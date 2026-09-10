@@ -1,0 +1,17 @@
+# Mencegah eksekusi script di folder upload (hardened)
+<FilesMatch "\.(php|php5|phtml|phar|inc|pht)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_php5.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+Options -Indexes
+<FilesMatch "\.(jpg|jpeg|png|webp|svg)$">
+    Require all granted
+</FilesMatch>

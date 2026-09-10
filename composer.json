@@ -1,0 +1,27 @@
+{
+    "name": "perpustakaan/sejahtera",
+    "description": "Sistem Informasi Perpustakaan Umum Sejahtera",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
+    },
+    "autoload": {
+        "files": [
+            "includes/functions.php",
+            "includes/helpers.php",
+            "includes/auth.php",
+            "includes/csrf.php",
+            "includes/isbn.php",
+            "includes/book_metadata.php",
+            "includes/rate_limit.php",
+            "includes/audit.php"
+        ]
+    },
+    "scripts": {
+        "lint": "find . -name \"*.php\" -exec php -l {} \\;",
+        "test": "phpunit tests"
+    }
+}
