@@ -8,7 +8,7 @@ $filter_tersedia = isset($_GET['tersedia']) && $_GET['tersedia'] === '1';
 $sort_raw    = $_GET['sort'] ?? '';
 $sort_whitelist = ['judul_asc' => 'b.judul ASC', 'terbaru' => 'b.created_at DESC, b.id_buku DESC', 'stok_desc' => 'b.stok DESC, b.judul ASC'];
 $sort = isset($sort_whitelist[$sort_raw]) ? $sort_raw : '';
-$order_by = $sort !== '' ? $sort_whitelist[$sort] : 'b.judul ASC';
+$order_by = $sort !== '' ? $sort_whitelist[$sort] : 'RAND()';
 $halaman     = isset($_GET['halaman']) ? max(1, (int) $_GET['halaman']) : 1;
 $per_halaman = 12;
 $offset      = ($halaman - 1) * $per_halaman;
@@ -44,21 +44,25 @@ if ($halaman > $total_halaman) {
     $offset = ($halaman - 1) * $per_halaman;
 }
 
-// Ambil data buku
-$sql = "SELECT b.id_buku, b.judul, b.penulis, b.cover, b.tersedia, b.is_arsip, b.id_kategori, k.nama_kategori
-        FROM buku b
-        LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
-        $where_sql
-        ORDER BY $order_by
-        LIMIT :limit OFFSET :offset";
-$stmt = $pdo->prepare($sql);
-foreach ($params as $key => $val) {
-    $stmt->bindValue($key, $val);
+// Ambil data buku secara acak (ORDER BY RAND() saat tanpa sort/filter urutan)
+try {
+    $sql = "SELECT b.id_buku, b.judul, b.penulis, b.cover, b.tersedia, b.is_arsip, b.id_kategori, k.nama_kategori
+            FROM buku b
+            LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
+            $where_sql
+            ORDER BY $order_by
+            LIMIT :limit OFFSET :offset";
+    $stmt = $pdo->prepare($sql);
+    foreach ($params as $key => $val) {
+        $stmt->bindValue($key, $val);
+    }
+    $stmt->bindValue(':limit', $per_halaman, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $daftar_buku = $stmt->fetchAll();
+} catch (PDOException $e) {
+    die('Query daftar buku gagal: ' . htmlspecialchars($e->getMessage()));
 }
-$stmt->bindValue(':limit', $per_halaman, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$daftar_buku = $stmt->fetchAll();
 
 // Ambil daftar kategori
 $kategori_list = $pdo->query("SELECT id_kategori, nama_kategori FROM kategori ORDER BY nama_kategori ASC")->fetchAll();
