@@ -17,7 +17,7 @@ if ($kata_kunci !== '') {
 // Hitung total data untuk pagination (konsisten dengan peminjaman/index.php)
 $stmt_count = $pdo->prepare("SELECT COUNT(*) FROM peminjaman p
                        JOIN anggota a ON a.id_anggota = p.id_anggota
-                       JOIN buku b ON b.id_buku = p.id_buku
+                       LEFT JOIN buku b ON b.id_buku = p.id_buku
                        $where");
 $stmt_count->execute($params);
 $total_data = (int) $stmt_count->fetchColumn();
@@ -32,7 +32,7 @@ $stmt = $pdo->prepare("SELECT p.*, a.nama AS nama_anggota, a.nomor_anggota,
                               b.judul, b.kode_buku, b.cover, b.penulis, k.nama_kategori
                        FROM peminjaman p
                        JOIN anggota a ON a.id_anggota = p.id_anggota
-                       JOIN buku b ON b.id_buku = p.id_buku
+                       LEFT JOIN buku b ON b.id_buku = p.id_buku
                        LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
                        $where
                        ORDER BY p.tanggal_jatuh_tempo ASC, p.id_peminjaman ASC
@@ -50,7 +50,7 @@ if ($total_data > 0) {
     // Jumlah terlambat & estimasi denda untuk seluruh data terfilter
     $stmt_stat = $pdo->prepare("SELECT p.tanggal_jatuh_tempo FROM peminjaman p
                           JOIN anggota a ON a.id_anggota = p.id_anggota
-                          JOIN buku b ON b.id_buku = p.id_buku
+                          LEFT JOIN buku b ON b.id_buku = p.id_buku
                           $where");
     $stmt_stat->execute($params);
     $all_jatuh = $stmt_stat->fetchAll(PDO::FETCH_COLUMN);
@@ -116,6 +116,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
 <?php foreach ($daftar as $p):
     $telat_awal = hitung_keterlambatan($p['tanggal_jatuh_tempo'], $hari_ini);
     $denda_awal = hitung_denda($telat_awal);
+    $is_hilang_peng = empty($p['judul']);
     $cover = cover_url($p['cover']);
 ?>
   <article class="bg-white rounded-2xl border <?= $telat_awal > 0 ? 'border-red-100' : 'border-gray-100' ?> shadow-sm overflow-hidden">
@@ -132,16 +133,19 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0">
               <p class="text-[11px] font-semibold uppercase tracking-wide text-brand-600 truncate"><?= e($p['nama_kategori'] ?: 'Tanpa Kategori') ?></p>
-              <h2 class="font-bold text-gray-800 text-base sm:text-lg leading-tight mt-0.5 line-clamp-2"><?= e($p['judul']) ?></h2>
-              <p class="text-xs sm:text-sm text-gray-500 mt-1 truncate"><?= e($p['penulis']) ?></p>
+              <h2 class="font-bold text-gray-800 text-base sm:text-lg leading-tight mt-0.5 line-clamp-2"><?= e($p['judul'] ?? 'Buku telah dihapus dari katalog') ?></h2>
+              <p class="text-xs sm:text-sm text-gray-500 mt-1 truncate"><?= $is_hilang_peng ? 'Tidak tersedia' : e($p['penulis']) ?></p>
             </div>
-            <?php if ($telat_awal > 0): ?>
+            <?php if ($is_hilang_peng): ?>
+              <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">Tidak tersedia</span>
+            <?php elseif ($telat_awal > 0): ?>
               <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">Telat <?= $telat_awal ?> hari</span>
             <?php else: ?>
               <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Aman</span>
             <?php endif; ?>
           </div>
 
+          <?php if ($is_hilang_peng): ?><div class="mt-3 rounded-lg border px-3 py-2.5 text-xs leading-5" style="background:#fef2f2; border-color:#fecaca; color:#991b1b"><i class="bi bi-exclamation-triangle mr-1"></i> Buku telah dihapus dari katalog — transaksi ini tidak bisa diproses otomatis. Cek riwayat manual.</div><?php endif; ?>
           <div class="mt-3 bg-gray-50 rounded-xl p-2.5 sm:p-3">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-xs font-bold shrink-0">👤</div>

@@ -23,7 +23,7 @@ $where_sql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
 
 $total = $pdo->prepare("SELECT COUNT(*) FROM peminjaman p
                          JOIN anggota a ON a.id_anggota = p.id_anggota
-                         JOIN buku b ON b.id_buku = p.id_buku $where_sql");
+                         LEFT JOIN buku b ON b.id_buku = p.id_buku $where_sql");
 $total->execute($params);
 $total_data = (int) $total->fetchColumn();
 $total_halaman = max(1, (int) ceil($total_data / $per_halaman));
@@ -35,7 +35,7 @@ if ($halaman > $total_halaman) {
 $sql = "SELECT p.*, a.nama AS nama_anggota, a.nomor_anggota, b.judul, b.kode_buku, b.cover, b.penulis, k.nama_kategori
         FROM peminjaman p
         JOIN anggota a ON a.id_anggota = p.id_anggota
-        JOIN buku b ON b.id_buku = p.id_buku
+        LEFT JOIN buku b ON b.id_buku = p.id_buku
         LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
         $where_sql
         ORDER BY p.id_peminjaman DESC
@@ -101,6 +101,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
 <?php foreach ($daftar as $p):
     $telat = $p['status'] === 'dipinjam' ? hitung_keterlambatan($p['tanggal_jatuh_tempo']) : hitung_keterlambatan($p['tanggal_jatuh_tempo'], $p['tanggal_kembali']);
     $is_aktif = $p['status'] === 'dipinjam';
+    $is_hilang = empty($p['judul']);
     $cover = cover_url($p['cover']);
 ?>
   <article class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition">
@@ -117,10 +118,12 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
           <div class="flex items-start justify-between gap-2">
             <div class="min-w-0">
               <p class="text-[11px] font-semibold uppercase tracking-wide text-brand-600 truncate"><?= e($p['nama_kategori'] ?: 'Tanpa Kategori') ?></p>
-              <h2 class="font-bold text-gray-800 text-base sm:text-lg leading-tight mt-0.5 line-clamp-2"><?= e($p['judul']) ?></h2>
-              <p class="text-xs sm:text-sm text-gray-500 mt-1 truncate"><?= e($p['penulis']) ?></p>
+              <h2 class="font-bold text-gray-800 text-base sm:text-lg leading-tight mt-0.5 line-clamp-2"><?= e($p['judul'] ?? 'Buku telah dihapus dari katalog') ?></h2>
+              <p class="text-xs sm:text-sm text-gray-500 mt-1 truncate"><?= $is_hilang ? 'Tidak tersedia' : e($p['penulis']) ?></p>
             </div>
-            <?php if ($is_aktif && $telat > 0): ?>
+            <?php if ($is_hilang): ?>
+              <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">Tidak tersedia</span>
+            <?php elseif ($is_aktif && $telat > 0): ?>
               <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">Telat <?= $telat ?> hari</span>
             <?php elseif ($is_aktif): ?>
               <span class="shrink-0 text-[10px] sm:text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">Aktif</span>
@@ -129,6 +132,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
             <?php endif; ?>
           </div>
 
+          <?php if ($is_hilang): ?><div class="mt-3 rounded-lg border px-3 py-2.5 text-xs leading-5" style="background:#fef2f2; border-color:#fecaca; color:#991b1b"><i class="bi bi-exclamation-triangle mr-1"></i> Buku telah dihapus dari katalog — tidak tersedia. Riwayat tetap ditampilkan untuk audit.</div><?php endif; ?>
           <div class="mt-3 bg-gray-50 rounded-xl p-2.5 sm:p-3">
             <div class="flex items-center gap-2">
               <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center text-xs font-bold shrink-0">👤</div>

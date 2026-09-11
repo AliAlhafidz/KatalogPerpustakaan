@@ -33,10 +33,11 @@ try {
     $stmt->execute([':id' => $id_peminjaman]);
     if ($stmt->rowCount() !== 1) throw new Exception('Peminjaman gagal dibatalkan.');
 
-    // Kembalikan stok buku yang tersedia — batasi agar tidak melebihi stok (konsisten dengan pengembalian)
-    $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
-    $stmt->execute([':id' => $peminjaman['id_buku']]);
-    if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal dikembalikan.');
+    if (!empty($peminjaman['id_buku'])) {
+        $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
+        $stmt->execute([':id' => $peminjaman['id_buku']]);
+        if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal dikembalikan.');
+    }
 
     $pdo->commit();
 } catch (Throwable $e) {

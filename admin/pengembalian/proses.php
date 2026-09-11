@@ -66,9 +66,11 @@ try {
     $stmt->execute([':tgl' => $tanggal_kembali, ':denda' => $denda, ':admin' => $_SESSION['id_admin'], ':id' => $id_peminjaman]);
     if ($stmt->rowCount() !== 1) throw new Exception('Status peminjaman sudah berubah. Silakan muat ulang halaman.');
 
-    $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
-    $stmt->execute([':id' => $peminjaman['id_buku']]);
-    if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal diperbarui.');
+    if (!empty($peminjaman['id_buku'])) {
+        $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
+        $stmt->execute([':id' => $peminjaman['id_buku']]);
+        if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal diperbarui.');
+    }
 
     $pdo->commit();
     $stmt = $pdo->prepare("SELECT judul FROM buku WHERE id_buku=:id");

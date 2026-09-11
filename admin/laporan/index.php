@@ -43,7 +43,7 @@ switch ($jenis) {
         $judul_laporan = 'Laporan Transaksi Peminjaman (' . format_tanggal($dari) . ' – ' . format_tanggal($sampai) . ')';
         $kolom = ['Cover', 'Anggota', 'Buku', 'Tgl Pinjam', 'Jatuh Tempo', 'Status'];
         $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_pinjam, p.tanggal_jatuh_tempo, p.status
-                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku
+                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku
                                 WHERE p.tanggal_pinjam BETWEEN :dari AND :sampai ORDER BY p.tanggal_pinjam DESC LIMIT $limit_laporan");
         $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
         $data = $stmt->fetchAll();
@@ -56,7 +56,7 @@ switch ($jenis) {
         $judul_laporan = 'Laporan Transaksi Pengembalian (' . format_tanggal($dari) . ' – ' . format_tanggal($sampai) . ')';
         $kolom = ['Cover', 'Anggota', 'Buku', 'Tgl Kembali', 'Terlambat', 'Denda'];
         $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.tanggal_jatuh_tempo, p.denda
-                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku
+                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku
                                 WHERE p.status='dikembalikan' AND p.tanggal_kembali BETWEEN :dari AND :sampai
                                 ORDER BY p.tanggal_kembali DESC LIMIT $limit_laporan");
         $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
@@ -70,7 +70,7 @@ switch ($jenis) {
         $judul_laporan = 'Laporan Denda Keterlambatan (' . format_tanggal($dari) . ' – ' . format_tanggal($sampai) . ')';
         $kolom = ['Cover', 'Anggota', 'Buku', 'Tgl Kembali', 'Denda'];
         $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.denda
-                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku
+                                FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku
                                 WHERE p.status='dikembalikan' AND p.denda > 0 AND p.tanggal_kembali BETWEEN :dari AND :sampai
                                 ORDER BY p.tanggal_kembali DESC LIMIT $limit_laporan");
         $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
@@ -219,17 +219,17 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
             $export_data = $stmt->fetchAll();
             break;
         case 'peminjaman':
-            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_pinjam, p.tanggal_jatuh_tempo, p.status FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku WHERE p.tanggal_pinjam BETWEEN :dari AND :sampai ORDER BY p.tanggal_pinjam DESC");
+            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_pinjam, p.tanggal_jatuh_tempo, p.status FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku WHERE p.tanggal_pinjam BETWEEN :dari AND :sampai ORDER BY p.tanggal_pinjam DESC");
             $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
             $export_data = $stmt->fetchAll();
             break;
         case 'pengembalian':
-            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.tanggal_jatuh_tempo, p.denda FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku WHERE p.status='dikembalikan' AND p.tanggal_kembali BETWEEN :dari AND :sampai ORDER BY p.tanggal_kembali DESC");
+            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.tanggal_jatuh_tempo, p.denda FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku WHERE p.status='dikembalikan' AND p.tanggal_kembali BETWEEN :dari AND :sampai ORDER BY p.tanggal_kembali DESC");
             $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
             $export_data = $stmt->fetchAll();
             break;
         case 'denda':
-            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.denda FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota JOIN buku b ON b.id_buku=p.id_buku WHERE p.status='dikembalikan' AND p.denda > 0 AND p.tanggal_kembali BETWEEN :dari AND :sampai ORDER BY p.tanggal_kembali DESC");
+            $stmt = $pdo->prepare("SELECT a.nama AS nama_anggota, b.judul, b.cover, p.tanggal_kembali, p.denda FROM peminjaman p JOIN anggota a ON a.id_anggota=p.id_anggota LEFT JOIN buku b ON b.id_buku=p.id_buku WHERE p.status='dikembalikan' AND p.denda > 0 AND p.tanggal_kembali BETWEEN :dari AND :sampai ORDER BY p.tanggal_kembali DESC");
             $stmt->execute([':dari' => $dari, ':sampai' => $sampai]);
             $export_data = $stmt->fetchAll();
             break;
@@ -661,7 +661,7 @@ if (!function_exists('initials_from_name')) {
                   <?php if ($jenis === 'peminjaman'): ?>
                     <td class="px-3 py-2.5" data-label="Cover"><img src="<?= e(cover_url($row['cover'] ?? null)) ?>" alt="" class="lap-cover"></td>
                     <td class="px-3 py-2.5 font-semibold max-w-[150px] truncate" data-label="Anggota" title="<?= e($row['nama_anggota']) ?>"><?= e($row['nama_anggota']) ?></td>
-                    <td class="px-3 py-2.5 font-semibold max-w-[180px] truncate" style="color:var(--text)" data-label="Buku" title="<?= e($row['judul']) ?>"><?= e($row['judul']) ?></td>
+                    <td class="px-3 py-2.5 font-semibold max-w-[180px] truncate" style="color:var(--text)" data-label="Buku" title="<?= e($row['judul'] ?? 'Buku telah dihapus dari katalog') ?>"><?= e($row['judul'] ?? 'Buku telah dihapus dari katalog') ?><?php if (empty($row['judul'])): ?> <span class="ml-1 text-[11px] px-1.5 py-0.5 rounded-full" style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca">Tidak tersedia</span><?php endif; ?></td>
                     <td class="px-3 py-2.5 whitespace-nowrap" data-label="Tgl Pinjam"><?= format_tanggal($row['tanggal_pinjam']) ?></td>
                     <td class="px-3 py-2.5 whitespace-nowrap" data-label="Jatuh Tempo"><?= format_tanggal($row['tanggal_jatuh_tempo']) ?></td>
                     <td class="px-3 py-2.5" data-label="Status"><span class="lap-badge <?= $row['status']==='dipinjam' ? 'lap-badge-theme' : 'lap-badge-safe' ?>"><?= $row['status']==='dipinjam' ? 'Dipinjam' : 'Selesai' ?></span></td>
@@ -669,14 +669,14 @@ if (!function_exists('initials_from_name')) {
                     <?php $telat=hitung_keterlambatan($row['tanggal_jatuh_tempo'],$row['tanggal_kembali']); ?>
                     <td class="px-3 py-2.5" data-label="Cover"><img src="<?= e(cover_url($row['cover'] ?? null)) ?>" alt="" class="lap-cover"></td>
                     <td class="px-3 py-2.5 font-semibold max-w-[140px] truncate" data-label="Anggota"><?= e($row['nama_anggota']) ?></td>
-                    <td class="px-3 py-2.5 font-semibold max-w-[160px] truncate" style="color:var(--text)" data-label="Buku"><?= e($row['judul']) ?></td>
+                    <td class="px-3 py-2.5 font-semibold max-w-[160px] truncate" style="color:var(--text)" data-label="Buku"><?= e($row['judul'] ?? 'Buku telah dihapus dari katalog') ?><?php if (empty($row['judul'])): ?> <span class="ml-1 text-[11px] px-1.5 py-0.5 rounded-full" style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca">Tidak tersedia</span><?php endif; ?></td>
                     <td class="px-3 py-2.5 whitespace-nowrap" data-label="Tgl Kembali"><?= format_tanggal($row['tanggal_kembali']) ?></td>
                     <td class="px-3 py-2.5" data-label="Terlambat"><span class="lap-badge <?= $telat>0 ? 'lap-badge-danger' : 'lap-badge-safe' ?>"><?= $telat ?> hari</span></td>
                     <td class="px-3 py-2.5 whitespace-nowrap font-bold" style="color:<?= $row['denda']>0 ? '#991b1b' : '#065f46' ?>" data-label="Denda"><?= format_rupiah($row['denda']) ?></td>
                   <?php elseif ($jenis === 'denda'): ?>
                     <td class="px-3 py-2.5" data-label="Cover"><img src="<?= e(cover_url($row['cover'] ?? null)) ?>" alt="" class="lap-cover"></td>
                     <td class="px-3 py-2.5 font-semibold max-w-[150px] truncate" data-label="Anggota"><?= e($row['nama_anggota']) ?></td>
-                    <td class="px-3 py-2.5 font-semibold max-w-[180px] truncate" style="color:var(--text)" data-label="Buku"><?= e($row['judul']) ?></td>
+                    <td class="px-3 py-2.5 font-semibold max-w-[180px] truncate" style="color:var(--text)" data-label="Buku"><?= e($row['judul'] ?? 'Buku telah dihapus dari katalog') ?><?php if (empty($row['judul'])): ?> <span class="ml-1 text-[11px] px-1.5 py-0.5 rounded-full" style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca">Tidak tersedia</span><?php endif; ?></td>
                     <td class="px-3 py-2.5 whitespace-nowrap" data-label="Tgl Kembali"><?= format_tanggal($row['tanggal_kembali']) ?></td>
                     <td class="px-3 py-2.5 whitespace-nowrap font-bold" style="color:#991b1b" data-label="Denda"><?= format_rupiah($row['denda']) ?></td>
                   <?php endif; ?>

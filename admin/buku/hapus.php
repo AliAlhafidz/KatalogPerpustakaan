@@ -26,13 +26,9 @@ if (!$buku) {
 }
 
 try {
-    // Riwayat peminjaman adalah data transaksi dan tidak boleh ikut terhapus.
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM peminjaman WHERE id_buku = :id");
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM peminjaman WHERE id_buku = :id AND status = 'dipinjam'");
     $stmt->execute([':id' => $id_buku]);
-    if ((int)$stmt->fetchColumn() > 0) {
-        set_flash('error', 'Buku tidak dapat dihapus karena memiliki riwayat peminjaman. Gunakan tombol Arsipkan agar buku hilang dari katalog tanpa menghapus riwayat transaksi (riwayat anggota akan tetap tampil dengan keterangan Diarsipkan).');
-        redirect('/admin/buku/index.php');
-    }
+    $masih_dipinjam = (int)$stmt->fetchColumn() > 0;
 
     $pdo->beginTransaction();
     $stmt = $pdo->prepare("DELETE FROM favorit WHERE id_buku = :id");
@@ -47,7 +43,12 @@ try {
 
     hapus_cover($buku['cover']);
     catat_audit($pdo, $_SESSION['id_admin'] ?? null, 'hapus', 'buku', $id_buku, ['judul' => $buku['judul']]);
-    set_flash('sukses', "Buku \"{$buku['judul']}\" berhasil dihapus.");
+
+    if ($masih_dipinjam) {
+        set_flash('warning', "Buku \"{$buku['judul']}\" berhasil dihapus. Perhatian: buku ini masih dipinjam oleh anggota. Transaksi pengembaliannya nanti tidak akan bisa diproses otomatis lewat sistem karena data buku sudah dihapus — cek riwayat peminjaman manual.");
+    } else {
+        set_flash('sukses', "Buku \"{$buku['judul']}\" berhasil dihapus.");
+    }
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

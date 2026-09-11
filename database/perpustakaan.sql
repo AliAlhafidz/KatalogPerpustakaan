@@ -396,7 +396,7 @@ CREATE TABLE `pengajuan_peminjaman` (
   `diproses_at` datetime DEFAULT NULL,
   `diproses_oleh` int DEFAULT NULL,
   `aktif_unik` varchar(40) GENERATED ALWAYS AS ((case when (`status` = _utf8mb4'menunggu') then concat(`id_anggota`,_utf8mb4':',`id_buku`) else NULL end)) VIRTUAL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `pengajuan_peminjaman`
