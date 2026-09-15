@@ -7,3 +7,4 @@ assets/uploads/profil/*.*
 *.log
 .DS_Store
 Thumbs.db
+database/backups/
