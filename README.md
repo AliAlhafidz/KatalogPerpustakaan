@@ -8,7 +8,7 @@ Proyek UKK — PHP Native 8+, PDO MySQL, Tailwind CSS, Bootstrap Icons.
 
 **Anggota:** semua di atas + dashboard (sedang dipinjam, estimasi denda, notifikasi, statistik: total pinjam/total denda/kategori favorit), peminjaman aktif + kalender jatuh tempo, riwayat (`LEFT JOIN` — histori tetap tampil meski buku dihapus), notifikasi H-3/H-1, favorit, ajukan perpanjangan 1–7 hari (1×), pengajuan buku baru, ubah profil + foto profil (thumb), lupa password token demo 1 jam.
 
-**Admin:** dashboard (7 stat + chart 30 hari via Chart.js CDN) + warning `admin123`, CRUD buku (arsip/hapus/ISBN cache 24j/bulk import 20/batch + thumb) & kategori, kelola anggota, peminjaman & pengembalian (filter/pagination clamp/LEAST stok/validasi Minggu) + trigger simulasi H-3/H-1, perpanjangan & pengajuan (approve/reject + notifikasi), audit log (buku/kategori/pengajuan), laporan 5 jenis (`LIMIT 500` + export CSV BOM + print A4), profil + foto.
+**Admin:** dashboard (7 stat + chart 30 hari via Chart.js CDN) + warning `aliali123`, CRUD buku (arsip/hapus/ISBN cache 24j/bulk import 20/batch + thumb) & kategori, kelola anggota, peminjaman & pengembalian (filter/pagination clamp/LEAST stok/validasi Minggu) + trigger simulasi H-3/H-1, perpanjangan & pengajuan (approve/reject + notifikasi), audit log (buku/kategori/pengajuan), laporan 5 jenis (`LIMIT 500` + export CSV BOM + print A4), profil + foto.
 
 > **Hapus buku:** histori `peminjaman` tidak ikut terhapus. FK `peminjaman.id_buku` → `ON DELETE SET NULL` (NULL → tampil "Buku telah dihapus dari katalog / Tidak tersedia" di `anggota/riwayat.php` + halaman admin). `favorit` & `pengajuan_peminjaman` tetap `CASCADE` (workflow). Admin `hapus.php` tidak lagi blokir buku berhistori; ada `warning` bila buku masih `dipinjam`.
 
@@ -77,8 +77,8 @@ perpustakaan/
 
 | Peran | Username / Email | Password | Catatan |
 |-------|------------------|----------|---------|
-| Admin | `admin` | `admin123` | Demo — ganti segera |
-| Anggota | `budi@example.com` | `anggota123` | Demo — hapus di produksi |
+| Admin | `admin` | `aliali123` | Demo — ganti segera |
+| Anggota | `budi@example.com` | `budi123` | Demo — hapus di produksi |
 
 ## Aturan Sistem
 
@@ -94,7 +94,7 @@ perpustakaan/
 
 ## Keamanan
 
-- `password_hash`/`password_verify`, PDO prepared, `e()` XSS, validasi upload (ext/MIME/`finfo`/`getimagesize` via thumb, `basename`, `move_uploaded_file`, 2MB), `.htaccess` upload, `wajib_admin`/`wajib_anggota`, modal konfirmasi, rate limit 5/15m, `csrf_regenerate`, audit side-effect, warning `admin123`.
+- `password_hash`/`password_verify`, PDO prepared, `e()` XSS, validasi upload (ext/MIME/`finfo`/`getimagesize` via thumb, `basename`, `move_uploaded_file`, 2MB), `.htaccess` upload, `wajib_admin`/`wajib_anggota`, modal konfirmasi, rate limit 5/15m, `csrf_regenerate`, audit side-effect, warning `aliali123`.
 
 ### Hardening Nginx (opsional — `.htaccess` hanya Apache)
 

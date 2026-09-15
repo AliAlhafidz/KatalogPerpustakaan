@@ -47,13 +47,13 @@ for ($i = 29; $i >= 0; $i--) {
 
 $peringatan_default = false;
 try {
-    // Cek apakah password masih default admin123 (jangan simpan plaintext, hanya verify)
+    // Cek apakah password masih default aliali123 (jangan simpan plaintext, hanya verify)
     // File setup_akun_awal.php sudah dihapus manual — pengecekan file tidak lagi relevan,
     // indikator utama keamanan adalah apakah password default masih ada di database.
     $stmt = $pdo->prepare("SELECT password FROM admin WHERE id_admin = :id");
     $stmt->execute([':id' => $_SESSION['id_admin'] ?? 0]);
     $hash = $stmt->fetchColumn();
-    if ($hash && password_verify('admin123', $hash)) {
+    if ($hash && password_verify('aliali123', $hash)) {
         $peringatan_default = true;
     }
 } catch (Throwable $e) {
@@ -71,7 +71,7 @@ require_once __DIR__ . '/../includes/admin_menu.php';
   <span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm" style="background:#fef3c7; color:#92400e"><i class="bi bi-shield-exclamation"></i></span>
   <div class="min-w-0 flex-1">
     <h2 class="text-sm font-bold" style="color:#92400e">Password default masih digunakan</h2>
-    <p class="text-sm mt-1 leading-6" style="color:#92400e">Akun admin masih memakai <code>admin123</code>. Ganti via <a href="<?= BASE_URL ?>/admin/profil.php" class="font-bold underline">Profil → Keamanan Akun</a>.</p>
+    <p class="text-sm mt-1 leading-6" style="color:#92400e">Akun admin masih memakai <code>aliali123</code>. Ganti via <a href="<?= BASE_URL ?>/admin/profil.php" class="font-bold underline">Profil → Keamanan Akun</a>.</p>
   </div>
 </div>
 <?php endif; ?>
