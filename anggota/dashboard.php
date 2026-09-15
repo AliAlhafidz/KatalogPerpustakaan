@@ -9,9 +9,9 @@ $stmt = $pdo->prepare("SELECT * FROM anggota WHERE id_anggota = :id");
 $stmt->execute([':id' => $id_anggota]);
 $anggota = $stmt->fetch();
 
-$stmt = $pdo->prepare("SELECT p.*, b.judul, b.cover, b.kode_buku, b.lokasi_rak,
+$stmt = $pdo->prepare("SELECT p.*, COALESCE(b.judul,'(buku dihapus)') AS judul, b.cover, b.kode_buku, b.lokasi_rak,
                        (SELECT pp.status FROM perpanjangan_peminjaman pp WHERE pp.id_peminjaman=p.id_peminjaman AND pp.status='menunggu' ORDER BY pp.id_perpanjangan DESC LIMIT 1) AS status_perpanjangan
-                       FROM peminjaman p JOIN buku b ON b.id_buku=p.id_buku
+                       FROM peminjaman p LEFT JOIN buku b ON b.id_buku=p.id_buku
                        WHERE p.id_anggota=:id AND p.status='dipinjam' ORDER BY p.tanggal_jatuh_tempo ASC");
 $stmt->execute([':id'=>$id_anggota]);
 $sedang_dipinjam = $stmt->fetchAll();
@@ -38,7 +38,7 @@ try {
     $stmt->execute([':id'=>$id_anggota]);
     $kategori_favorit = $stmt->fetch();
     if (!$kategori_favorit) {
-        $stmt = $pdo->prepare("SELECT k.nama_kategori, COUNT(*) AS jml FROM peminjaman p JOIN buku b ON b.id_buku=p.id_buku LEFT JOIN kategori k ON k.id_kategori=b.id_kategori WHERE p.id_anggota=:id AND k.nama_kategori IS NOT NULL GROUP BY k.id_kategori, k.nama_kategori ORDER BY jml DESC LIMIT 1");
+        $stmt = $pdo->prepare("SELECT k.nama_kategori, COUNT(*) AS jml FROM peminjaman p LEFT JOIN buku b ON b.id_buku=p.id_buku LEFT JOIN kategori k ON k.id_kategori=b.id_kategori WHERE p.id_anggota=:id AND k.nama_kategori IS NOT NULL GROUP BY k.id_kategori, k.nama_kategori ORDER BY jml DESC LIMIT 1");
         $stmt->execute([':id'=>$id_anggota]);
         $kategori_favorit = $stmt->fetch();
     }

@@ -63,7 +63,7 @@ try {
         $error_tabel = 'Tabel pengajuan_peminjaman belum ada. Jalankan migrasi database/migrasi_v7_pengajuan_peminjaman.sql';
     } else {
         error_log('Gagal load pengajuan_peminjaman: ' . $e->getMessage());
-        $error_tabel = 'Gagal memuat data: ' . $e->getMessage();
+        $error_tabel = 'Gagal memuat data. Silakan coba lagi.';
     }
 }
 

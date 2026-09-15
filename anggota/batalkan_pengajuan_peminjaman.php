@@ -52,7 +52,7 @@ try {
         set_flash('error', 'Tabel pengajuan belum ada. Jalankan migrasi.');
     } else {
         error_log('Batalkan pengajuan gagal: ' . $e->getMessage());
-        set_flash('error', 'Gagal membatalkan: ' . $e->getMessage());
+        set_flash('error', 'Gagal membatalkan pengajuan. Silakan coba lagi.');
     }
     redirect('/anggota/pengajuan_peminjaman.php');
 }

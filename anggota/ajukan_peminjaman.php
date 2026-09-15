@@ -95,10 +95,10 @@ try {
         redirect('/detail.php?id=' . $id_buku);
     }
     error_log('Ajukan peminjaman gagal: ' . $e->getMessage());
-    set_flash('error', 'Gagal mengirim pengajuan: ' . $e->getMessage());
+    set_flash('error', 'Gagal mengirim pengajuan. Silakan coba lagi.');
     redirect('/detail.php?id=' . $id_buku);
 } catch (Throwable $e) {
     error_log('Ajukan peminjaman gagal: ' . $e->getMessage());
-    set_flash('error', 'Gagal mengirim pengajuan: ' . $e->getMessage());
+    set_flash('error', 'Gagal mengirim pengajuan. Silakan coba lagi.');
     redirect('/detail.php?id=' . $id_buku);
 }

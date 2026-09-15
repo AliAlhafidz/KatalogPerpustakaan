@@ -19,7 +19,7 @@ if ($hari_diminta < 1 || $hari_diminta > PERPANJANGAN_MAKS_HARI) {
     redirect('/anggota/peminjaman.php');
 }
 
-$stmt = $pdo->prepare("SELECT p.*, b.judul FROM peminjaman p JOIN buku b ON b.id_buku=p.id_buku WHERE p.id_peminjaman=:p AND p.id_anggota=:a AND p.status='dipinjam'");
+$stmt = $pdo->prepare("SELECT p.*, b.judul FROM peminjaman p LEFT JOIN buku b ON b.id_buku=p.id_buku WHERE p.id_peminjaman=:p AND p.id_anggota=:a AND p.status='dipinjam'");
 $stmt->execute([':p'=>$id_peminjaman, ':a'=>$id_anggota]);
 $peminjaman = $stmt->fetch();
 

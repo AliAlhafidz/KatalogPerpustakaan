@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (strpos($e->getMessage(), 'pengajuan_buku') !== false) {
                 $errors[] = 'Fitur pengajuan belum siap (tabel belum ada). Hubungi admin untuk migrasi.';
             } else {
-                $errors[] = 'Gagal mengirim pengajuan: ' . $e->getMessage();
+                $errors[] = 'Gagal mengirim pengajuan. Silakan coba lagi nanti.';
             }
             error_log('Pengajuan buku error: ' . $e->getMessage());
         }

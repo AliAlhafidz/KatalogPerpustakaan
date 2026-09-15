@@ -9,11 +9,11 @@ $where = '';
 $params = [];
 if ($filter !== 'semua') { $where = 'WHERE pp.status = :status'; $params[':status'] = $filter; }
 
-$stmt = $pdo->prepare("SELECT pp.*, a.nama AS nama_anggota, a.nomor_anggota, b.judul, b.kode_buku
+$stmt = $pdo->prepare("SELECT pp.*, a.nama AS nama_anggota, a.nomor_anggota, COALESCE(b.judul,'(buku dihapus)') AS judul, b.kode_buku
                        FROM perpanjangan_peminjaman pp
                        JOIN anggota a ON a.id_anggota=pp.id_anggota
                        JOIN peminjaman p ON p.id_peminjaman=pp.id_peminjaman
-                       JOIN buku b ON b.id_buku=p.id_buku
+                       LEFT JOIN buku b ON b.id_buku=p.id_buku
                        $where ORDER BY CASE WHEN pp.status='menunggu' THEN 0 ELSE 1 END, pp.created_at DESC");
 $stmt->execute($params);
 $daftar = $stmt->fetchAll();

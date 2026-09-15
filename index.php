@@ -8,7 +8,7 @@ $filter_tersedia = isset($_GET['tersedia']) && $_GET['tersedia'] === '1';
 $sort_raw    = $_GET['sort'] ?? '';
 $sort_whitelist = ['judul_asc' => 'b.judul ASC', 'terbaru' => 'b.created_at DESC, b.id_buku DESC', 'stok_desc' => 'b.stok DESC, b.judul ASC'];
 $sort = isset($sort_whitelist[$sort_raw]) ? $sort_raw : '';
-$order_by = $sort !== '' ? $sort_whitelist[$sort] : 'RAND()';
+$order_by = $sort !== '' ? $sort_whitelist[$sort] : 'b.judul ASC';
 $halaman     = isset($_GET['halaman']) ? max(1, (int) $_GET['halaman']) : 1;
 $per_halaman = 12;
 $offset      = ($halaman - 1) * $per_halaman;
@@ -468,7 +468,7 @@ require_once __DIR__ . '/includes/header.php';
   <div>
     <p class="text-[11px] font-bold tracking-[.14em] uppercase" style="color:var(--text-faint-2)">Koleksi buku</p>
     <h2 class="font-display text-[18px] sm:text-[20px] font-bold tracking-tight mt-1" style="color:var(--text)">Jelajahi katalog</h2>
-    <p class="text-xs mt-1" style="color:var(--text-faint)"><?= $total_data ?> buku ditemukan<?php if ($id_kategori>0): ?> · <?= e($kategori_list[array_search($id_kategori, array_column($kategori_list,'id_kategori'))]['nama_kategori'] ?? '') ?><?php endif; ?></p>
+    <p class="text-xs mt-1" style="color:var(--text-faint)"><?= $total_data ?> buku ditemukan<?php if ($id_kategori>0): ?> · <?= e(array_column($kategori_list, 'nama_kategori', 'id_kategori')[$id_kategori] ?? '') ?><?php endif; ?></p>
   </div>
   <div class="flex items-center gap-2">
     <span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium bg-white" style="border-color:var(--border); color:var(--text-muted)">

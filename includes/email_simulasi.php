@@ -11,9 +11,9 @@ function proses_notifikasi_h3_h1(PDO $pdo): array {
     $h1 = date('Y-m-d', strtotime('+1 days'));
 
     // Cari peminjaman aktif jatuh tempo H-3 atau H-1
-    $stmt = $pdo->prepare("SELECT p.id_peminjaman, p.id_anggota, p.tanggal_jatuh_tempo, b.judul, a.nama, a.email
+    $stmt = $pdo->prepare("SELECT p.id_peminjaman, p.id_anggota, p.tanggal_jatuh_tempo, COALESCE(b.judul,'(buku dihapus)') AS judul, a.nama, a.email
                            FROM peminjaman p
-                           JOIN buku b ON b.id_buku = p.id_buku
+                           LEFT JOIN buku b ON b.id_buku = p.id_buku
                            JOIN anggota a ON a.id_anggota = p.id_anggota
                            WHERE p.status = 'dipinjam' AND p.tanggal_jatuh_tempo IN (:h3, :h1)
                            ORDER BY p.tanggal_jatuh_tempo ASC");

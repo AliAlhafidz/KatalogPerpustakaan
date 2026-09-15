@@ -26,3 +26,13 @@ require_once __DIR__ . '/../includes/csrf.php';
 require_once __DIR__ . '/../includes/helpers.php';
 require_once __DIR__ . '/../includes/rate_limit.php';
 require_once __DIR__ . '/../includes/audit.php';
+
+// Tangkap exception tak tertangani agar tidak bocor detail error ke pengguna.
+set_exception_handler(function (Throwable $e): void {
+    error_log('[unhandled] ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+    http_response_code(500);
+    if (!headers_sent()) {
+        header('Content-Type: text/html; charset=utf-8');
+    }
+    die('<title>Terjadi Kesalahan</title><style>body{font-family:system-ui,sans-serif;background:#f7f5f4;color:#1c1917;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}div{text-align:center;padding:2rem}h1{font-size:1.75rem;margin:0 0 .5rem}p{color:#78716c;margin:0 0 1.25rem}a{color:#b45309;font-weight:600;text-decoration:none}</style><div><h1>Terjadi kesalahan</h1><p>Terjadi kendala teknis pada server. Silakan coba lagi beberapa saat.</p><a href="' . BASE_URL . '">Kembali ke beranda</a></div>');
+});

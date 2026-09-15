@@ -16,10 +16,10 @@ if ($id <= 0 || !in_array($aksi, ['setujui','tolak'])) {
 $pdo->beginTransaction();
 try {
     // Kunci permintaan setelah transaksi dimulai agar dua admin tidak dapat memprosesnya bersamaan.
-    $lock = $pdo->prepare("SELECT pp.*, p.status AS status_peminjaman, p.tanggal_jatuh_tempo, p.id_buku, b.judul, a.nama AS nama_anggota
+    $lock = $pdo->prepare("SELECT pp.*, p.status AS status_peminjaman, p.tanggal_jatuh_tempo, p.id_buku, COALESCE(b.judul,'(buku dihapus)') AS judul, a.nama AS nama_anggota
                            FROM perpanjangan_peminjaman pp
                            JOIN peminjaman p ON p.id_peminjaman=pp.id_peminjaman
-                           JOIN buku b ON b.id_buku=p.id_buku
+                           LEFT JOIN buku b ON b.id_buku=p.id_buku
                            JOIN anggota a ON a.id_anggota=pp.id_anggota
                            WHERE pp.id_perpanjangan=:id AND pp.status='menunggu' FOR UPDATE");
     $lock->execute([':id'=>$id]);

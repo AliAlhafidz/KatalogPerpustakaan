@@ -425,9 +425,9 @@ function sinkronkan_notifikasi_anggota(PDO $pdo, $id_anggota) {
     $_SESSION[$key] = time();
 
     // Membuat pengingat otomatis saat halaman anggota dibuka. Ini tidak membutuhkan cron job.
-    $stmt = $pdo->prepare("SELECT p.id_peminjaman, p.tanggal_jatuh_tempo, b.judul
+    $stmt = $pdo->prepare("SELECT p.id_peminjaman, p.tanggal_jatuh_tempo, COALESCE(b.judul,'(buku dihapus)') AS judul
                            FROM peminjaman p
-                           JOIN buku b ON b.id_buku = p.id_buku
+                           LEFT JOIN buku b ON b.id_buku = p.id_buku
                            WHERE p.id_anggota = :id AND p.status = 'dipinjam'");
     $stmt->execute([':id' => $id_anggota]);
     $pinjaman = $stmt->fetchAll();

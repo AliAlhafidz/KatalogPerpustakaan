@@ -34,7 +34,7 @@ $daftar = $stmt->fetchAll();
 // Stats untuk header
 try {
     $stat_aktif = (int)$pdo->query("SELECT COUNT(*) FROM anggota WHERE status='aktif'")->fetchColumn();
-    $stat_non = $total_data - $stat_aktif;
+    $stat_non = (int)$pdo->query("SELECT COUNT(*) FROM anggota WHERE status<>'aktif'")->fetchColumn();
 } catch (Throwable $e) { $stat_aktif = 0; $stat_non = 0; }
 
 if (!function_exists('initials_from_name')) {

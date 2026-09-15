@@ -305,7 +305,7 @@ INSERT INTO `notifikasi` (`id_notifikasi`, `id_anggota`, `judul`, `pesan`, `tipe
 CREATE TABLE `peminjaman` (
   `id_peminjaman` int NOT NULL,
   `id_anggota` int NOT NULL,
-  `id_buku` int NOT NULL,
+  `id_buku` int DEFAULT NULL,
   `tanggal_pinjam` date NOT NULL,
   `tanggal_jatuh_tempo` date NOT NULL,
   `tanggal_kembali` date DEFAULT NULL,
@@ -603,7 +603,7 @@ ALTER TABLE `notifikasi`
 --
 ALTER TABLE `peminjaman`
   ADD CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`),
-  ADD CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`),
+  ADD CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`) ON DELETE SET NULL,
   ADD CONSTRAINT `peminjaman_ibfk_3` FOREIGN KEY (`diproses_oleh`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL;
 
 --

@@ -26,7 +26,8 @@ $kalender_bulan = (int)date('n');
 $kalender_tahun = (int)date('Y');
 $kalender_jumlah_hari = (int)date('t', mktime(0,0,0,$kalender_bulan,1,$kalender_tahun));
 $kalender_hari_pertama = (int)date('w', mktime(0,0,0,$kalender_bulan,1,$kalender_tahun)); // 0=Min
-$kalender_nama_bulan = format_tanggal(sprintf('%04d-%02d-01', $kalender_tahun, $kalender_bulan));
+$bulan_nama = [1=>'Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+$kalender_nama_bulan = $bulan_nama[$kalender_bulan] . ' ' . $kalender_tahun;
 
 $page_title = 'Peminjaman Saya';
 $member_menu_aktif = 'peminjaman';
