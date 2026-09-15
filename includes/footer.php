@@ -1,9 +1,15 @@
 </main>
 
 <?php $auth_footer = in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['login.php', 'register.php', 'lupa_password.php', 'reset_password.php'], true); ?>
+<?php
+$footer_wrap   = (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer' : '');
+$footer_inner  = (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer-inner' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer-inner' : 'max-w-7xl mx-auto');
+$area_dashboard = $footer_wrap !== '';
+?>
 <?php if (!$auth_footer): ?>
-<footer class="mt-8 border-t bg-[#0c0f12] text-stone-300 <?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer' : '') ?>" style="border-color:#1e2326">
-  <div class="<?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer-inner' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer-inner' : 'max-w-7xl mx-auto') ?> px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<footer class="mt-8 border-t bg-[#0c0f12] text-stone-300 <?= $footer_wrap ?>" style="border-color:#1e2326">
+  <?php if (!$area_dashboard): ?>
+  <div class="<?= $footer_inner ?> px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-1">
       <div class="flex items-center gap-2.5 font-display font-bold text-white text-[15px] mb-2">
         <span class="w-8 h-8 rounded-lg bg-white text-[#0c0f12] flex items-center justify-center"><i class="bi bi-book-half text-sm"></i></span>
@@ -28,8 +34,9 @@
       </ul>
     </div>
   </div>
+  <?php endif; ?>
   <div class="border-t text-center text-stone-500 text-xs py-3 px-4" style="border-color:#1e2326">
-    &copy; <?= date('Y') ?> Perpustakaan Umum Sejahtera · Proyek UKK
+    &copy; <?= date('Y') ?> Perpustakaan Umum Sejahtera
   </div>
 </footer>
 <?php endif; ?>
