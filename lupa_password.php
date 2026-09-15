@@ -58,7 +58,7 @@ $page_title = 'Lupa Password';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="max-w-md mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8 mt-4">
+<div class="max-w-md mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8 my-auto">
   <h1 class="text-xl font-bold text-gray-800 mb-1">Lupa Password</h1>
   <p class="text-sm text-gray-500 mb-6">Masukkan email anggota. Jika terdaftar, token reset akan ditampilkan (mode demo).</p>
 

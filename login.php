@@ -71,7 +71,7 @@ $page_title = 'Masuk';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="max-w-md mx-auto bg-white rounded-xl border p-6 sm:p-7 mt-6" style="border-color: var(--border)">
+<div class="max-w-md mx-auto bg-white rounded-xl border p-6 sm:p-7 my-auto" style="border-color: var(--border)">
   <p class="text-[11px] font-bold tracking-widest uppercase mb-1" style="color: var(--text-faint-2)">Masuk</p>
   <h1 class="font-display text-[20px] font-bold mb-1" style="color: var(--text)">Masuk ke Akun</h1>
   <p class="text-sm mb-5" style="color: var(--text-faint)">Gunakan akun admin atau anggota untuk masuk.</p>

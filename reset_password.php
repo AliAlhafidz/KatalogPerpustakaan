@@ -60,7 +60,7 @@ $page_title = 'Reset Password';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="max-w-md mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8 mt-4">
+<div class="max-w-md mx-auto bg-white rounded-2xl border border-gray-100 shadow-sm p-8 my-auto">
   <h1 class="text-xl font-bold text-gray-800 mb-1">Reset Password</h1>
   <p class="text-sm text-gray-500 mb-6">Buat password baru untuk akun anggota.</p>
 

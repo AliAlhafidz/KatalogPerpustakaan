@@ -1,5 +1,7 @@
 </main>
 
+<?php $auth_footer = in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['login.php', 'register.php', 'lupa_password.php', 'reset_password.php'], true); ?>
+<?php if (!$auth_footer): ?>
 <footer class="mt-8 border-t bg-[#0c0f12] text-stone-300 <?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer' : '') ?>" style="border-color:#1e2326">
   <div class="<?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer-inner' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer-inner' : 'max-w-7xl mx-auto') ?> px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-1">
@@ -30,6 +32,7 @@
     &copy; <?= date('Y') ?> Perpustakaan Umum Sejahtera · Proyek UKK
   </div>
 </footer>
+<?php endif; ?>
 
 
 <!-- PWA install -->

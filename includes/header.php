@@ -221,5 +221,5 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 </aside>
 <?php endif; ?>
 
-<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 <?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-main' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-main' : '') ?>">
+<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 <?= in_array(basename($_SERVER['SCRIPT_NAME'] ?? ''), ['login.php', 'register.php', 'lupa_password.php', 'reset_password.php'], true) ? 'auth-main' : '' ?> <?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-main' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-main' : '') ?>">
 <?php tampilkan_flash(); ?>
