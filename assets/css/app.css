@@ -166,15 +166,6 @@ nav .shadow-lg, nav .shadow-brand-600\/20 { box-shadow: none !important; }
 .nav-link:hover { transform: none !important; background: var(--accent-soft) !important; color: var(--accent-text) !important; }
 .nav-link.text-brand-700, .nav-link.bg-brand-50 { background: var(--accent-soft) !important; color: var(--accent-text) !important; }
 
-/* Theme toggle — small, bordered, no shadow lift */
-.theme-toggle {
-  width: 36px; height: 36px; border-radius: var(--radius);
-  border: 1px solid var(--border); background: var(--surface); color: var(--text-faint);
-  display: inline-flex; align-items: center; justify-content: center;
-  box-shadow: none; transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-}
-.theme-toggle:hover { background: var(--surface-2); color: var(--text); transform: none; border-color: var(--border-strong); }
-.theme-toggle:active { transform: none; }
 
 /* ---------- Drawer ---------- */
 .drawer {

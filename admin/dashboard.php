@@ -71,7 +71,7 @@ require_once __DIR__ . '/../includes/admin_menu.php';
   <span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm" style="background:#fef3c7; color:#92400e"><i class="bi bi-shield-exclamation"></i></span>
   <div class="min-w-0 flex-1">
     <h2 class="text-sm font-bold" style="color:#92400e">Password default masih digunakan</h2>
-    <p class="text-sm mt-1 leading-6" style="color:#92400e">Akun admin masih memakai <code>aliali123</code>. Ganti via <a href="<?= BASE_URL ?>/admin/profil.php" class="font-bold underline">Profil → Keamanan Akun</a>.</p>
+    <p class="text-sm mt-1 leading-6" style="color:#92400e">Akun admin masih memakai password bawaan <code>aliali123</code>. Segera perbarui password melalui database demi keamanan sistem.</p>
   </div>
 </div>
 <?php endif; ?>

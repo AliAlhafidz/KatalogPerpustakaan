@@ -346,7 +346,6 @@ function admin_menu_items() {
         'laporan'               => ['label' => 'Laporan',           'icon' => 'bi-bar-chart',          'url' => '/admin/laporan/index.php'],
         'pengajuan'             => ['label' => 'Pengajuan Buku',    'icon' => 'bi-file-earmark-plus',  'url' => '/admin/pengajuan/index.php'],
         'audit_log'             => ['label' => 'Audit Log',         'icon' => 'bi-journal-text',       'url' => '/admin/audit_log/index.php'],
-        'profil'                => ['label' => 'Profil',            'icon' => 'bi-person-circle',      'url' => '/admin/profil.php'],
     ];
 }
 

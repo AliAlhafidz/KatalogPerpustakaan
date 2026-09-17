@@ -11,27 +11,19 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 }
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title><?= e($page_title) ?> | Perpustakaan Umum Sejahtera</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-  // Apply saved Light/Dark theme before paint — migrate old accent values to light.
-  (function(){
-    try {
-      var s = localStorage.getItem('perpus-theme');
-      if (s === 'light' || s === 'dark') {
-        document.documentElement.dataset.theme = s;
-      } else if (s === 'ocean' || s === 'emerald' || s === 'violet' || s === 'rose' || s === 'amber') {
-        document.documentElement.dataset.theme = 'light';
-        localStorage.setItem('perpus-theme','light');
-      } else {
-        document.documentElement.dataset.theme = 'light';
-      }
-    } catch(e) { document.documentElement.dataset.theme = 'light'; }
-  })();
+  try {
+    localStorage.removeItem('perpus-theme');
+    document.documentElement.dataset.theme = 'light';
+  } catch(e) {
+    document.documentElement.dataset.theme = 'light';
+  }
   tailwind.config = {
     theme: {
       extend: {
@@ -89,10 +81,10 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
         <a href="<?= BASE_URL ?>/tentang.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Tentang</a>
         <?php if (is_admin()): ?>
           <a href="<?= BASE_URL ?>/admin/dashboard.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Dashboard Admin</a>
-          <a href="<?= BASE_URL ?>/admin/profil.php" class="nav-link ml-1 flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
-            <img src="<?= e(foto_profil_url($_SESSION['foto'] ?? null)) ?>" class="w-7 h-7 rounded-full object-cover" style="border:1px solid var(--border)" alt="Profil">
-            <span class="text-sm font-semibold">Profil</span>
-          </a>
+          <span class="ml-1 flex items-center gap-2 px-2.5 py-1.5 text-slate-700 text-sm font-semibold">
+            <img src="<?= e(foto_profil_url($_SESSION['foto'] ?? null)) ?>" class="w-7 h-7 rounded-full object-cover" style="border:1px solid var(--border)" alt="Admin">
+            <span><?= e($_SESSION['nama'] ?? 'Admin') ?></span>
+          </span>
         <?php elseif (is_anggota()): ?>
           <a href="<?= BASE_URL ?>/anggota/notifikasi.php" class="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50" aria-label="Notifikasi">
             <i class="bi bi-bell text-[16px]"></i>
@@ -109,9 +101,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
       </div>
 
       <div class="flex items-center gap-1.5">
-        <button id="themeToggle" data-theme-toggle type="button" class="theme-toggle" aria-label="Aktifkan Dark Mode" title="Aktifkan Dark Mode">
-          <i class="bi bi-moon-fill text-sm"></i>
-        </button>
         <button id="navToggle" type="button" class="min-[900px]:hidden w-9 h-9 rounded-lg border bg-white text-slate-700 flex items-center justify-center hover:bg-slate-50" style="border-color: var(--border)" aria-label="Buka menu" aria-controls="mobileDrawer" aria-expanded="false">
           <i class="bi bi-list text-xl"></i>
         </button>
@@ -178,10 +167,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
       <?php endif; ?>
     </div>
   </div>
-  <div class="px-4 py-3 border-t flex items-center justify-between" style="border-color: var(--border)">
-    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Tema</div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Aktifkan Dark Mode" title="Aktifkan Dark Mode"><i class="bi bi-moon-fill text-sm"></i></button>
-  </div>
   <?php if (is_admin() || is_anggota()): ?>
     <div class="p-3 border-t" style="border-color: var(--border)">
       <a href="<?= BASE_URL ?>/logout.php" data-confirm="Yakin ingin keluar dari akun?" data-confirm-text="Keluar" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800"><i class="bi bi-box-arrow-right"></i>Keluar</a>
@@ -210,10 +195,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
         </a>
       <?php endforeach; ?>
     </div>
-  </div>
-  <div class="px-3 py-2.5 border-t flex items-center justify-between" style="border-color: var(--border)">
-    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Tema</div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Aktifkan Dark Mode" title="Aktifkan Dark Mode"><i class="bi bi-moon-fill text-sm"></i></button>
   </div>
   <div class="p-3 border-t" style="border-color: var(--border)">
     <a href="<?= BASE_URL ?>/logout.php" data-confirm="Yakin ingin keluar dari akun?" data-confirm-text="Keluar" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition"><i class="bi bi-box-arrow-right"></i>Keluar</a>
