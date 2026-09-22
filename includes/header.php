@@ -89,10 +89,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
         <a href="<?= BASE_URL ?>/tentang.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Tentang</a>
         <?php if (is_admin()): ?>
           <a href="<?= BASE_URL ?>/admin/dashboard.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Dashboard Admin</a>
-          <a href="<?= BASE_URL ?>/admin/profil.php" class="nav-link ml-1 flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
-            <img src="<?= e(foto_profil_url($_SESSION['foto'] ?? null)) ?>" class="w-7 h-7 rounded-full object-cover" style="border:1px solid var(--border)" alt="Profil">
-            <span class="text-sm font-semibold">Profil</span>
-          </a>
         <?php elseif (is_anggota()): ?>
           <a href="<?= BASE_URL ?>/anggota/notifikasi.php" class="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50" aria-label="Notifikasi">
             <i class="bi bi-bell text-[16px]"></i>
