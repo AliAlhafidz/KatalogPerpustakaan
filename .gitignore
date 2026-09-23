@@ -1,9 +1,5 @@
 .env
 /vendor/
-assets/uploads/covers/*.*
-!assets/uploads/covers/.htaccess
-assets/uploads/profil/*.*
-!assets/uploads/profil/.htaccess
 *.log
 .DS_Store
 Thumbs.db
