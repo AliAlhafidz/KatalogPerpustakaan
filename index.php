@@ -184,11 +184,7 @@ require_once __DIR__ . '/includes/header.php';
   .stats-editorial .stat{position:relative;padding:18px 16px;text-align:center}
   .stats-editorial .stat + .stat{border-left:1px solid var(--border)}
   @media(max-width:640px){ .stats-editorial .stat + .stat{border-left:0;border-top:1px solid var(--border)} .stats-editorial{flex-direction:column} }
-  /* Dark mode tweaks */
-  html[data-theme="dark"] .hero-discovery{border-color:var(--border)}
-  html[data-theme="dark"] .cat-chip{background:var(--surface-2);border-color:var(--border)}
-  html[data-theme="dark"] .cat-chip.is-active{background:var(--accent);border-color:var(--accent);color:#fff}
-  html[data-theme="dark"] .featured-card::before{opacity:.5}
+
 </style>
 
 <!-- HERO -->

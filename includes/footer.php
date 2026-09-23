@@ -181,35 +181,6 @@
     });
   }, true);
 
-  // Light/Dark theme: apply immediately and persist. Migrate old accent values to light.
-  function applyPerpusTheme(theme) {
-    const allowed = ['light','dark'];
-    if (!allowed.includes(theme)) {
-      if (['ocean','emerald','violet','rose','amber'].includes(theme)) theme = 'light';
-      else theme = 'light';
-    }
-    document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem('perpus-theme', theme); } catch (e) {}
-    const isDark = theme === 'dark';
-    document.querySelectorAll('[data-theme-toggle], #themeToggle').forEach(btn => {
-      btn.setAttribute('aria-label', isDark ? 'Aktifkan Light Mode' : 'Aktifkan Dark Mode');
-      btn.setAttribute('title', isDark ? 'Aktifkan Light Mode' : 'Aktifkan Dark Mode');
-      const icon = btn.querySelector('i');
-      if (icon) icon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
-    });
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isDark ? '#14181b' : '#243a5e');
-  }
-
-  document.addEventListener('click', (event) => {
-    const t = event.target.closest('[data-theme-toggle], #themeToggle');
-    if (!t) return;
-    event.preventDefault();
-    const cur = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-    applyPerpusTheme(cur === 'dark' ? 'light' : 'dark');
-  });
-  applyPerpusTheme(document.documentElement.dataset.theme || 'light');
-
   const navToggle = document.getElementById('navToggle');
   const navClose = document.getElementById('navClose');
   const mobileDrawer = document.getElementById('mobileDrawer');

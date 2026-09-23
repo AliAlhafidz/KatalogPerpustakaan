@@ -63,8 +63,6 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
   .angg-badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.28rem .6rem;font-size:.70rem;font-weight:700;border:1px solid var(--border);white-space:nowrap}
   .angg-badge-safe{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
   .angg-badge-danger{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-  html[data-theme="dark"] .angg-badge-safe{background:rgba(6,78,59,.18);color:#6ee7b7;border-color:rgba(52,211,153,.22)}
-  html[data-theme="dark"] .angg-badge-danger{background:rgba(127,29,29,.18);color:#fca5a5;border-color:rgba(248,113,113,.22)}
   .angg-card{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px;display:flex;gap:12px;align-items:flex-start;transition:border-color 120ms ease}
   .angg-card:hover{border-color:var(--border-strong)}
   .angg-menu-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-faint);display:inline-flex;align-items:center;justify-content:center;transition:all 120ms ease}
@@ -75,8 +73,6 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
   .angg-dropdown a:hover,.angg-dropdown button:hover{background:var(--surface-2);color:var(--text)}
   .angg-dropdown button.is-danger{color:#991b1b}
   .angg-dropdown button.is-danger:hover{background:#fef2f2}
-  html[data-theme="dark"] .angg-dropdown button.is-danger{color:#fca5a5}
-  html[data-theme="dark"] .angg-dropdown button.is-danger:hover{background:rgba(127,29,29,.18)}
   @media(max-width:767px){
     .angg-desktop{display:none !important}
   }

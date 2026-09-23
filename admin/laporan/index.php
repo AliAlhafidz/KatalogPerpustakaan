@@ -274,10 +274,6 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
   .lap-badge-safe{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
   .lap-badge-danger{background:#fef2f2;color:#991b1b;border-color:#fecaca}
   .lap-badge-warn{background:#fffbeb;color:#92400e;border-color:#fde68a}
-  html[data-theme="dark"] .lap-badge-safe{background:rgba(6,78,59,.18);color:#6ee7b7;border-color:rgba(52,211,153,.22)}
-  html[data-theme="dark"] .lap-badge-danger{background:rgba(127,29,29,.18);color:#fca5a5;border-color:rgba(248,113,113,.22)}
-  html[data-theme="dark"] .lap-badge-warn{background:rgba(120,53,15,.18);color:#fcd34d;border-color:rgba(251,191,36,.22)}
-  html[data-theme="dark"] .lap-cover{background:var(--surface-2);border-color:var(--border)}
   .lap-stat{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:14px 16px}
   .lap-chart{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:16px}
   .lap-sheet{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:16px}
@@ -705,9 +701,8 @@ if (!function_exists('initials_from_name')) {
     const el = document.getElementById(id);
     if(!el || typeof Chart==='undefined' || !cfg.labels.length) return;
     const type = cfg.type;
-    const isDark = document.documentElement.dataset.theme==='dark';
-    const gridColor = isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)';
-    const tickColor = isDark ? '#a8a29e' : '#78716c';
+    const gridColor = 'rgba(0,0,0,.06)';
+    const tickColor = '#78716c';
     let datasets, options;
     if(type==='doughnut'){
       datasets=[{data:cfg.values, backgroundColor: palette.slice(0,cfg.values.length), borderWidth: 0, hoverOffset: 6}];

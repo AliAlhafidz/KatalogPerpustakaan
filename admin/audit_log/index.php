@@ -194,14 +194,10 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
   .audit-icon-tambah{background:#ecfdf5;color:#059669;border-color:#a7f3d0}
   .audit-icon-edit{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent-soft-2)}
   .audit-icon-hapus{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-  html[data-theme="dark"] .audit-icon-tambah{background:rgba(6,78,59,.18);color:#6ee7b7;border-color:rgba(52,211,153,.22)}
-  html[data-theme="dark"] .audit-icon-hapus{background:rgba(127,29,29,.18);color:#fca5a5;border-color:rgba(248,113,113,.22)}
   .audit-badge{display:inline-flex;align-items:center;gap:.35rem;border-radius:999px;padding:.28rem .6rem;font-size:.70rem;font-weight:700;border:1px solid var(--border);white-space:nowrap}
   .audit-badge-tambah{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
   .audit-badge-edit{background:var(--accent-soft);color:var(--accent-text);border-color:var(--accent-soft-2)}
   .audit-badge-hapus{background:#fef2f2;color:#991b1b;border-color:#fecaca}
-  html[data-theme="dark"] .audit-badge-tambah{background:rgba(6,78,59,.18);color:#6ee7b7;border-color:rgba(52,211,153,.22)}
-  html[data-theme="dark"] .audit-badge-hapus{background:rgba(127,29,29,.18);color:#fca5a5;border-color:rgba(248,113,113,.22)}
   .audit-card{border:1px solid var(--border);background:var(--surface);border-radius:10px;transition:border-color 120ms ease, background 120ms ease}
   .audit-card:hover{border-color:var(--border-strong)}
   .audit-change-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border)}

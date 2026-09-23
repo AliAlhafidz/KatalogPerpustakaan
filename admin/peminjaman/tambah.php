@@ -391,7 +391,6 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
 <style>
 /* Picker modal overrides — use global app.css system, remove heavy blur */
 .picker-backdrop { background: rgba(15,23,42,.32) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-html[data-theme="dark"] .picker-backdrop { background: rgba(0,0,0,.48) !important; }
 .picker-panel { transform: translateY(6px) !important; transition: transform 150ms ease !important; box-shadow: 0 12px 40px rgba(16,24,40,.12) !important; border-radius: var(--radius-lg) !important; contain: layout paint; }
 .picker-modal.is-open .picker-panel { transform: none !important; }
 .picker-item, .picker-close, .picker-btn, .picker-search-input { transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast) !important; }

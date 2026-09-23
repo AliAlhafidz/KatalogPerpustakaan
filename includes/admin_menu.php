@@ -43,8 +43,7 @@ $items = admin_menu_items();
   </div>
 
   <div class="px-3 py-2.5 border-t flex items-center justify-between" style="border-color: var(--border)">
-    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Tema</div>
-    <button type="button" class="theme-toggle" data-theme-toggle aria-label="Aktifkan Dark Mode" title="Aktifkan Dark Mode"><i class="bi bi-moon-fill text-sm"></i></button>
+    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Menu</div>
   </div>
   <div class="p-3 border-t" style="border-color: var(--border)">
     <a href="<?= BASE_URL ?>/logout.php" data-confirm="Yakin ingin keluar dari akun?" data-confirm-text="Keluar" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition">

@@ -58,8 +58,6 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
   .kat-dropdown a:hover,.kat-dropdown button:hover{background:var(--surface-2);color:var(--text)}
   .kat-dropdown button.is-danger{color:#991b1b}
   .kat-dropdown button.is-danger:hover{background:#fef2f2;color:#991b1b}
-  html[data-theme="dark"] .kat-dropdown button.is-danger{color:#fca5a5}
-  html[data-theme="dark"] .kat-dropdown button.is-danger:hover{background:rgba(127,29,29,.18);color:#fca5a5}
   .kat-row{transition:background 120ms ease}
   .kat-row:hover{background:var(--surface-2)}
   .kat-mobile-card{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;transition:border-color 120ms ease, background 120ms ease}
