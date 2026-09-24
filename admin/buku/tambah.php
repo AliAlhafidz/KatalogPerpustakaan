@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
             $new_id = (int)$pdo->lastInsertId();
             $pdo->commit();
+            hapus_cache_buku_populer();
             catat_audit($pdo, $_SESSION['id_admin'] ?? null, 'tambah', 'buku', $new_id, ['judul' => $input['judul'], 'kode' => $kode_buku, 'isbn' => $input['isbn']]);
             set_flash('sukses', "Buku \"{$input['judul']}\" ($kode_buku) berhasil ditambahkan.");
             redirect('/admin/buku/index.php');

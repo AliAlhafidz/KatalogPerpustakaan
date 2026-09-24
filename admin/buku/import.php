@@ -111,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         ]);
                         $new_id = (int)$pdo->lastInsertId();
                         $pdo->commit();
+                        hapus_cache_buku_populer();
                         // Audit log — reuse pola tambah.php, side-effect tidak gagalkan import
                         try {
                             catat_audit($pdo, $_SESSION['id_admin'] ?? null, 'tambah', 'buku', $new_id, ['judul' => $judul_ins, 'kode' => $kode_buku, 'isbn' => $isbn, 'via' => 'import_batch', 'providers' => $d['providers'] ?? $d['sumber_detail']['providers'] ?? []]);

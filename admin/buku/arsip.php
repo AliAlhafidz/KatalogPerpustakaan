@@ -44,6 +44,7 @@ try {
         $stmt->execute([':id' => $id_buku]);
         set_flash('sukses', "Buku \"{$buku['judul']}\" berhasil dipublikasikan kembali.");
     }
+    hapus_cache_buku_populer();
 } catch (Throwable $e) {
     error_log('Arsip buku #' . $id_buku . ': ' . $e->getMessage());
     set_flash('error', 'Gagal memperbarui status arsip.');

@@ -55,13 +55,13 @@ perpustakaan/
 │   ├── laporan/index.php   # 5 jenis + CSV + chart
 │   ├── kirim_notifikasi_jatuh_tempo.php
 │   └── profil.php
-├── index.php               # katalog (pencarian+filter+sort, Pilihan Minggu Ini, Sedang Banyak Dibaca, grid 3 kolom mobile)
+├── index.php               # katalog (pencarian+filter+sort, Pilihan Minggu Ini, Buku Paling Banyak Dipinjam, grid 3 kolom mobile)
 ├── detail.php | tentang.php | login.php | logout.php | register.php
 ├── lupa_password.php | reset_password.php
 └── README.md
 ```
 
-> `index.php` — "Pilihan Minggu Ini" (`$featured`) & "Sedang Banyak Dibaca" (`$buku_populer`) hanya dirender `if (!empty(...))`, jadi tidak muncul saat DB kosong. Grid katalog & populer `grid-cols-3` di mobile (compact `p-2`, `aspect-[2/3]`, `line-clamp-2`).
+> `index.php` — "Pilihan Minggu Ini" (`$featured`) & "Buku Paling Banyak Dipinjam" (`$buku_populer`) hanya dirender `if (!empty(...))`, jadi tidak muncul saat DB kosong. Cache populer 5 menit di-invalidate saat buku ditambah/diedit/dihapus/diarsipkan (`hapus_cache_buku_populer()`). Grid katalog & populer `grid-cols-3` di mobile (compact `p-2`, `aspect-[2/3]`, `line-clamp-2`).
 
 ## Instalasi (XAMPP/Laragon)
 

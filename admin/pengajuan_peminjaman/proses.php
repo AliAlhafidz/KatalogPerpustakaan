@@ -131,6 +131,7 @@ try {
     if ($stmt->rowCount() !== 1) {
         throw new Exception('Gagal memperbarui status pengajuan. Mungkin sudah diproses admin lain.');
     }
+    hapus_cache_buku_populer();
 
     // Notifikasi ke anggota — sukses
     $pesan_notif = 'Pengajuan peminjaman buku "' . $pengajuan['judul'] . '" telah disetujui. Silakan ambil buku di perpustakaan. Jatuh tempo: ' . format_tanggal($tanggal_jatuh_tempo) . '.';

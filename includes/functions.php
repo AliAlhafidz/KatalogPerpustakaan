@@ -224,6 +224,20 @@ function download_remote_cover($url) {
     return $name;
 }
 
+// Path cache buku populer (Pilihan Minggu Ini & Buku Paling Banyak Dipinjam)
+function cache_buku_populer_path() {
+    return rtrim(sys_get_temp_dir(), '/\\') . '/perpus_populer_' . md5(BASE_URL) . '.json';
+}
+
+// Invalidasi cache buku populer — dipanggil saat buku ditambah/diedit/dihapus/diarsipkan
+// agar section di index.php tidak menampilkan buku yang sudah tidak ada di database.
+function hapus_cache_buku_populer() {
+    $path = cache_buku_populer_path();
+    if (is_file($path)) {
+        @unlink($path);
+    }
+}
+
 // Menghapus file cover lama (jika ada dan bukan default) + thumbnail terkait
 function hapus_cover($nama_file) {
     if (empty($nama_file)) return;

@@ -146,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
             $pdo->commit();
+            hapus_cache_buku_populer();
 
             // Notifikasi: satu notifikasi ringkas untuk multi-buku agar tidak spam, tetap kompatibel
             $judul_notif = count($id_buku_inputs) === 1

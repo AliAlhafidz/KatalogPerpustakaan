@@ -77,7 +77,7 @@ try {
 // Ambil buku terpopuler — hanya di katalog utama tanpa filter, dengan cache file 5 menit
 $buku_populer = [];
 if ($kata_kunci === '' && $id_kategori === 0 && !$filter_tersedia && $sort === '') {
-    $cache_populer = rtrim(sys_get_temp_dir(), '/\\') . '/perpus_populer_' . md5(BASE_URL) . '.json';
+    $cache_populer = cache_buku_populer_path();
     $use_cache = false;
     if (is_file($cache_populer) && (time() - filemtime($cache_populer) < 300)) {
         $raw = @file_get_contents($cache_populer);
@@ -85,15 +85,18 @@ if ($kata_kunci === '' && $id_kategori === 0 && !$filter_tersedia && $sort === '
         if (is_array($cached)) { $buku_populer = $cached; $use_cache = true; }
     }
     if (!$use_cache) {
+        // Hanya buku yang benar-benar pernah dipinjam (INNER JOIN peminjaman);
+        // bila belum ada peminjaman, hasil kosong dan section tidak dirender.
         $stmt_populer = $pdo->query("SELECT b.id_buku, b.judul, b.penulis, b.cover, b.tersedia, b.is_arsip, k.nama_kategori,
             COUNT(DISTINCT p.id_peminjaman) AS jumlah_dipinjam,
             COUNT(DISTINCT f.id_favorit) AS jumlah_favorit
             FROM buku b
+            INNER JOIN peminjaman p ON p.id_buku = b.id_buku
             LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
-            LEFT JOIN peminjaman p ON p.id_buku = b.id_buku
             LEFT JOIN favorit f ON f.id_buku = b.id_buku
             WHERE b.is_arsip = 0
             GROUP BY b.id_buku, b.judul, b.penulis, b.cover, b.tersedia, b.is_arsip, k.nama_kategori
+            HAVING COUNT(DISTINCT p.id_peminjaman) > 0
             ORDER BY jumlah_dipinjam DESC, jumlah_favorit DESC, b.judul ASC
             LIMIT 5");
         $buku_populer = $stmt_populer->fetchAll();
@@ -385,8 +388,8 @@ require_once __DIR__ . '/includes/header.php';
 <section class="mb-6" aria-labelledby="buku-terpopuler">
   <div class="flex items-end justify-between gap-3 mb-3 border-b pb-3" style="border-color:var(--border)">
     <div>
-      <h2 id="buku-terpopuler" class="font-display text-[16px] sm:text-[18px] font-bold tracking-tight flex items-center gap-2" style="color:var(--text)"><span>🔥</span> Sedang Banyak Dibaca</h2>
-      <p class="text-xs mt-1" style="color:var(--text-faint)">Buku yang paling sering dipilih oleh pembaca kami minggu ini.</p>
+      <h2 id="buku-terpopuler" class="font-display text-[16px] sm:text-[18px] font-bold tracking-tight flex items-center gap-2" style="color:var(--text)"><span>🔥</span> Buku Paling Banyak Dipinjam</h2>
+      <p class="text-xs mt-1" style="color:var(--text-faint)">Buku yang paling sering dipinjam oleh anggota kami.</p>
     </div>
     <a href="#koleksi" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold hover:underline" style="color:var(--accent-text)">Lihat Semua <i class="bi bi-arrow-right text-[11px]"></i></a>
   </div>

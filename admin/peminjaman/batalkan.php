@@ -46,5 +46,6 @@ try {
     redirect('/admin/peminjaman/index.php');
 }
 
+hapus_cache_buku_populer();
 set_flash('sukses', 'Peminjaman berhasil dibatalkan dan stok buku telah dikembalikan.');
 redirect('/admin/peminjaman/index.php');

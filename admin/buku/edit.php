@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($nama_cover_baru && $cover_lama && $cover_lama !== $cover_final) {
             hapus_cover($cover_lama);
         }
+        hapus_cache_buku_populer();
         // Audit: catat field penting yang berubah
         $diff = [];
         foreach (['judul','stok','id_kategori','tahun_terbit'] as $f) {

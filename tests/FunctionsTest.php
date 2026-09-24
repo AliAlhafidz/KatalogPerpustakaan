@@ -32,4 +32,13 @@ assert_eq(is_hari_minggu('2026-08-24'), false, '2026-08-24 Senin');
 assert_eq(format_rupiah(1000), 'Rp 1.000', 'rupiah 1000');
 assert_eq(format_rupiah(1000000), 'Rp 1.000.000', 'rupiah 1jt');
 
+// hapus_cache_buku_populer
+$cache_path = cache_buku_populer_path();
+file_put_contents($cache_path, '[]');
+assert_eq(is_file($cache_path), true, 'cache buku populer dibuat');
+hapus_cache_buku_populer();
+assert_eq(is_file($cache_path), false, 'cache buku populer dihapus');
+hapus_cache_buku_populer();
+assert_eq(true, true, 'hapus cache saat file tidak ada aman');
+
 echo "Selesai.\n";

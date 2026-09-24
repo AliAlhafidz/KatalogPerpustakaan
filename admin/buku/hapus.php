@@ -42,6 +42,7 @@ try {
     $pdo->commit();
 
     hapus_cover($buku['cover']);
+    hapus_cache_buku_populer();
     catat_audit($pdo, $_SESSION['id_admin'] ?? null, 'hapus', 'buku', $id_buku, ['judul' => $buku['judul']]);
 
     if ($masih_dipinjam) {
