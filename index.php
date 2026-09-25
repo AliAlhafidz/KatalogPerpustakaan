@@ -6,14 +6,29 @@ $kata_kunci  = clean($_GET['q'] ?? '');
 $id_kategori = isset($_GET['kategori']) ? (int) $_GET['kategori'] : 0;
 $filter_tersedia = isset($_GET['tersedia']) && $_GET['tersedia'] === '1';
 $sort_raw    = $_GET['sort'] ?? '';
-$sort_whitelist = ['judul_asc' => 'b.judul ASC', 'terbaru' => 'b.created_at DESC, b.id_buku DESC', 'stok_desc' => 'b.stok DESC, b.judul ASC'];
+$sort_whitelist = [
+    'judul_asc' => 'b.judul ASC, b.id_buku ASC',
+    'terbaru'   => 'b.created_at DESC, b.id_buku DESC',
+    'stok_desc' => 'b.stok DESC, b.judul ASC',
+];
 $sort = isset($sort_whitelist[$sort_raw]) ? $sort_raw : '';
-$order_by = $sort !== '' ? $sort_whitelist[$sort] : 'RAND()';
+$order_by = $sort !== '' ? $sort_whitelist[$sort] : $sort_whitelist['judul_asc'];
 $halaman     = isset($_GET['halaman']) ? max(1, (int) $_GET['halaman']) : 1;
-$per_halaman = 12;
+$per_halaman = 20;
 $offset      = ($halaman - 1) * $per_halaman;
 
+
+// Query string saat ini untuk navigasi kembali dari halaman detail buku
+$catalog_params = [];
+if ($kata_kunci !== '') $catalog_params['q'] = $kata_kunci;
+if ($id_kategori > 0) $catalog_params['kategori'] = $id_kategori;
+if ($filter_tersedia) $catalog_params['tersedia'] = '1';
+if ($sort !== '') $catalog_params['sort'] = $sort;
+if ($halaman > 1) $catalog_params['halaman'] = $halaman;
+$catalog_back_url = BASE_URL . '/index.php' . (!empty($catalog_params) ? ('?' . http_build_query($catalog_params) . '#koleksi') : '');
+
 // ---- Susun query dinamis dengan prepared statement ----
+
 $where  = ['b.is_arsip = 0'];
 $params = [];
 
@@ -204,7 +219,7 @@ require_once __DIR__ . '/includes/header.php';
       </h1>
       <p class="text-[14px] leading-6 mt-3 max-w-xl" style="color:var(--text-muted)">Jelajahi koleksi pilihan kami. Cari judul, penulis, ISBN atau penerbit — lalu buka detail untuk melihat rak dan sinopsis lengkap.</p>
 
-      <form method="get" action="" class="mt-6 bg-white rounded-xl border p-2.5 shadow-sm" style="border-color:var(--border)">
+      <form method="get" action="#koleksi" class="mt-6 bg-white rounded-xl border p-2.5 shadow-sm" style="border-color:var(--border)">
         <div class="flex flex-col sm:flex-row gap-2">
           <div class="relative flex-1">
             <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:var(--text-faint-2)"></i>
@@ -307,7 +322,7 @@ require_once __DIR__ . '/includes/header.php';
       ];
       $is_all_active = $id_kategori===0;
     ?>
-    <a href="?kategori=0<?= $base_qs_cat ?>" class="cat-chip <?= $is_all_active ? 'is-active' : '' ?>">
+    <a href="?kategori=0<?= $base_qs_cat ?>#koleksi" class="cat-chip <?= $is_all_active ? 'is-active' : '' ?>">
       <span class="cat-icon"><i class="bi bi-grid"></i></span> Semua <span class="opacity-60 text-[11px]"><?= $stats_total_buku ?></span>
     </a>
     <?php foreach ($kategori_list as $kat):
@@ -318,7 +333,7 @@ require_once __DIR__ . '/includes/header.php';
       foreach ($cat_icon_map as $key=>$bi) if (strpos($lower,$key)!==false) { $icon=$bi; break; }
       $cnt = $kategori_counts[$kid] ?? 0;
     ?>
-      <a href="?kategori=<?= $kid ?><?= $base_qs_cat ?>" class="cat-chip <?= $active ? 'is-active' : '' ?>">
+      <a href="?kategori=<?= $kid ?><?= $base_qs_cat ?>#koleksi" class="cat-chip <?= $active ? 'is-active' : '' ?>">
         <span class="cat-icon"><i class="bi <?= $icon ?>"></i></span> <?= e($kat['nama_kategori']) ?> <span class="opacity-60 text-[11px]"><?= $cnt ?></span>
       </a>
     <?php endforeach; ?>
@@ -369,12 +384,13 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
       <div class="mt-6 flex gap-2">
-        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$featured['id_buku'] ?>" class="inline-flex items-center justify-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg">Lihat Detail <i class="bi bi-arrow-right text-xs"></i></a>
+        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$featured['id_buku'] ?>&back=<?= urlencode($catalog_back_url) ?>" class="inline-flex items-center justify-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg">Lihat Detail <i class="bi bi-arrow-right text-xs"></i></a>
         <?php if (is_anggota()): ?>
           <form method="post" action="<?= BASE_URL ?>/anggota/toggle_favorit.php">
             <?= csrf_field() ?>
             <input type="hidden" name="id_buku" value="<?= (int)$featured['id_buku'] ?>">
             <input type="hidden" name="redirect" value="katalog">
+            <input type="hidden" name="return_url" value="<?= e($catalog_back_url) ?>">
             <button type="submit" class="fav-btn inline-flex items-center justify-center gap-1.5 border bg-white hover:bg-slate-50 text-sm font-semibold px-4 py-2.5 rounded-lg" style="border-color:var(--border); color:<?= $f_is_fav ? '#dc2626' : 'var(--text-muted)' ?>"><i class="bi <?= $f_is_fav ? 'bi-heart-fill' : 'bi-heart' ?>"></i> <?= $f_is_fav ? 'Favorit' : 'Simpan' ?></button>
           </form>
         <?php endif; ?>
@@ -394,44 +410,47 @@ require_once __DIR__ . '/includes/header.php';
     <a href="#koleksi" class="hidden sm:inline-flex items-center gap-1 text-xs font-semibold hover:underline" style="color:var(--accent-text)">Lihat Semua <i class="bi bi-arrow-right text-[11px]"></i></a>
   </div>
 
-  <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
+  <div class="grid grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">
     <?php foreach ($buku_populer as $peringkat => $buku):
         $is_fav_populer = in_array($buku['id_buku'], $favorit_ids);
+        $populer_detail_link = BASE_URL . '/detail.php?id=' . (int)$buku['id_buku'] . '&back=' . urlencode($catalog_back_url);
     ?>
       <article class="book-card group bg-white rounded-lg border overflow-hidden relative flex flex-col" style="border-color:var(--border)">
-        <div class="absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-1 rounded-full bg-white border px-1.5 py-0.5 text-[10px] font-bold shadow-sm" style="border-color:var(--border); color:var(--text-muted)">
-          <span class="w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-black" style="background:<?= $peringkat===0 ? '#243a5e' : ($peringkat===1 ? '#3d6a94' : '#6a9ac4') ?>; color:#fff">#<?= $peringkat + 1 ?></span> Top
+        <div class="absolute top-1 left-1 z-10 inline-flex items-center gap-1 rounded-full bg-white border px-1.5 py-0.5 text-[9px] font-bold shadow-sm" style="border-color:var(--border); color:var(--text-muted)">
+          <span class="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-black" style="background:<?= $peringkat===0 ? '#243a5e' : ($peringkat===1 ? '#3d6a94' : '#6a9ac4') ?>; color:#fff">#<?= $peringkat + 1 ?></span> Top
         </div>
         <?php if (is_anggota()): ?>
-          <form method="post" action="<?= BASE_URL ?>/anggota/toggle_favorit.php" class="absolute top-1.5 right-1.5 z-10">
-      <?= csrf_field() ?>
+          <form method="post" action="<?= BASE_URL ?>/anggota/toggle_favorit.php" class="absolute top-1 right-1 z-10">
+            <?= csrf_field() ?>
             <input type="hidden" name="id_buku" value="<?= (int)$buku['id_buku'] ?>">
             <input type="hidden" name="redirect" value="katalog">
+            <input type="hidden" name="return_url" value="<?= e($catalog_back_url) ?>">
             <button type="submit" title="<?= $is_fav_populer ? 'Hapus dari favorit' : 'Tambah ke favorit' ?>" class="fav-btn w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs <?= $is_fav_populer ? 'text-red-600' : 'text-slate-400' ?>" style="border-color:var(--border); background:var(--surface)">
               <i class="bi <?= $is_fav_populer ? 'bi-heart-fill' : 'bi-heart' ?> text-[11px]"></i>
             </button>
           </form>
         <?php else: ?>
-          <button type="button" onclick="showNoticeModal('Silakan login sebagai anggota untuk menambah buku ke Favorit.')" title="Login untuk favorit" class="absolute top-1.5 right-1.5 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white border text-slate-400 text-xs fav-btn" style="border-color:var(--border); background:var(--surface)">
+          <button type="button" onclick="showNoticeModal('Silakan login sebagai anggota untuk menambah buku ke Favorit.')" title="Login untuk favorit" class="absolute top-1 right-1 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white border text-slate-400 text-xs fav-btn" style="border-color:var(--border); background:var(--surface)">
             <i class="bi bi-heart text-[11px]"></i>
           </button>
         <?php endif; ?>
-        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$buku['id_buku'] ?>" class="block flex flex-col flex-1">
+        <a href="<?= $populer_detail_link ?>" class="block flex flex-col flex-1">
           <div class="aspect-[2/3] overflow-hidden relative" style="background:var(--paper-2)">
             <img src="<?= e(cover_thumb_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" loading="lazy" decoding="async" width="400" height="600" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'" class="w-full h-full object-cover">
             <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
           </div>
-          <div class="p-2 sm:p-3 flex flex-col flex-1 border-t" style="border-color:var(--border-faint)">
+          <div class="p-2 flex flex-col flex-1 border-t" style="border-color:var(--border-faint)">
             <p class="text-[9px] font-bold uppercase tracking-wide truncate mb-0.5" style="color:var(--text-faint)"><?= e($buku['nama_kategori'] ?? 'Tanpa Kategori') ?></p>
-            <h3 class="font-semibold text-[11px] sm:text-[13px] leading-3 sm:leading-4 line-clamp-2 min-h-[1.5rem] sm:min-h-0 mb-0.5" style="color:var(--text)"><?= e($buku['judul']) ?></h3>
-            <p class="text-[11px] truncate mb-2" style="color:var(--text-faint)"><?= e($buku['penulis']) ?></p>
-            <div class="flex items-center justify-between gap-1 text-[10px] border-t pt-1.5 mt-auto" style="border-color:var(--border-faint)">
+            <h3 class="font-semibold text-[11px] sm:text-[12px] leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0 mb-0.5" style="color:var(--text)"><?= e($buku['judul']) ?></h3>
+            <p class="text-[10px] sm:text-[11px] truncate mb-1.5" style="color:var(--text-faint)"><?= e($buku['penulis']) ?></p>
+            <div class="flex items-center justify-between gap-1 text-[10px] border-t pt-1 mt-auto" style="border-color:var(--border-faint)">
               <span class="inline-flex items-center gap-1 font-medium" style="color:var(--text-faint)"><i class="bi bi-fire text-[10px]" style="color:#b45309"></i> <?= (int)$buku['jumlah_dipinjam'] ?>×</span>
               <?= badge_ketersediaan((int)$buku['tersedia']) ?>
             </div>
           </div>
         </a>
       </article>
+
     <?php endforeach; ?>
   </div>
   <div class="sm:hidden mt-3 text-center">
@@ -486,36 +505,38 @@ require_once __DIR__ . '/includes/header.php';
     <p class="text-sm mt-1 px-6" style="color:var(--text-faint)">Coba gunakan kata kunci lain atau pilih kategori yang berbeda.</p>
   </div>
 <?php else: ?>
-  <div class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
+  <div id="katalogGrid" class="grid grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
     <?php foreach ($daftar_buku as $buku):
         $is_fav = in_array($buku['id_buku'], $favorit_ids);
+        $detail_link = BASE_URL . '/detail.php?id=' . (int)$buku['id_buku'] . '&back=' . urlencode($catalog_back_url);
     ?>
       <article class="book-card group bg-white rounded-lg border overflow-hidden relative flex flex-col" style="border-color:var(--border)">
         <?php if (is_anggota()): ?>
-          <form method="post" action="<?= BASE_URL ?>/anggota/toggle_favorit.php" class="absolute top-1.5 right-1.5 z-10">
-      <?= csrf_field() ?>
+          <form method="post" action="<?= BASE_URL ?>/anggota/toggle_favorit.php" class="absolute top-1 right-1 z-10">
+            <?= csrf_field() ?>
             <input type="hidden" name="id_buku" value="<?= (int)$buku['id_buku'] ?>">
             <input type="hidden" name="redirect" value="katalog">
+            <input type="hidden" name="return_url" value="<?= e($catalog_back_url) ?>">
             <button type="submit" title="<?= $is_fav ? 'Hapus dari favorit' : 'Tambah ke favorit' ?>" class="fav-btn w-6 h-6 flex items-center justify-center rounded-full bg-white border text-xs <?= $is_fav ? 'text-red-600' : 'text-slate-400' ?>" style="border-color:var(--border); background:var(--surface)">
               <i class="bi <?= $is_fav ? 'bi-heart-fill' : 'bi-heart' ?> text-[11px]"></i>
             </button>
           </form>
         <?php else: ?>
-          <button type="button" onclick="showNoticeModal('Silakan login sebagai anggota untuk menambah buku ke Favorit.')" title="Login untuk favorit" class="absolute top-1.5 right-1.5 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white border text-slate-400 text-xs fav-btn" style="border-color:var(--border); background:var(--surface)">
+          <button type="button" onclick="showNoticeModal('Silakan login sebagai anggota untuk menambah buku ke Favorit.')" title="Login untuk favorit" class="absolute top-1 right-1 z-10 w-6 h-6 flex items-center justify-center rounded-full bg-white border text-slate-400 text-xs fav-btn" style="border-color:var(--border); background:var(--surface)">
             <i class="bi bi-heart text-[11px]"></i>
           </button>
         <?php endif; ?>
-        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$buku['id_buku'] ?>" class="block flex flex-col flex-1">
+        <a href="<?= $detail_link ?>" class="block flex flex-col flex-1">
           <div class="aspect-[2/3] overflow-hidden relative" style="background:var(--paper-2)">
             <img src="<?= e(cover_thumb_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" loading="lazy" decoding="async" width="400" height="600" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'" class="w-full h-full object-cover">
           </div>
-          <div class="p-2 sm:p-3 flex flex-col flex-1 border-t" style="border-color:var(--border-faint)">
+          <div class="p-2 flex flex-col flex-1 border-t" style="border-color:var(--border-faint)">
             <p class="text-[9px] font-bold uppercase tracking-wide truncate mb-0.5" style="color:var(--text-faint)"><?= e($buku['nama_kategori'] ?? 'Tanpa Kategori') ?></p>
-            <h3 class="font-semibold text-[11px] sm:text-[13px] leading-3 sm:leading-4 line-clamp-2 min-h-[1.5rem] sm:min-h-0 mb-0.5" style="color:var(--text)"><?= e($buku['judul']) ?></h3>
-            <p class="text-[11px] truncate mb-2" style="color:var(--text-faint)"><?= e($buku['penulis']) ?></p>
-            <div class="mt-auto pt-1.5 border-t flex items-center justify-between gap-1" style="border-color:var(--border-faint)">
+            <h3 class="font-semibold text-[11px] sm:text-[12px] leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0 mb-0.5" style="color:var(--text)"><?= e($buku['judul']) ?></h3>
+            <p class="text-[10px] sm:text-[11px] truncate mb-1.5" style="color:var(--text-faint)"><?= e($buku['penulis']) ?></p>
+            <div class="mt-auto pt-1 border-t flex items-center justify-between gap-1 text-[10px]" style="border-color:var(--border-faint)">
               <?= badge_ketersediaan((int)$buku['tersedia']) ?>
-              <span class="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium opacity-0 group-hover:opacity-100 transition-opacity" style="color:var(--accent-text)">Lihat <i class="bi bi-arrow-right text-[11px]"></i></span>
+              <span class="hidden sm:inline-flex items-center gap-0.5 text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity" style="color:var(--accent-text)">Lihat <i class="bi bi-arrow-right text-[9px]"></i></span>
             </div>
           </div>
         </a>
@@ -523,8 +544,9 @@ require_once __DIR__ . '/includes/header.php';
     <?php endforeach; ?>
   </div>
 
+
   <?php if ($total_halaman > 1): ?>
-    <div class="flex justify-center items-center gap-1 mt-6 overflow-x-auto py-1">
+    <div id="katalogPagination" class="flex justify-center items-center gap-1 mt-6 overflow-x-auto py-1">
       <?php
         $base_qs = 'q=' . urlencode($kata_kunci) . '&kategori=' . $id_kategori . ($filter_tersedia ? '&tersedia=1' : '') . ($sort !== '' ? '&sort=' . urlencode($sort) : '');
         $pages = [];
@@ -543,7 +565,7 @@ require_once __DIR__ . '/includes/header.php';
           if ($p === '...'): ?>
             <span class="shrink-0 w-9 h-9 flex items-center justify-center text-xs" style="color:var(--text-faint)">…</span>
           <?php else: ?>
-            <a href="?<?= $base_qs ?>&halaman=<?= $p ?>"
+            <a href="?<?= $base_qs ?>&halaman=<?= $p ?>#koleksi"
                class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold transition <?= $p === $halaman ? 'bg-brand-600 text-white' : 'bg-white border text-slate-600 hover:bg-slate-50' ?>" style="<?= $p === $halaman ? '' : 'border-color:var(--border)' ?>">
               <?= $p ?>
             </a>

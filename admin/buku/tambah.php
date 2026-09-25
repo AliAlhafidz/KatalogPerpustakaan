@@ -24,15 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input['lokasi_rak']   = clean($_POST['lokasi_rak'] ?? '');
     $cover_api_url = trim($_POST['cover_api_url'] ?? '');
 
-    // Cegah ISBN duplikat saat ISBN diisi.
-    if ($input['isbn'] !== '') {
-        $cek = $pdo->prepare('SELECT COUNT(*) FROM buku WHERE isbn = :isbn');
-        $cek->execute([':isbn' => $input['isbn']]);
-        if ((int)$cek->fetchColumn() > 0) $errors[] = 'ISBN tersebut sudah terdaftar di katalog.';
-    }
-
     if ($input['judul'] === '') $errors[] = 'Judul buku wajib diisi.';
     if ($input['penulis'] === '') $errors[] = 'Penulis wajib diisi.';
+
+    // Cek duplikasi berdasarkan ISBN (10 & 13) dan Judul/Penulis
+    if (empty($errors)) {
+        $cek = cek_buku_duplikat($pdo, $input['isbn'] !== '' ? $input['isbn'] : null, $input['judul'], $input['penulis']);
+        if ($cek['duplicate']) {
+            $errors[] = $cek['alasan'];
+        }
+    }
+
     if ($input['stok'] < 0) $errors[] = 'Stok tidak boleh negatif.';
     if ($input['tahun_terbit'] !== '') {
         if (!ctype_digit($input['tahun_terbit'])) {

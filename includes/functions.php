@@ -500,3 +500,141 @@ function jumlah_notifikasi_belum_dibaca(PDO $pdo, $id_anggota) {
     $stmt->execute([':id' => $id_anggota]);
     return (int)$stmt->fetchColumn();
 }
+
+// ---------------------------------------------------------------------------
+// Helpers: ISBN Normalization, Conversion, & Duplicate Book Checks
+// ---------------------------------------------------------------------------
+
+if (!function_exists('isbn_normalize')) {
+    function isbn_normalize(string $isbn): string {
+        return strtoupper(trim(preg_replace('/[^0-9Xx]/', '', $isbn)));
+    }
+}
+
+if (!function_exists('isbn10_to_isbn13')) {
+    function isbn10_to_isbn13(string $isbn10): ?string {
+        $isbn10 = isbn_normalize($isbn10);
+        if (strlen($isbn10) !== 10) return null;
+        $core = substr($isbn10, 0, 9);
+        if (!ctype_digit($core)) return null;
+        $isbn13base = '978' . $core;
+        $sum = 0;
+        for ($i = 0; $i < 12; $i++) {
+            $d = (int)$isbn13base[$i];
+            $sum += ($i % 2 === 0) ? $d : $d * 3;
+        }
+        $check = (10 - ($sum % 10)) % 10;
+        return $isbn13base . $check;
+    }
+}
+
+if (!function_exists('isbn13_to_isbn10')) {
+    function isbn13_to_isbn10(string $isbn13): ?string {
+        $isbn13 = isbn_normalize($isbn13);
+        if (strlen($isbn13) !== 13) return null;
+        if (substr($isbn13, 0, 3) !== '978') return null;
+        $core = substr($isbn13, 3, 9);
+        if (!ctype_digit($core)) return null;
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $sum += (int)$core[$i] * (10 - $i);
+        }
+        $remainder = $sum % 11;
+        $check = (11 - $remainder) % 11;
+        $checkChar = $check === 10 ? 'X' : (string)$check;
+        return $core . $checkChar;
+    }
+}
+
+if (!function_exists('isbn_alternatives')) {
+    /**
+     * Mengembalikan daftar varian ISBN yang mungkin (ISBN-10 & ISBN-13).
+     */
+    function isbn_alternatives(string $isbn): array {
+        $norm = isbn_normalize($isbn);
+        if ($norm === '') return [];
+        $list = [$norm];
+        if (strlen($norm) === 10) {
+            $conv = isbn10_to_isbn13($norm);
+            if ($conv && !in_array($conv, $list, true)) $list[] = $conv;
+        } elseif (strlen($norm) === 13) {
+            $conv = isbn13_to_isbn10($norm);
+            if ($conv && !in_array($conv, $list, true)) $list[] = $conv;
+        }
+        return $list;
+    }
+}
+
+if (!function_exists('cek_buku_duplikat')) {
+    /**
+     * Memeriksa apakah buku sudah terdaftar di database berdasarkan ISBN (10 & 13)
+     * atau kesamaan Judul (& Penulis).
+     *
+     * @param PDO $pdo
+     * @param string|null $isbn
+     * @param string|null $judul
+     * @param string|null $penulis
+     * @param int|null $exclude_id_buku ID buku yang dikecualikan (misal saat edit)
+     * @return array ['duplicate' => bool, 'alasan' => string|null, 'buku' => array|null]
+     */
+    function cek_buku_duplikat(PDO $pdo, ?string $isbn = null, ?string $judul = null, ?string $penulis = null, ?int $exclude_id_buku = null): array {
+        // 1. Cek duplikasi berdasarkan ISBN (mencakup ISBN-10 dan ISBN-13 konversinya)
+        if (!empty($isbn)) {
+            $isbns = isbn_alternatives($isbn);
+            if (!empty($isbns)) {
+                $placeholders = implode(',', array_fill(0, count($isbns), '?'));
+                $sql = "SELECT id_buku, kode_buku, isbn, judul, penulis FROM buku WHERE isbn IN ($placeholders)";
+                $params = $isbns;
+                if ($exclude_id_buku) {
+                    $sql .= " AND id_buku != ?";
+                    $params[] = $exclude_id_buku;
+                }
+                $sql .= " LIMIT 1";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute($params);
+                $found = $stmt->fetch();
+                if ($found) {
+                    return [
+                        'duplicate' => true,
+                        'alasan' => 'ISBN sudah terdaftar (Buku: "' . $found['judul'] . '", Kode: ' . $found['kode_buku'] . ')',
+                        'buku' => $found,
+                    ];
+                }
+            }
+        }
+
+        // 2. Cek duplikasi berdasarkan Judul & Penulis
+        $clean_judul = trim($judul ?? '');
+        if ($clean_judul !== '') {
+            $sql = "SELECT id_buku, kode_buku, isbn, judul, penulis FROM buku WHERE LOWER(TRIM(judul)) = LOWER(TRIM(?))";
+            $params = [$clean_judul];
+
+            $clean_penulis = trim($penulis ?? '');
+            if ($clean_penulis !== '' && strtolower($clean_penulis) !== 'tidak diketahui') {
+                $sql .= " AND LOWER(TRIM(penulis)) = LOWER(TRIM(?))";
+                $params[] = $clean_penulis;
+            }
+
+            if ($exclude_id_buku) {
+                $sql .= " AND id_buku != ?";
+                $params[] = $exclude_id_buku;
+            }
+            $sql .= " LIMIT 1";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $found = $stmt->fetch();
+            if ($found) {
+                $penulis_info = !empty($found['penulis']) ? ' oleh ' . $found['penulis'] : '';
+                return [
+                    'duplicate' => true,
+                    'alasan' => 'Buku dengan judul yang sama sudah ada di katalog ("' . $found['judul'] . '"' . $penulis_info . ', Kode: ' . $found['kode_buku'] . ')',
+                    'buku' => $found,
+                ];
+            }
+        }
+
+        return ['duplicate' => false, 'alasan' => null, 'buku' => null];
+    }
+}
+

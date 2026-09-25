@@ -7,7 +7,7 @@
   const kategoriSelect = form.querySelector('select[name="kategori"]');
   const sortSelect = form.querySelector('select[name="sort"]');
   const tersediaCheckbox = form.querySelector('input[name="tersedia"]');
-  const grid = document.querySelector('.grid.grid-cols-2');
+  const grid = document.getElementById('katalogGrid') || document.querySelector('.grid.grid-cols-2') || document.querySelector('#koleksi ~ .grid');
   if (!qInput || !grid) return;
 
   let debounceTimer = null;
@@ -15,16 +15,16 @@
   let lastRequestId = 0;
 
   function showSkeleton() {
-    const count = 12;
+    const count = 18;
     let html = '';
     for (let i = 0; i < count; i++) {
       html += `
         <article class="bg-white rounded-lg border overflow-hidden" style="border-color: var(--border)">
-          <div class="aspect-[3/4]" style="background: var(--surface-2)"></div>
-          <div class="p-3 space-y-2">
-            <div class="h-2.5 rounded" style="background: var(--surface-2); width: 50%"></div>
-            <div class="h-3 rounded" style="background: var(--surface-2); width: 75%"></div>
-            <div class="h-2.5 rounded" style="background: var(--surface-2); width: 65%"></div>
+          <div class="aspect-[2/3]" style="background: var(--surface-2)"></div>
+          <div class="p-2 space-y-1.5">
+            <div class="h-2 rounded" style="background: var(--surface-2); width: 45%"></div>
+            <div class="h-2.5 rounded" style="background: var(--surface-2); width: 75%"></div>
+            <div class="h-2 rounded" style="background: var(--surface-2); width: 60%"></div>
           </div>
         </article>`;
     }
@@ -59,11 +59,12 @@
       const html = await res.text();
       if (requestId !== lastRequestId) return; // hasil lama, abaikan
       const doc = new DOMParser().parseFromString(html, 'text/html');
-      const newGrid = doc.querySelector('.grid.grid-cols-2');
+      const newGrid = doc.getElementById('katalogGrid') || doc.querySelector('.grid.grid-cols-2') || doc.querySelector('#koleksi ~ .grid');
       const newPagination = doc.querySelector('.flex.justify-center');
       const newCount = doc.querySelector('.rounded-full.bg-white.border');
       if (newGrid && grid) {
         grid.innerHTML = newGrid.innerHTML;
+
         // Re-apply lazy loading dan reveal
         grid.querySelectorAll('img').forEach(img => {
           if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
@@ -71,19 +72,25 @@
         });
       }
       // Update pagination
-      const oldPag = document.querySelector('.flex.justify-center');
+      const oldPag = document.getElementById('katalogPagination') || document.querySelector('.flex.justify-center.items-center');
       if (newPagination && oldPag) oldPag.replaceWith(newPagination);
       else if (!newPagination && oldPag) oldPag.remove();
       else if (newPagination && !oldPag) {
         grid?.after(newPagination);
       }
-      // Update count
-      if (newCount) {
-        const oldCount = document.querySelector('.rounded-full.bg-white.border');
-        if (oldCount) oldCount.replaceWith(newCount);
+      // Update count & subtitle
+      const newKoleksiHeader = doc.getElementById('koleksi');
+      const oldKoleksiHeader = document.getElementById('koleksi');
+      if (newKoleksiHeader && oldKoleksiHeader) {
+        oldKoleksiHeader.innerHTML = newKoleksiHeader.innerHTML;
       }
       if (push) history.pushState(null, '', url);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const targetElem = document.getElementById('koleksi');
+      if (targetElem) {
+        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
     } catch (e) {
       if (e.name === 'AbortError') return;
       console.warn('Katalog fetch gagal', e);

@@ -56,15 +56,40 @@ if (is_anggota()) {
     }
 }
 
+// Ambil URL kembali (dari parameter GET 'back' atau HTTP_REFERER jika internal)
+$back_url = BASE_URL . '/index.php#koleksi';
+if (!empty($_GET['back'])) {
+    $cand = trim($_GET['back']);
+    // Validasi bahwa URL merupakan path relatif lokal atau diawali BASE_URL
+    if (str_starts_with($cand, BASE_URL . '/') || str_starts_with($cand, '/')) {
+        $back_url = $cand;
+    }
+} elseif (!empty($_SERVER['HTTP_REFERER'])) {
+    $ref = $_SERVER['HTTP_REFERER'];
+    $parsed_ref = parse_url($ref, PHP_URL_PATH);
+    if ($parsed_ref && (str_contains($parsed_ref, 'index.php') || str_ends_with($parsed_ref, 'perpustakaan') || str_ends_with($parsed_ref, 'perpustakaan/'))) {
+        $query_ref = parse_url($ref, PHP_URL_QUERY);
+        $back_url = BASE_URL . '/index.php' . ($query_ref ? '?' . $query_ref : '') . '#koleksi';
+    }
+}
+
 $page_title = $buku['judul'];
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<nav class="text-xs mb-4 flex items-center gap-1.5" style="color: var(--text-faint)">
-  <a href="<?= BASE_URL ?>/index.php" class="hover:underline" style="color: var(--text-faint)">Katalog</a>
-  <span class="opacity-40">/</span>
-  <span class="truncate" style="color: var(--text-muted)"><?= e($buku['judul']) ?></span>
+<nav class="text-xs mb-4 flex items-center justify-between gap-2" style="color: var(--text-faint)">
+  <div class="flex items-center gap-1.5 min-w-0">
+    <a href="<?= e($back_url) ?>" class="inline-flex items-center gap-1 font-semibold hover:underline" style="color: var(--accent-text)">
+      <i class="bi bi-arrow-left text-xs"></i> Kembali ke Katalog
+    </a>
+    <span class="opacity-40">/</span>
+    <span class="truncate" style="color: var(--text-muted)"><?= e($buku['judul']) ?></span>
+  </div>
+  <a href="<?= e($back_url) ?>" class="shrink-0 inline-flex sm:hidden items-center gap-1 px-2.5 py-1 rounded-full border bg-white text-[11px] font-semibold" style="border-color: var(--border); color: var(--text-muted)">
+    &larr; Kembali
+  </a>
 </nav>
+
 
 <div class="bg-white rounded-xl border p-5 sm:p-6 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 sm:gap-8" style="border-color: var(--border)">
   <div class="md:col-span-1">

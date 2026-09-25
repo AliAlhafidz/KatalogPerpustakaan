@@ -6,8 +6,9 @@ $kata_kunci = clean($_GET['q'] ?? '');
 $filter_status = $_GET['status'] ?? 'semua';
 if (!in_array($filter_status, ['semua','aktif','arsip'], true)) $filter_status = 'semua';
 $halaman = isset($_GET['halaman']) ? max(1, (int)$_GET['halaman']) : 1;
-$per_halaman = 12;
+$per_halaman = 20;
 $offset = ($halaman - 1) * $per_halaman;
+
 
 $where = [];
 $params = [];
@@ -128,7 +129,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
     <p class="text-sm mt-1 px-6" style="color: var(--text-faint)">Coba kata kunci lain.</p>
   </div>
 <?php else: ?>
-  <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
+  <div class="grid grid-cols-2 min-[480px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
     <?php foreach ($daftar as $b): ?>
       <?php
         $tersedia = (int)$b['tersedia'];
@@ -142,64 +143,64 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
                alt="Cover <?= e($b['judul']) ?>"
                loading="lazy" decoding="async" width="400" height="600" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'"
                class="w-full h-full object-cover">
-          <div class="absolute top-2 left-2">
-            <span class="inline-flex items-center rounded-full bg-white border px-2 py-1 text-[10px] font-bold tracking-wide" style="border-color: var(--border); color: var(--text-muted)">
+          <div class="absolute top-1 left-1">
+            <span class="inline-flex items-center rounded-full bg-white/95 border px-1.5 py-0.5 text-[9px] font-bold tracking-wide" style="border-color: var(--border); color: var(--text-muted)">
               <?= e($b['kode_buku']) ?>
             </span>
           </div>
-          <div class="absolute top-2 right-2 flex flex-col gap-1 items-end">
+          <div class="absolute top-1 right-1 flex flex-col gap-1 items-end">
             <?php if ($is_arsip): ?>
-              <span class="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold" style="background:#fef3c7; border-color:#fde68a; color:#92400e"><i class="bi bi-archive text-[10px]"></i> Arsip</span>
+              <span class="inline-flex items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold" style="background:#fef3c7; border-color:#fde68a; color:#92400e"><i class="bi bi-archive text-[9px]"></i> Arsip</span>
             <?php else: ?>
-              <span class="inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold" style="background: <?= $habis ? '#fef2f2' : '#ecfdf5' ?>; border-color: <?= $habis ? '#fecaca' : '#a7f3d0' ?>; color: <?= $habis ? '#991b1b' : '#065f46' ?>">
+              <span class="inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[9px] font-semibold" style="background: <?= $habis ? '#fef2f2' : '#ecfdf5' ?>; border-color: <?= $habis ? '#fecaca' : '#a7f3d0' ?>; color: <?= $habis ? '#991b1b' : '#065f46' ?>">
                 <span class="w-1.5 h-1.5 rounded-full" style="background: <?= $habis ? '#dc2626' : '#059669' ?>"></span>
-                <?= $habis ? 'Habis' : 'Tersedia ' . $tersedia ?>
+                <?= $habis ? 'Habis' : 'Sisa ' . $tersedia ?>
               </span>
             <?php endif; ?>
           </div>
         </div>
 
-        <div class="p-3 flex flex-col flex-1 border-t" style="border-color: var(--border-faint)">
-          <p class="text-[10px] font-bold uppercase tracking-wide truncate mb-1" style="color: var(--text-faint)">
+        <div class="p-2 sm:p-2.5 flex flex-col flex-1 border-t" style="border-color: var(--border-faint)">
+          <p class="text-[9px] font-bold uppercase tracking-wide truncate mb-0.5" style="color: var(--text-faint)">
             <?= e($b['nama_kategori'] ?? 'Tanpa Kategori') ?><?= $is_arsip ? ' · Arsip' : '' ?>
           </p>
-          <h2 class="font-semibold text-[13px] leading-4 line-clamp-2 mb-1" style="color: var(--text)">
+          <h2 class="font-semibold text-[11px] sm:text-[12px] leading-snug line-clamp-2 min-h-[2rem] sm:min-h-0 mb-0.5" style="color: var(--text)">
             <?= e($b['judul']) ?>
           </h2>
-          <p class="text-xs truncate mb-3" style="color: var(--text-faint)">
+          <p class="text-[10px] sm:text-[11px] truncate mb-2" style="color: var(--text-faint)">
             <?= e($b['penulis']) ?>
           </p>
 
-          <div class="grid grid-cols-2 gap-1.5 mb-3 mt-auto">
-            <div class="rounded-md border px-2.5 py-2" style="background: var(--surface-2); border-color: var(--border)">
-              <p class="text-[10px] font-bold uppercase tracking-wide" style="color: var(--text-faint-2)">Stok</p>
-              <p class="text-sm font-bold mt-0.5" style="color: var(--text)"><?= $stok ?></p>
+          <div class="grid grid-cols-2 gap-1 mb-2 mt-auto text-center">
+            <div class="rounded border py-1 px-1" style="background: var(--surface-2); border-color: var(--border)">
+              <p class="text-[9px] font-bold uppercase tracking-wide" style="color: var(--text-faint-2)">Stok</p>
+              <p class="text-xs font-bold leading-tight" style="color: var(--text)"><?= $stok ?></p>
             </div>
-            <div class="rounded-md border px-2.5 py-2" style="background: var(--surface-2); border-color: var(--border)">
-              <p class="text-[10px] font-bold uppercase tracking-wide" style="color: var(--text-faint-2)">Tersedia</p>
-              <p class="text-sm font-bold mt-0.5" style="color: <?= $habis ? '#991b1b' : '#065f46' ?>"><?= $tersedia ?></p>
+            <div class="rounded border py-1 px-1" style="background: var(--surface-2); border-color: var(--border)">
+              <p class="text-[9px] font-bold uppercase tracking-wide" style="color: var(--text-faint-2)">Tersedia</p>
+              <p class="text-xs font-bold leading-tight" style="color: <?= $habis ? '#991b1b' : '#065f46' ?>"><?= $tersedia ?></p>
             </div>
           </div>
 
-          <div class="space-y-1.5 pt-2.5 border-t" style="border-color: var(--border-faint)">
-            <div class="flex items-center gap-1.5">
+          <div class="space-y-1 pt-1.5 border-t" style="border-color: var(--border-faint)">
+            <div class="flex items-center gap-1">
               <a href="<?= BASE_URL ?>/admin/buku/edit.php?id=<?= (int)$b['id_buku'] ?>"
-                 class="flex-1 h-8 rounded-md border font-semibold text-xs inline-flex items-center justify-center gap-1" style="background: var(--accent-soft); border-color: var(--accent-soft-2); color: var(--accent-text)">
+                 class="flex-1 h-7 rounded border font-semibold text-[11px] inline-flex items-center justify-center gap-1" style="background: var(--accent-soft); border-color: var(--accent-soft-2); color: var(--accent-text)">
                 Ubah
               </a>
               <form method="post" action="<?= BASE_URL ?>/admin/buku/arsip.php" class="flex-1">
                 <?= csrf_field() ?>
                 <input type="hidden" name="id" value="<?= (int)$b['id_buku'] ?>">
                 <input type="hidden" name="aksi" value="<?= $is_arsip ? 'publikasikan' : 'arsipkan' ?>">
-                <button type="submit" data-confirm="<?= $is_arsip ? 'Publikasikan kembali buku &quot;'.e($b['judul']).'&quot;? Buku akan muncul lagi di katalog.' : 'Arsipkan buku &quot;'.e($b['judul']).'&quot;? Buku tidak akan bisa dipinjam dan hilang dari katalog sampai dipublikasikan lagi.' ?>" class="w-full h-8 rounded-md border font-semibold text-xs inline-flex items-center justify-center gap-1" style="background: <?= $is_arsip ? '#ecfdf5' : '#fffbeb' ?>; border-color: <?= $is_arsip ? '#a7f3d0' : '#fde68a' ?>; color: <?= $is_arsip ? '#065f46' : '#92400e' ?>">
-                  <?= $is_arsip ? 'Publikasi' : 'Arsipkan' ?>
+                <button type="submit" data-confirm="<?= $is_arsip ? 'Publikasikan kembali buku &quot;'.e($b['judul']).'&quot;? Buku akan muncul lagi di katalog.' : 'Arsipkan buku &quot;'.e($b['judul']).'&quot;? Buku tidak akan bisa dipinjam dan hilang dari katalog sampai dipublikasikan lagi.' ?>" class="w-full h-7 rounded border font-semibold text-[11px] inline-flex items-center justify-center gap-0.5" style="background: <?= $is_arsip ? '#ecfdf5' : '#fffbeb' ?>; border-color: <?= $is_arsip ? '#a7f3d0' : '#fde68a' ?>; color: <?= $is_arsip ? '#065f46' : '#92400e' ?>">
+                  <?= $is_arsip ? 'Publikasi' : 'Arsip' ?>
                 </button>
               </form>
             </div>
             <form method="post" action="<?= BASE_URL ?>/admin/buku/hapus.php" data-confirm-danger="true" data-confirm="Yakin ingin menghapus buku &quot;<?= e($b['judul']) ?>&quot;? Riwayat peminjaman buku ini akan tetap tersimpan untuk anggota, tapi buku tidak bisa dikembalikan/diproses lagi lewat sistem. Tindakan ini tidak dapat dibatalkan." class="w-full">
               <?= csrf_field() ?>
               <input type="hidden" name="id" value="<?= (int)$b['id_buku'] ?>">
-              <button type="submit" class="w-full h-7 rounded-md border font-semibold text-xs inline-flex items-center justify-center gap-1" style="background:#fef2f2; border-color:#fecaca; color:#991b1b">
+              <button type="submit" class="w-full h-6 rounded border font-semibold text-[11px] inline-flex items-center justify-center gap-1" style="background:#fef2f2; border-color:#fecaca; color:#991b1b">
                 Hapus
               </button>
             </form>
@@ -208,6 +209,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
       </article>
     <?php endforeach; ?>
   </div>
+
 
   <?php if ($total_halaman > 1): ?>
     <div class="flex justify-center items-center gap-1 mt-6 overflow-x-auto py-1">

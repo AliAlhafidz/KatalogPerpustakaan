@@ -39,12 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     continue;
                 }
 
-                // b. Cek duplicate di DB
+                // b. Cek duplicate awal di DB berdasarkan ISBN (ISBN-10 & ISBN-13)
                 try {
-                    $cek = $pdo->prepare('SELECT COUNT(*) FROM buku WHERE isbn = :isbn');
-                    $cek->execute([':isbn' => $isbn]);
-                    if ((int)$cek->fetchColumn() > 0) {
-                        $dilewati[] = ['isbn' => $isbn, 'pesan' => 'Sudah ada di katalog'];
+                    $cek_awal = cek_buku_duplikat($pdo, $isbn, null, null);
+                    if ($cek_awal['duplicate']) {
+                        $dilewati[] = ['isbn' => $isbn, 'pesan' => $cek_awal['alasan'] ?? 'Sudah ada di katalog'];
                         continue;
                     }
                 } catch (Throwable $e) {
@@ -62,16 +61,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         continue;
                     }
 
-                    // d. INSERT dengan transaksi FOR UPDATE per-ISBN (reuse generate_kode_buku)
                     $d = $payload['data'];
                     $judul_ins = clean($d['judul'] ?? '');
                     $penulis_ins = clean($d['penulis'] ?? '');
                     if ($judul_ins === '') $judul_ins = 'Judul tidak tersedia';
                     if ($penulis_ins === '') $penulis_ins = 'Tidak diketahui';
+
+                    // Cek duplikasi berdasarkan Judul & Penulis yang didapat dari provider
+                    $cek_judul = cek_buku_duplikat($pdo, null, $judul_ins, $penulis_ins);
+                    if ($cek_judul['duplicate']) {
+                        $dilewati[] = ['isbn' => $isbn, 'pesan' => $cek_judul['alasan'] ?? 'Sudah ada buku dengan judul serupa di katalog'];
+                        continue;
+                    }
+
+                    // d. INSERT dengan transaksi FOR UPDATE per-ISBN (reuse generate_kode_buku)
                     $penerbit_ins = clean($d['penerbit'] ?? '');
                     $tahun_ins = $d['tahun_terbit'] ?? '';
                     $deskripsi_ins = clean($d['deskripsi'] ?? '');
                     $cover_url_ins = $d['cover_url'] ?? null;
+
                     // Kategori dari orchestrator sudah berupa ['id','nama'] atau null
                     $kategori_ins = null;
                     if (isset($d['kategori']['id'])) $kategori_ins = (int)$d['kategori']['id'];

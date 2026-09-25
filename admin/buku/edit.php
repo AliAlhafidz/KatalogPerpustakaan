@@ -48,14 +48,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Cegah ISBN duplikat: izinkan ISBN milik buku sendiri, tolak milik buku lain.
-    if ($input['isbn'] !== '' && empty($errors)) {
-        $cek = $pdo->prepare('SELECT COUNT(*) FROM buku WHERE isbn = :isbn AND id_buku != :id');
-        $cek->execute([':isbn' => $input['isbn'], ':id' => $id_buku]);
-        if ((int)$cek->fetchColumn() > 0) {
-            $errors[] = 'ISBN tersebut sudah terdaftar untuk buku lain di katalog.';
+    // Cegah duplikasi ISBN dan Judul/Penulis milik buku lain.
+    if (empty($errors)) {
+        $cek = cek_buku_duplikat($pdo, $input['isbn'] !== '' ? $input['isbn'] : null, $input['judul'], $input['penulis'], $id_buku);
+        if ($cek['duplicate']) {
+            $errors[] = $cek['alasan'];
         }
     }
+
 
     $sedang_dipinjam = $buku['stok'] - $buku['tersedia'];
     if ($input['stok'] < $sedang_dipinjam) {

@@ -41,4 +41,12 @@ assert_eq(is_file($cache_path), false, 'cache buku populer dihapus');
 hapus_cache_buku_populer();
 assert_eq(true, true, 'hapus cache saat file tidak ada aman');
 
+// ISBN normalization & conversion
+assert_eq(isbn_normalize('978-0-7432-7356-5'), '9780743273565', 'isbn normalize clean hyphens');
+assert_eq(isbn10_to_isbn13('0743273567'), '9780743273565', 'isbn10 to isbn13');
+assert_eq(isbn13_to_isbn10('9780743273565'), '0743273567', 'isbn13 to isbn10');
+assert_eq(isbn_alternatives('0743273567'), ['0743273567', '9780743273565'], 'isbn alternatives from 10');
+assert_eq(isbn_alternatives('9780743273565'), ['9780743273565', '0743273567'], 'isbn alternatives from 13');
+
 echo "Selesai.\n";
+

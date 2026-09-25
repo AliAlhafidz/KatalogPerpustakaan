@@ -30,11 +30,21 @@ if (is_favorit($pdo, $id_anggota, $id_buku)) {
     set_flash('sukses', 'Buku ditambahkan ke favorit.');
 }
 
+$return_url = trim($_POST['return_url'] ?? '');
+
+if (!empty($return_url)) {
+    // Validasi return_url hanya internal (dimulai dengan BASE_URL atau path relatif '/')
+    if (str_starts_with($return_url, BASE_URL . '/') || (str_starts_with($return_url, '/') && !str_starts_with($return_url, '//'))) {
+        header('Location: ' . $return_url);
+        exit;
+    }
+}
+
 if ($redirect_ke === 'favorit') {
     redirect('/anggota/favorit.php');
 } elseif ($redirect_ke === 'detail') {
     redirect('/detail.php?id=' . $id_buku);
 } else {
-    // Jangan memakai HTTP_REFERER karena nilainya dapat berasal dari luar aplikasi.
     redirect('/index.php');
 }
+
