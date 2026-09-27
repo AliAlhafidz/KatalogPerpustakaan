@@ -10,11 +10,6 @@ $terlambat       = (int) $pdo->query("SELECT COUNT(*) FROM peminjaman WHERE stat
 $total_denda_bulan_ini = (int) $pdo->query("SELECT COALESCE(SUM(denda),0) FROM peminjaman WHERE status='dikembalikan' AND MONTH(tanggal_kembali)=MONTH(CURDATE()) AND YEAR(tanggal_kembali)=YEAR(CURDATE())")->fetchColumn();
 $pending_perpanjangan = (int) $pdo->query("SELECT COUNT(*) FROM perpanjangan_peminjaman WHERE status='menunggu'")->fetchColumn();
 try {
-    $pending_pengajuan = (int) $pdo->query("SELECT COUNT(*) FROM pengajuan_buku WHERE status='menunggu'")->fetchColumn();
-} catch (Throwable $e) {
-    $pending_pengajuan = 0;
-}
-try {
     $pending_pengajuan_pinjam = (int) $pdo->query("SELECT COUNT(*) FROM pengajuan_peminjaman WHERE status='menunggu'")->fetchColumn();
 } catch (Throwable $e) {
     $pending_pengajuan_pinjam = 0;
@@ -117,11 +112,6 @@ require_once __DIR__ . '/../includes/admin_menu.php';
     <p class="text-[11px] font-bold uppercase tracking-wide" style="color:#92400e">Perpanjangan</p>
     <p class="text-[22px] font-bold tracking-tight mt-1" style="color:#92400e"><?= $pending_perpanjangan ?></p>
     <p class="text-xs mt-0.5 font-medium" style="color:#b45309">Perlu ditinjau →</p>
-  </a>
-  <a href="<?= BASE_URL ?>/admin/pengajuan/index.php" class="bg-white rounded-lg border p-4 hover:bg-slate-50 transition flex flex-col justify-between" style="border-color: var(--accent-soft-2); background: var(--accent-soft)">
-    <p class="text-[11px] font-bold uppercase tracking-wide" style="color: var(--accent-text)">Pengajuan Buku</p>
-    <p class="text-[22px] font-bold tracking-tight mt-1" style="color: var(--accent)"><?= $pending_pengajuan ?></p>
-    <p class="text-xs mt-0.5 font-medium" style="color: var(--accent)">Menunggu →</p>
   </a>
   <a href="<?= BASE_URL ?>/admin/pengajuan_peminjaman/index.php" class="bg-white rounded-lg border p-4 hover:bg-slate-50 transition flex flex-col justify-between" style="border-color:#fde68a; background:#fffbeb">
     <p class="text-[11px] font-bold uppercase tracking-wide" style="color:#92400e">Pengajuan Pinjam</p>

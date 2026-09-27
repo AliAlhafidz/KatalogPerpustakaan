@@ -6,9 +6,9 @@ Proyek UKK — PHP Native 8+, PDO MySQL, Tailwind CSS, Bootstrap Icons.
 
 **Pengunjung (tanpa login):** katalog + pencarian lanjutan (judul/penulis/ISBN/penerbit), filter kategori & "hanya tersedia", sort (A–Z/terbaru/stok), Top 5 populer & terbaru, detail buku (rak/ketersediaan/cover thumb 400px), empty state, favorit guest → modal login, daftar mandiri.
 
-**Anggota:** semua di atas + dashboard (sedang dipinjam, estimasi denda, notifikasi, statistik: total pinjam/total denda/kategori favorit), peminjaman aktif + kalender jatuh tempo, riwayat (`LEFT JOIN` — histori tetap tampil meski buku dihapus), notifikasi H-3/H-1, favorit, ajukan perpanjangan 1–7 hari (1×), pengajuan buku baru, ubah profil + foto profil (thumb), lupa password token demo 1 jam.
+**Anggota:** semua di atas + dashboard (sedang dipinjam, estimasi denda, notifikasi, statistik: total pinjam/total denda/kategori favorit), peminjaman aktif + kalender jatuh tempo, riwayat (`LEFT JOIN` — histori tetap tampil meski buku dihapus), notifikasi H-3/H-1 + lencana navbar/sidebar + tandai dibaca, favorit, ajukan perpanjangan 1–7 hari (1×), pengajuan peminjaman, ubah profil + foto profil (thumb), lupa password token demo 1 jam.
 
-**Admin:** dashboard (7 stat + chart 30 hari via Chart.js CDN) + warning `aliali123`, CRUD buku (arsip/hapus/ISBN cache 24j/bulk import 20/batch + thumb) & kategori, kelola anggota, peminjaman & pengembalian (filter/pagination clamp/LEAST stok/validasi Minggu) + trigger simulasi H-3/H-1, perpanjangan & pengajuan (approve/reject + notifikasi), audit log (buku/kategori/pengajuan), laporan 5 jenis (`LIMIT 500` + export CSV BOM + print A4), profil + foto.
+**Admin:** dashboard (7 stat + chart 30 hari via Chart.js CDN) + warning `aliali123`, CRUD buku (arsip/hapus/ISBN cache 24j/bulk import 20/batch + thumb) & kategori, kelola anggota, peminjaman & pengembalian (filter/pagination clamp/LEAST stok/validasi Minggu) + trigger simulasi H-3/H-1, perpanjangan & pengajuan peminjaman (approve/reject + notifikasi), laporan 5 jenis (`LIMIT 500` + export CSV BOM + print A4), profil + foto.
 
 > **Hapus buku:** histori `peminjaman` tidak ikut terhapus. FK `peminjaman.id_buku` → `ON DELETE SET NULL` (NULL → tampil "Buku telah dihapus dari katalog / Tidak tersedia" di `anggota/riwayat.php` + halaman admin). `favorit` & `pengajuan_peminjaman` tetap `CASCADE` (workflow). Admin `hapus.php` tidak lagi blokir buku berhistori; ada `warning` bila buku masih `dipinjam`.
 
@@ -29,7 +29,7 @@ perpustakaan/
 │   ├── admin_menu.php      # sidebar desktop admin
 │   ├── csrf.php            # CSRF + csrf_regenerate()
 │   ├── rate_limit.php      # 5/15m file+session
-│   ├── audit.php           # catat_audit() side-effect
+│   ├── audit.php           # catat_audit() side-effect (tanpa UI Audit Log)
 │   ├── isbn.php            # isbn_cache_get/set + isbn_api_get (24j)
 │   └── email_simulasi.php  # simulasi H-3/H-1 (INSERT IGNORE, kunci_unik)
 ├── assets/
@@ -39,8 +39,9 @@ perpustakaan/
 │   └── uploads/profil/     # foto profil + .htaccess
 ├── database/
 │   ├── perpustakaan.sql                    # skema + data contoh (fresh install)
-│   └── migrasi_hapus_buku_set_null.sql    # peminjaman.id_buku → SET NULL (jaga histori)
-├── anggota/                # dashboard, peminjaman, riwayat, favorit, notifikasi, ajukan_perpanjangan, pengajuan, profil
+│   ├── migrasi_hapus_pengajuan_buku.sql   # DROP pengajuan_buku (DB yang sudah terisi)
+│   └── bersihkan_duplikat.php             # util pembersihan data (manual)
+├── anggota/                # dashboard, peminjaman, riwayat, favorit, notifikasi, ajukan_perpanjangan, pengajuan_peminjaman, profil
 ├── admin/
 │   ├── dashboard.php
 │   ├── buku/               # index, tambah, edit, hapus, arsip, import, cari_isbn, _form
@@ -49,9 +50,7 @@ perpustakaan/
 │   ├── peminjaman/         # index, tambah, batalkan
 │   ├── pengembalian/       # index, proses
 │   ├── perpanjangan/       # index, proses
-│   ├── pengajuan/          # index, proses
 │   ├── pengajuan_peminjaman/ # index, proses
-│   ├── audit_log/index.php
 │   ├── laporan/index.php   # 5 jenis + CSV + chart
 │   ├── kirim_notifikasi_jatuh_tempo.php
 │   └── profil.php
@@ -67,7 +66,7 @@ perpustakaan/
 
 1. Salin `perpustakaan/` ke `htdocs` (XAMPP) atau `www` (Laragon).
 2. Buat DB `perpustakaan` → import `database/perpustakaan.sql` via phpMyAdmin atau `mysql -u root perpustakaan < database/perpustakaan.sql`.
-   Jika DB sudah ada dan ingin jaga histori saat hapus buku: `mariadb --ssl=0 -h 127.0.0.1 -u root perpustakaan < database/migrasi_hapus_buku_set_null.sql`.
+   Jika DB sudah ada dan fitur "Pengajuan Buku" dihapus: `mariadb --ssl=0 -h 127.0.0.1 -u root perpustakaan < database/migrasi_hapus_pengajuan_buku.sql`.
 3. Sesuaikan `DB_USER`/`DB_PASS`/`BASE_URL` di `config/database.php` jika folder/DB berbeda.
 4. Buka `http://localhost/perpustakaan/` — akun demo siap pakai.
 
@@ -89,7 +88,7 @@ perpustakaan/
 - Daftar mandiri via `register.php` (validasi `nama` 150, `no_hp` `08…`, rate limit) atau admin daftarkan.
 - Favorit dari katalog/detail → lihat di Favorit.
 - Perpanjangan 1–7 hari, 1× per transaksi, butuh approve admin.
-- Pengajuan buku: judul/penulis/isbn/alasan → menunggu/disetujui/ditolak (+ catatan admin); approve tidak auto-tambah ke katalog.
+- Pengajuan peminjaman: anggota ajukan buku yang sedang dipinjam/diarsipkan → menunggu/disetujui/ditolak (+ catatan admin).
 - Hapus buku tidak hapus histori; `peminjaman.id_buku` jadi `NULL` → riwayat tampil "Buku telah dihapus dari katalog / Tidak tersedia" (+ badge/notice konsisten `riwayat.php`).
 
 ## Keamanan
@@ -116,6 +115,8 @@ Admin → Buku → Tambah: mode **Via ISBN** (Open Library/Google Books, cache 2
 
 ## Riwayat Perubahan
 
+- **Hapus 2 fitur:** Pengajuan Buku anggota+admin (`anggota/pengajuan.php`, `admin/pengajuan/`, kartu dashboard, tabel `pengajuan_buku` — **bukan** `pengajuan_peminjaman` yang tetap) dan Audit Log UI (`admin/audit_log/index.php` + entri menu — `includes/audit.php` & tabel `audit_log` tetap ditulis sebagai jejak internal tanpa UI).
+- **Fitur Notifikasi anggota dipertahankan penuh:** `anggota/notifikasi.php`, lencana unread di navbar/sidebar/drawer, kartu "Notifikasi terbaru" + "Notifikasi Baru" di dashboard, dan 3 helper `sinkronkan_notifikasi_anggota()`/`ambil_notifikasi_anggota()`/`jumlah_notifikasi_belum_dibaca()`. Tabel `notifikasi` + `buat_notifikasi_anggota()` kembali terpakai penuh (ditandai dibaca per-notifikasi & tandai-semua-dibaca).
 - **Hapus buku (histori aman):** `migrasi_hapus_buku_set_null.sql` (`MODIFY id_buku NULL` + `FK SET NULL`), `admin/buku/hapus.php` (hapus guard `COUNT(*) >0`, `warning` jika masih `dipinjam`, `DELETE favorit`+`DELETE buku`), `admin/buku/index.php` (`data-confirm` baru), `admin/peminjaman/index.php` & `admin/pengembalian/index.php` & `admin/laporan/index.php` (`JOIN`→`LEFT JOIN`, fallback "Buku telah dihapus dari katalog"/"Tidak tersedia"), `admin/pengembalian/proses.php` & `admin/peminjaman/batalkan.php` (skip `UPDATE buku` jika `id_buku IS NULL`).
 - **Homepage grid:** `index.php` `grid-cols-2`→`grid-cols-3` (populer & katalog), card compact (`p-2`, `aspect-[2/3]`, `text-[11px]`, `line-clamp-2`).
 - Sebelumnya: P1–P4 + N1–N10 (lihat `git log`; ringkas: UNIQUE ISBN/kategori, rate limit, `FOR UPDATE`, pagination clamp, `LIMIT 500` laporan, login generik, thumb orphan, cache ISBN, `LEAST`, audit, CSV, pencarian lanjutan, chart 30 hari, bulk import, notifikasi H-3/H-1 simulasi, kalender jatuh tempo, statistik pribadi, pengajuan buku).

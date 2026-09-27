@@ -322,7 +322,6 @@ CREATE TABLE `notifikasi` (
 --
 
 INSERT INTO `notifikasi` (`id_notifikasi`, `id_anggota`, `judul`, `pesan`, `tipe`, `link`, `kunci_unik`, `dibaca`, `created_at`) VALUES
-(1, 1, 'Pengajuan disetujui', 'Pengajuan buku \"Janji\" disetujui. Admin akan menindaklanjuti.', 'success', '/anggota/pengajuan.php', 'pengajuan:1:disetujui', 1, '2026-08-25 08:42:05'),
 (2, 1, 'Peminjaman berhasil dicatat', 'Buku \"Harry Potter and the Prisoner of Azkaban\" berhasil dipinjam. Jatuh tempo: 02 September 2026.', 'success', '/anggota/peminjaman.php', 'pinjam:43:2026-08-26', 1, '2026-08-26 02:26:32'),
 (3, 1, 'Peminjaman berhasil dicatat', '2 buku berhasil dipinjam. Jatuh tempo: 02 September 2026.', 'success', '/anggota/peminjaman.php', 'pinjam:multi:2026-08-26', 0, '2026-08-26 13:32:40'),
 (4, 1, 'Jatuh tempo semakin dekat', 'Buku \"Harry Potter and the Prisoner of Azkaban\" jatuh tempo 3 hari lagi (02 September 2026).', 'warning', '/anggota/peminjaman.php', 'jatuh_tempo:1:2026-09-02', 0, '2026-08-30 00:19:00'),
@@ -354,32 +353,6 @@ CREATE TABLE `peminjaman` (
   `diproses_oleh` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `pengajuan_buku`
---
-
-CREATE TABLE `pengajuan_buku` (
-  `id` int NOT NULL,
-  `anggota_id` int NOT NULL,
-  `judul` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `penulis` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `isbn` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `alasan` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `status` enum('menunggu','disetujui','ditolak') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'menunggu',
-  `catatan_admin` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `pengajuan_buku`
---
-
-INSERT INTO `pengajuan_buku` (`id`, `anggota_id`, `judul`, `penulis`, `isbn`, `alasan`, `status`, `catatan_admin`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Janji', 'Tere liye', '9786239726201', 'menurut saya buku ini penting karena menginspirasi khalayak banyak untuk menjadi orang yang sabar dan tidak sembrono', 'disetujui', NULL, '2026-08-25 08:41:38', '2026-08-25 08:42:05');
 
 -- --------------------------------------------------------
 
@@ -496,15 +469,6 @@ ALTER TABLE `peminjaman`
   ADD KEY `idx_peminjaman_status_jatuh_tempo` (`status`,`tanggal_jatuh_tempo`);
 
 --
--- Indexes for table `pengajuan_buku`
---
-ALTER TABLE `pengajuan_buku`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_pengajuan_anggota` (`anggota_id`),
-  ADD KEY `idx_pengajuan_status` (`status`),
-  ADD KEY `idx_pengajuan_created` (`created_at`);
-
---
 -- Indexes for table `pengajuan_peminjaman`
 --
 ALTER TABLE `pengajuan_peminjaman`
@@ -580,12 +544,6 @@ ALTER TABLE `peminjaman`
   MODIFY `id_peminjaman` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `pengajuan_buku`
---
-ALTER TABLE `pengajuan_buku`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `pengajuan_peminjaman`
 --
 ALTER TABLE `pengajuan_peminjaman`
@@ -633,12 +591,6 @@ ALTER TABLE `peminjaman`
   ADD CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`),
   ADD CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`),
   ADD CONSTRAINT `peminjaman_ibfk_3` FOREIGN KEY (`diproses_oleh`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL;
-
---
--- Constraints for table `pengajuan_buku`
---
-ALTER TABLE `pengajuan_buku`
-  ADD CONSTRAINT `pengajuan_buku_ibfk_1` FOREIGN KEY (`anggota_id`) REFERENCES `anggota` (`id_anggota`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `pengajuan_peminjaman`

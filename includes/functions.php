@@ -358,8 +358,6 @@ function admin_menu_items() {
         'pengajuan_peminjaman'  => ['label' => 'Pengajuan Pinjam',  'icon' => 'bi-journal-arrow-up',   'url' => '/admin/pengajuan_peminjaman/index.php'],
         'pengembalian'          => ['label' => 'Pengembalian',      'icon' => 'bi-arrow-return-left',  'url' => '/admin/pengembalian/index.php'],
         'laporan'               => ['label' => 'Laporan',           'icon' => 'bi-bar-chart',          'url' => '/admin/laporan/index.php'],
-        'pengajuan'             => ['label' => 'Pengajuan Buku',    'icon' => 'bi-file-earmark-plus',  'url' => '/admin/pengajuan/index.php'],
-        'audit_log'             => ['label' => 'Audit Log',         'icon' => 'bi-journal-text',       'url' => '/admin/audit_log/index.php'],
     ];
 }
 
@@ -372,7 +370,6 @@ function member_menu_items() {
         'pengajuan_peminjaman' => ['label' => 'Pengajuan Pinjam',  'icon' => 'bi-journal-arrow-up',   'url' => '/anggota/pengajuan_peminjaman.php'],
         'riwayat'              => ['label' => 'Riwayat',           'icon' => 'bi-clock-history',     'url' => '/anggota/riwayat.php'],
         'favorit'              => ['label' => 'Favorit',           'icon' => 'bi-heart',             'url' => '/anggota/favorit.php'],
-        'pengajuan'            => ['label' => 'Pengajuan Buku',    'icon' => 'bi-file-earmark-plus', 'url' => '/anggota/pengajuan.php'],
         'notifikasi'           => ['label' => 'Notifikasi',        'icon' => 'bi-bell',              'url' => '/anggota/notifikasi.php'],
         'profil'               => ['label' => 'Profil',            'icon' => 'bi-person',            'url' => '/anggota/profil.php'],
     ];

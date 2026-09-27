@@ -2,11 +2,15 @@
 /**
  * Audit log helper — catat aksi buku & kategori
  * Side-effect only, tidak boleh menggagalkan aksi utama.
+ *
+ * CATATAN: tabel `audit_log` tetap ditulis di sini, namun halaman
+ * "Audit Log" di panel admin sudah dihapus. Data tetap berguna sebagai
+ * jejak audit internal/database tanpa harus exposes lewat UI.
  */
 function catat_audit(PDO $pdo, $user_id, string $aksi, string $target_tabel, int $target_id, $detail = null): void {
     try {
         if (!in_array($aksi, ['tambah','edit','hapus'], true)) return;
-        if (!in_array($target_tabel, ['buku','kategori','pengajuan_buku','pengajuan_peminjaman'], true)) return;
+        if (!in_array($target_tabel, ['buku','kategori','pengajuan_peminjaman'], true)) return;
         if ($target_id <= 0) return;
         // Detail boleh array (akan json_encode) atau string
         if (is_array($detail)) {
