@@ -50,6 +50,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <meta name="apple-mobile-web-app-title" content="Perpustakaan">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/app.css">
+<script src="<?= BASE_URL ?>/assets/js/bi-icons.js"></script>
 </head>
 <body class="min-h-screen flex flex-col" style="background: var(--paper); color: var(--text);">
 
