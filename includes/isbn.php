@@ -14,7 +14,7 @@ function isbn_api_get(string $url): ?array {
             CURLOPT_MAXREDIRS => 3,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT => 10,
-            CURLOPT_USERAGENT => 'Perpustakaan-Umum-Sejahtera/1.0 (educational)',
+            CURLOPT_USERAGENT => 'Sistem-Informasi-Perpustakaan/1.0 (educational)',
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_HTTPHEADER => ['Accept: application/json'],
@@ -27,8 +27,8 @@ function isbn_api_get(string $url): ?array {
         return is_array($data) ? $data : null;
     }
     $ctx = stream_context_create([
-        'http' => ['method'=>'GET','timeout'=>10,'ignore_errors'=>true,'header'=>"User-Agent: Perpustakaan-Umum-Sejahtera/1.0\r\nAccept: application/json\r\n"],
-        'https'=> ['method'=>'GET','timeout'=>10,'ignore_errors'=>true,'header'=>"User-Agent: Perpustakaan-Umum-Sejahtera/1.0\r\nAccept: application/json\r\n"],
+        'http' => ['method'=>'GET','timeout'=>10,'ignore_errors'=>true,'header'=>"User-Agent: Sistem-Informasi-Perpustakaan/1.0\r\nAccept: application/json\r\n"],
+        'https'=> ['method'=>'GET','timeout'=>10,'ignore_errors'=>true,'header'=>"User-Agent: Sistem-Informasi-Perpustakaan/1.0\r\nAccept: application/json\r\n"],
     ]);
     $raw = @file_get_contents($url, false, $ctx);
     if ($raw === false) return null;

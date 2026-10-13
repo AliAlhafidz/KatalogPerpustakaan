@@ -1,18 +1,17 @@
 <?php
 require_once __DIR__ . '/config/bootstrap.php';
 
-$page_title = 'Tentang Perpustakaan';
+$page_title = 'Tentang Sistem';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="bg-white rounded-xl border p-6 sm:p-8 max-w-3xl mx-auto" style="border-color: var(--border)">
   <p class="text-[11px] font-bold tracking-widest uppercase mb-2" style="color: var(--text-faint-2)">Tentang</p>
-  <h1 class="font-display text-[22px] sm:text-[24px] font-bold mb-3" style="color: var(--text)">Tentang Perpustakaan Umum Sejahtera</h1>
+  <h1 class="font-display text-[22px] sm:text-[24px] font-bold mb-3" style="color: var(--text)">Tentang Sistem Informasi Perpustakaan</h1>
   <p class="text-sm leading-7 mb-6" style="color: var(--text-muted)">
-    Perpustakaan Umum Sejahtera adalah perpustakaan umum yang melayani masyarakat dalam
-    mengakses berbagai koleksi buku, mulai dari fiksi, non-fiksi, sains, sejarah, hingga
-    bacaan anak dan remaja. Kami berkomitmen untuk mendukung budaya membaca dan literasi
-    di lingkungan sekitar.
+    Sistem Informasi Perpustakaan ini hadir sebagai solusi terpadu dalam pengelolaan layanan perpustakaan secara modern.
+    Sistem mencakup penelusuran katalog koleksi buku, sirkulasi peminjaman dan pengembalian, notifikasi jatuh tempo, perhitungan denda keterlambatan otomatis,
+    hingga pengelolaan data keanggotaan untuk mendukung kemudahan dan transparansi akses literasi.
   </p>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">

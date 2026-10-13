@@ -74,7 +74,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="max-w-md mx-auto bg-white rounded-xl border p-6 sm:p-7 mt-6" style="border-color: var(--border)">
   <p class="text-[11px] font-bold tracking-widest uppercase mb-1" style="color: var(--text-faint-2)">Masuk</p>
   <h1 class="font-display text-[20px] font-bold mb-1" style="color: var(--text)">Masuk ke Akun</h1>
-  <p class="text-sm mb-5" style="color: var(--text-faint)">Gunakan akun admin atau anggota untuk masuk.</p>
+  <p class="text-sm mb-5" style="color: var(--text-faint)">Gunakan akun admin atau anggota untuk masuk ke sistem.</p>
 
   <?php if ($error): ?>
     <div class="mb-4 rounded-lg border px-3.5 py-3 text-sm" style="background:#fef2f2; border-color:#fecaca; color:#991b1b"><?= e($error) ?></div>
@@ -105,7 +105,7 @@ require_once __DIR__ . '/includes/header.php';
   <p class="text-sm mt-5 text-center" style="color: var(--text-faint)">
     Belum punya akun? <a href="<?= BASE_URL ?>/register.php" class="font-semibold hover:underline" style="color: var(--accent)">Daftar sebagai anggota</a>
   </p>
-  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm hover:underline mt-3" style="color: var(--accent)">&larr; Kembali ke Katalog</a>
+  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm hover:underline mt-3" style="color: var(--accent)">&larr; Kembali ke Beranda / Katalog</a>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -1,6 +1,6 @@
 {
-    "name": "perpustakaan/sejahtera",
-    "description": "Sistem Informasi Perpustakaan Umum Sejahtera",
+    "name": "perpustakaan/sistem-informasi",
+    "description": "Sistem Informasi Perpustakaan",
     "type": "project",
     "require": {
         "php": ">=8.0"

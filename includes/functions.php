@@ -197,7 +197,7 @@ function download_remote_cover($url) {
             CURLOPT_MAXREDIRS => 3,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT => 12,
-            CURLOPT_USERAGENT => 'Perpustakaan-Umum-Sejahtera/1.0 (educational project)',
+            CURLOPT_USERAGENT => 'Sistem-Informasi-Perpustakaan/1.0 (educational project)',
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
         ]);
@@ -206,7 +206,7 @@ function download_remote_cover($url) {
         curl_close($ch);
         if ($data === false || $http < 200 || $http >= 300) $data = false;
     } else {
-        $context = stream_context_create(['http' => ['timeout' => 12, 'header' => "User-Agent: Perpustakaan-Umum-Sejahtera/1.0\r\n"]]);
+        $context = stream_context_create(['http' => ['timeout' => 12, 'header' => "User-Agent: Sistem-Informasi-Perpustakaan/1.0\r\n"]]);
         $data = @file_get_contents($url, false, $context);
     }
 

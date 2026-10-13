@@ -536,7 +536,7 @@ if (!function_exists('search_book_by_isbn')) {
                         CURLOPT_MAXREDIRS => 2,
                         CURLOPT_CONNECTTIMEOUT => 5,
                         CURLOPT_TIMEOUT => 8,
-                        CURLOPT_USERAGENT => 'Perpustakaan-Umum-Sejahtera/1.0 (educational)',
+                        CURLOPT_USERAGENT => 'Sistem-Informasi-Perpustakaan/1.0 (educational)',
                         CURLOPT_SSL_VERIFYPEER => true,
                         CURLOPT_SSL_VERIFYHOST => 2,
                         CURLOPT_HTTPHEADER => ['Authorization: ' . $isbndbKey, 'Accept: application/json'],

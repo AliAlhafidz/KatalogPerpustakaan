@@ -149,7 +149,7 @@ require_once __DIR__ . '/includes/header.php';
   <p class="text-sm mt-5 text-center" style="color: var(--text-faint)">
     Sudah punya akun? <a href="<?= BASE_URL ?>/login.php" class="font-semibold hover:underline" style="color: var(--accent)">Masuk di sini</a>
   </p>
-  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm hover:underline mt-3" style="color: var(--accent)">&larr; Kembali ke Katalog</a>
+  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm hover:underline mt-3" style="color: var(--accent)">&larr; Kembali ke Beranda / Katalog</a>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

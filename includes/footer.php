@@ -5,9 +5,9 @@
     <div class="lg:col-span-1">
       <div class="flex items-center gap-2.5 font-display font-bold text-white text-[15px] mb-2">
         <span class="w-8 h-8 rounded-lg bg-white text-[#0c0f12] flex items-center justify-center"><i class="bi bi-book-half text-sm"></i></span>
-        Perpustakaan Umum
+        Sistem Informasi Perpustakaan
       </div>
-      <p class="text-sm leading-6 text-stone-400 max-w-sm">Katalog klasik, pengalaman modern — ruang yang tenang untuk menemukan buku.</p>
+      <p class="text-sm leading-6 text-stone-400 max-w-sm">Sistem informasi perpustakaan terpadu — katalog buku digital, sirkulasi peminjaman, dan manajemen keanggotaan.</p>
     </div>
     <div>
       <div class="font-semibold text-white text-sm mb-2">Jam Layanan</div>
@@ -27,7 +27,7 @@
     </div>
   </div>
   <div class="border-t text-center text-stone-500 text-xs py-3 px-4" style="border-color:#1e2326">
-    &copy; <?= date('Y') ?> Perpustakaan Umum Sejahtera · Proyek UKK
+    &copy; <?= date('Y') ?> Sistem Informasi Perpustakaan · Proyek UKK
   </div>
 </footer>
 

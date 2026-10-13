@@ -89,7 +89,7 @@ require_once __DIR__ . '/includes/header.php';
   <p class="text-sm text-gray-500 mt-6 text-center">
     Ingat password? <a href="<?= BASE_URL ?>/login.php" class="text-brand-600 font-medium hover:underline">Masuk di sini</a>
   </p>
-  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm text-brand-600 hover:underline mt-3">&larr; Kembali ke Katalog</a>
+  <a href="<?= BASE_URL ?>/index.php" class="block text-center text-sm text-brand-600 hover:underline mt-3">&larr; Kembali ke Beranda / Katalog</a>
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
