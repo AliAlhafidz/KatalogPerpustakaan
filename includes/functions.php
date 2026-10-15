@@ -406,24 +406,29 @@ function badge_pengajuan_peminjaman($status) {
 
 // ========================= Notifikasi & Perpanjangan =========================
 function buat_notifikasi_anggota(PDO $pdo, $id_anggota, $judul, $pesan, $tipe = 'info', $link = null, $kunci_unik = null) {
-    // Normalisasi kunci_unik: '' untuk notifikasi tanpa dedup, hindari NULL yang tidak ter-dedup oleh UNIQUE
-    if ($kunci_unik === null) $kunci_unik = '';
-    // Jika kunci kosong, pakai INSERT biasa (tidak perlu IGNORE karena tidak ada dedup)
-    if ($kunci_unik === '') {
+    $kunci = trim((string)($kunci_unik ?? ''));
+    if ($kunci === '') {
         $stmt = $pdo->prepare("INSERT INTO notifikasi (id_anggota, judul, pesan, tipe, link, kunci_unik)
-                               VALUES (:anggota, :judul, :pesan, :tipe, :link, :kunci)");
+                               VALUES (:anggota, :judul, :pesan, :tipe, :link, NULL)");
+        $stmt->execute([
+            ':anggota' => $id_anggota,
+            ':judul' => $judul,
+            ':pesan' => $pesan,
+            ':tipe' => $tipe,
+            ':link' => $link,
+        ]);
     } else {
         $stmt = $pdo->prepare("INSERT IGNORE INTO notifikasi (id_anggota, judul, pesan, tipe, link, kunci_unik)
                                VALUES (:anggota, :judul, :pesan, :tipe, :link, :kunci)");
+        $stmt->execute([
+            ':anggota' => $id_anggota,
+            ':judul' => $judul,
+            ':pesan' => $pesan,
+            ':tipe' => $tipe,
+            ':link' => $link,
+            ':kunci' => $kunci,
+        ]);
     }
-    $stmt->execute([
-        ':anggota' => $id_anggota,
-        ':judul' => $judul,
-        ':pesan' => $pesan,
-        ':tipe' => $tipe,
-        ':link' => $link,
-        ':kunci' => $kunci_unik,
-    ]);
 }
 
 function sinkronkan_notifikasi_anggota(PDO $pdo, $id_anggota) {

@@ -47,7 +47,7 @@ try {
                    adm.nama AS nama_admin
             FROM pengajuan_peminjaman pp
             JOIN anggota a ON a.id_anggota = pp.id_anggota
-            JOIN buku b ON b.id_buku = pp.id_buku
+            LEFT JOIN buku b ON b.id_buku = pp.id_buku
             LEFT JOIN kategori k ON k.id_kategori = b.id_kategori
             LEFT JOIN admin adm ON adm.id_admin = pp.diproses_oleh
             $where_sql
