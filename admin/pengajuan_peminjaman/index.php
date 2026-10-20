@@ -17,8 +17,11 @@ if ($filter !== 'semua') {
     $params[':status'] = $filter;
 }
 if ($kata_kunci !== '') {
-    $where[] = '(a.nama LIKE :kw OR a.nomor_anggota LIKE :kw OR b.judul LIKE :kw OR b.kode_buku LIKE :kw)';
-    $params[':kw'] = '%' . $kata_kunci . '%';
+    $where[] = '(a.nama LIKE :kw1 OR a.nomor_anggota LIKE :kw2 OR b.judul LIKE :kw3 OR b.kode_buku LIKE :kw4)';
+    $params[':kw1'] = '%' . $kata_kunci . '%';
+    $params[':kw2'] = '%' . $kata_kunci . '%';
+    $params[':kw3'] = '%' . $kata_kunci . '%';
+    $params[':kw4'] = '%' . $kata_kunci . '%';
 }
 $where_sql = $where ? ('WHERE ' . implode(' AND ', $where)) : '';
 

@@ -10,8 +10,10 @@ $offset = ($halaman - 1) * $per_halaman;
 $where = '';
 $params = [];
 if ($kata_kunci !== '') {
-    $where = "WHERE nama LIKE :kw OR email LIKE :kw OR nomor_anggota LIKE :kw";
-    $params[':kw'] = '%' . $kata_kunci . '%';
+    $where = "WHERE (nama LIKE :kw1 OR email LIKE :kw2 OR nomor_anggota LIKE :kw3)";
+    $params[':kw1'] = '%' . $kata_kunci . '%';
+    $params[':kw2'] = '%' . $kata_kunci . '%';
+    $params[':kw3'] = '%' . $kata_kunci . '%';
 }
 
 $total = $pdo->prepare("SELECT COUNT(*) FROM anggota $where");

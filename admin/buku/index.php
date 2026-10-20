@@ -6,15 +6,17 @@ $kata_kunci = clean($_GET['q'] ?? '');
 $filter_status = $_GET['status'] ?? 'semua';
 if (!in_array($filter_status, ['semua','aktif','arsip'], true)) $filter_status = 'semua';
 $halaman = isset($_GET['halaman']) ? max(1, (int)$_GET['halaman']) : 1;
-$per_halaman = 20;
+$per_halaman = 24;
 $offset = ($halaman - 1) * $per_halaman;
 
 
 $where = [];
 $params = [];
 if ($kata_kunci !== '') {
-    $where[] = "(b.judul LIKE :kw OR b.penulis LIKE :kw OR b.kode_buku LIKE :kw)";
-    $params[':kw'] = '%' . $kata_kunci . '%';
+    $where[] = "(b.judul LIKE :kw1 OR b.penulis LIKE :kw2 OR b.kode_buku LIKE :kw3)";
+    $params[':kw1'] = '%' . $kata_kunci . '%';
+    $params[':kw2'] = '%' . $kata_kunci . '%';
+    $params[':kw3'] = '%' . $kata_kunci . '%';
 }
 if ($filter_status === 'aktif') {
     $where[] = "b.is_arsip = 0";
@@ -129,7 +131,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
     <p class="text-sm mt-1 px-6" style="color: var(--text-faint)">Coba kata kunci lain.</p>
   </div>
 <?php else: ?>
-  <div class="grid grid-cols-2 min-[480px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
+  <div class="grid grid-cols-2 min-[480px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
     <?php foreach ($daftar as $b): ?>
       <?php
         $tersedia = (int)$b['tersedia'];

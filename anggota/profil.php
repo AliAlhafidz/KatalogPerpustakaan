@@ -4,11 +4,22 @@ wajib_anggota();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') require_csrf();
 
-$id_anggota = $_SESSION['id_anggota'];
+$id_anggota = (int)($_SESSION['id_anggota'] ?? 0);
+if ($id_anggota <= 0) {
+    session_destroy();
+    set_flash('error', 'Sesi tidak valid. Silakan login kembali.');
+    redirect('/login.php');
+}
 
 $stmt = $pdo->prepare("SELECT * FROM anggota WHERE id_anggota = :id");
 $stmt->execute([':id' => $id_anggota]);
 $anggota = $stmt->fetch();
+
+if (!$anggota) {
+    session_destroy();
+    set_flash('error', 'Sesi tidak valid atau akun tidak ditemukan. Silakan login kembali.');
+    redirect('/login.php');
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama = clean($_POST['nama'] ?? '');
@@ -23,14 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         try {
             $foto_baru = upload_foto_profil($_FILES['foto'] ?? null);
-            $foto_final = $anggota['foto'];
-            $foto_lama = $anggota['foto'];
+            $foto_final = $anggota['foto'] ?? null;
+            $foto_lama = $anggota['foto'] ?? null;
             if ($foto_baru) {
                 $foto_final = $foto_baru;
             }
 
             if ($pass_baru !== '' || $pass_ulang !== '' || $pass_lama !== '') {
-                if (!password_verify($pass_lama, $anggota['password'])) throw new Exception('Password lama yang kamu masukkan salah.');
+                if ($pass_lama === '') throw new Exception('Masukkan password lama untuk konfirmasi pergantian password.');
+                if (!password_verify($pass_lama, $anggota['password'] ?? '')) throw new Exception('Password lama yang kamu masukkan salah.');
                 if (strlen($pass_baru) < 6) throw new Exception('Password baru minimal 6 karakter.');
                 if ($pass_baru !== $pass_ulang) throw new Exception('Konfirmasi password baru tidak cocok.');
                 $hash = password_hash($pass_baru, PASSWORD_DEFAULT);
@@ -54,6 +66,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("SELECT * FROM anggota WHERE id_anggota = :id");
     $stmt->execute([':id' => $id_anggota]);
     $anggota = $stmt->fetch();
+    if (!$anggota) {
+        session_destroy();
+        redirect('/login.php');
+    }
 }
 
 $page_title = 'Profil Saya';
@@ -75,14 +91,14 @@ require_once __DIR__ . '/../includes/header.php';
 <div class="profile-shell space-y-5">
   <section class="profile-hero rounded-xl p-5 sm:p-6">
     <div class="flex flex-col sm:flex-row items-center sm:items-end gap-5">
-      <img src="<?= e(foto_profil_url($anggota['foto'])) ?>" alt="Foto profil <?= e($anggota['nama']) ?>" class="profile-avatar rounded-xl object-cover">
+      <img src="<?= e(foto_profil_url($anggota['foto'] ?? null)) ?>" alt="Foto profil <?= e($anggota['nama'] ?? '') ?>" class="profile-avatar rounded-xl object-cover">
       <div class="flex-1 text-center sm:text-left min-w-0">
         <div class="text-[11px] font-bold uppercase tracking-[.14em]" style="color: var(--text-faint-2)">Profil Anggota</div>
-        <h1 class="mt-1 text-2xl sm:text-[26px] font-bold truncate font-display" style="color: var(--text)"><?= e($anggota['nama']) ?></h1>
-        <p class="mt-1 text-sm" style="color: var(--text-muted)"><?= e($anggota['email']) ?></p>
+        <h1 class="mt-1 text-2xl sm:text-[26px] font-bold truncate font-display" style="color: var(--text)"><?= e($anggota['nama'] ?? '') ?></h1>
+        <p class="mt-1 text-sm" style="color: var(--text-muted)"><?= e($anggota['email'] ?? '') ?></p>
         <div class="mt-3 flex flex-wrap justify-center sm:justify-start gap-2">
-          <span class="rounded-full px-3 py-1.5 text-xs font-bold" style="background: var(--accent-soft); color: var(--accent-text); border:1px solid var(--border)"><i class="bi bi-person-vcard mr-1"></i><?= e($anggota['nomor_anggota']) ?></span>
-          <span class="rounded-full px-3 py-1.5 text-xs font-bold" style="background: var(--accent-soft); color: var(--accent-text); border:1px solid var(--border)"><i class="bi bi-check-circle mr-1"></i><?= e(ucfirst($anggota['status'])) ?></span>
+          <span class="rounded-full px-3 py-1.5 text-xs font-bold" style="background: var(--accent-soft); color: var(--accent-text); border:1px solid var(--border)"><i class="bi bi-person-vcard mr-1"></i><?= e($anggota['nomor_anggota'] ?? '') ?></span>
+          <span class="rounded-full px-3 py-1.5 text-xs font-bold" style="background: var(--accent-soft); color: var(--accent-text); border:1px solid var(--border)"><i class="bi bi-check-circle mr-1"></i><?= e(ucfirst($anggota['status'] ?? 'aktif')) ?></span>
         </div>
       </div>
     </div>
@@ -98,23 +114,23 @@ require_once __DIR__ . '/../includes/header.php';
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="md:col-span-2">
           <label class="block text-sm font-bold mb-1.5" style="color: var(--text-muted)">Nama Lengkap</label>
-          <input type="text" name="nama" required value="<?= e($anggota['nama']) ?>" class="profile-input">
+          <input type="text" name="nama" required value="<?= e($anggota['nama'] ?? '') ?>" class="profile-input">
         </div>
         <div>
           <label class="block text-sm font-bold mb-1.5" style="color: var(--text-muted)">No. HP</label>
-          <input type="text" name="no_hp" value="<?= e($anggota['no_hp']) ?>" class="profile-input" placeholder="Contoh: 08xxxxxxxxxx">
+          <input type="text" name="no_hp" value="<?= e($anggota['no_hp'] ?? '') ?>" class="profile-input" placeholder="Contoh: 08xxxxxxxxxx">
         </div>
         <div>
           <label class="block text-sm font-bold mb-1.5" style="color: var(--text-muted)">Email</label>
-          <input type="text" value="<?= e($anggota['email']) ?>" class="profile-input" disabled>
+          <input type="text" value="<?= e($anggota['email'] ?? '') ?>" class="profile-input" disabled>
         </div>
         <div class="md:col-span-2">
           <label class="block text-sm font-bold mb-1.5" style="color: var(--text-muted)">Alamat</label>
-          <textarea name="alamat" rows="3" class="profile-input" placeholder="Tulis alamat kamu..."><?= e($anggota['alamat']) ?></textarea>
+          <textarea name="alamat" rows="3" class="profile-input" placeholder="Tulis alamat kamu..."><?= e($anggota['alamat'] ?? '') ?></textarea>
         </div>
         <div class="md:col-span-2 rounded-xl p-4" style="background: var(--accent-soft); border:1px solid var(--border)">
           <div class="flex items-center gap-3">
-            <img src="<?= e(foto_profil_url($anggota['foto'])) ?>" class="w-14 h-14 rounded-xl object-cover border" style="border-color: var(--border); background: var(--surface)">
+            <img src="<?= e(foto_profil_url($anggota['foto'] ?? null)) ?>" class="w-14 h-14 rounded-xl object-cover border" style="border-color: var(--border); background: var(--surface)">
             <div class="flex-1 min-w-0"><div class="text-sm font-bold" style="color: var(--text)">Foto Profil</div><div class="text-xs" style="color: var(--text-faint)">JPG, PNG, atau WEBP · maksimal 2MB</div></div>
           </div>
           <input type="file" name="foto" accept=".jpg,.jpeg,.png,.webp" class="mt-3 w-full text-sm" style="color: var(--text-muted)">

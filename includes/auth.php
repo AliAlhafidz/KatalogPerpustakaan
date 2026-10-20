@@ -9,11 +9,11 @@ function is_login() {
 }
 
 function is_admin() {
-    return is_login() && $_SESSION['role'] === 'admin';
+    return is_login() && $_SESSION['role'] === 'admin' && !empty($_SESSION['id_admin']);
 }
 
 function is_anggota() {
-    return is_login() && $_SESSION['role'] === 'anggota';
+    return is_login() && $_SESSION['role'] === 'anggota' && !empty($_SESSION['id_anggota']);
 }
 
 // Wajib login sebagai admin, kalau tidak -> redirect ke login
