@@ -4,7 +4,7 @@
   <div class="<?= (isset($menu_aktif) && $menu_aktif !== '') ? 'admin-footer-inner' : ((is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '') ? 'member-footer-inner' : 'max-w-7xl mx-auto') ?> px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
     <div class="lg:col-span-1">
       <div class="flex items-center gap-2.5 font-display font-bold text-white text-[15px] mb-2">
-        <img src="<?= BASE_URL ?>/assets/img/logo/logo-symbol-white.svg" alt="Logo" class="w-8 h-8 shrink-0 object-contain">
+        <span class="w-8 h-8 rounded-lg bg-white text-[#0c0f12] flex items-center justify-center"><i class="bi bi-book-half text-sm"></i></span>
         Sistem Informasi Perpustakaan
       </div>
       <p class="text-sm leading-6 text-stone-400 max-w-sm">Sistem informasi perpustakaan terpadu — katalog buku digital, sirkulasi peminjaman, dan manajemen keanggotaan.</p>
