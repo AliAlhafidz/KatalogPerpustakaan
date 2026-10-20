@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256"><title>Sistem Informasi Perpustakaan</title><rect width="256" height="256" rx="57.6" fill="#1a2c4a"/><g transform="translate(30.34 34.44) scale(0.763)" fill="#ffffff">
+  <title id="title-small">Sistem Informasi Perpustakaan - Favicon Symbol</title>
+  <!-- Bolder Central Knowledge Beacon -->
+  <polygon fill="#ffffff" points="128,32 148,64 128,96 108,64"/>
+  <!-- Solid Left Page with single clear horizontal data slot -->
+  <path fill="#ffffff" fill-rule="evenodd" d="M118 102 C82 90 52 90 32 98 C26 100 24 106 24 112 L24 184 C24 190 30 196 36 193 C60 185 88 185 118 200 L118 102 Z M44 140 C64 132 88 132 104 138 C108 139 110 143 110 147 C110 151 108 155 104 154 C88 148 64 148 44 156 C40 157 36 154 36 149 C36 144 40 141 44 140 Z"/>
+  <path fill="#ffffff" d="M44 140 C64 132 88 132 104 138 C108 139 110 143 110 147 C110 151 108 155 104 154 C88 148 64 148 44 156 C40 157 36 154 36 149 C36 144 40 141 44 140 Z"/>
+  <!-- Solid Right Page with single clear horizontal data slot -->
+  <path fill="#ffffff" fill-rule="evenodd" d="M138 102 C174 90 204 90 224 98 C230 100 232 106 232 112 L232 184 C232 190 226 196 220 193 C196 185 168 185 138 200 L138 102 Z M152 138 C168 132 192 132 212 140 C216 141 220 144 220 149 C220 154 216 157 212 156 C192 148 168 148 152 154 C148 155 146 151 146 147 C146 143 148 139 152 138 Z"/>
+  <path fill="#ffffff" d="M152 138 C168 132 192 132 212 140 C216 141 220 144 220 149 C220 154 216 157 212 156 C192 148 168 148 152 154 C148 155 146 151 146 147 C146 143 148 139 152 138 Z"/>
+  <!-- Base Spine Node -->
+  <path fill="#ffffff" d="M118 198 C124 204 132 204 138 198 L138 208 C138 212 133 214 128 213 C123 214 118 212 118 208 Z"/>
+</g></svg>

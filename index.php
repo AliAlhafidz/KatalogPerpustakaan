@@ -14,7 +14,7 @@ $sort_whitelist = [
 $sort = isset($sort_whitelist[$sort_raw]) ? $sort_raw : '';
 $order_by = $sort !== '' ? $sort_whitelist[$sort] : $sort_whitelist['judul_asc'];
 $halaman     = isset($_GET['halaman']) ? max(1, (int) $_GET['halaman']) : 1;
-$per_halaman = 20;
+$per_halaman = 24;
 $offset      = ($halaman - 1) * $per_halaman;
 
 
@@ -434,7 +434,7 @@ require_once __DIR__ . '/includes/header.php';
             <i class="bi bi-heart text-[11px]"></i>
           </button>
         <?php endif; ?>
-        <a href="<?= $populer_detail_link ?>" class="block flex flex-col flex-1">
+        <a href="<?= $populer_detail_link ?>" class="flex flex-col flex-1">
           <div class="aspect-[2/3] overflow-hidden relative" style="background:var(--paper-2)">
             <img src="<?= e(cover_thumb_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" loading="lazy" decoding="async" width="400" height="600" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'" class="w-full h-full object-cover">
             <div class="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
@@ -505,7 +505,7 @@ require_once __DIR__ . '/includes/header.php';
     <p class="text-sm mt-1 px-6" style="color:var(--text-faint)">Coba gunakan kata kunci lain atau pilih kategori yang berbeda.</p>
   </div>
 <?php else: ?>
-  <div id="katalogGrid" class="grid grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 sm:gap-3">
+  <div id="katalogGrid" class="grid grid-cols-2 min-[420px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
     <?php foreach ($daftar_buku as $buku):
         $is_fav = in_array($buku['id_buku'], $favorit_ids);
         $detail_link = BASE_URL . '/detail.php?id=' . (int)$buku['id_buku'] . '&back=' . urlencode($catalog_back_url);
@@ -526,7 +526,7 @@ require_once __DIR__ . '/includes/header.php';
             <i class="bi bi-heart text-[11px]"></i>
           </button>
         <?php endif; ?>
-        <a href="<?= $detail_link ?>" class="block flex flex-col flex-1">
+        <a href="<?= $detail_link ?>" class="flex flex-col flex-1">
           <div class="aspect-[2/3] overflow-hidden relative" style="background:var(--paper-2)">
             <img src="<?= e(cover_thumb_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" loading="lazy" decoding="async" width="400" height="600" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'" class="w-full h-full object-cover">
           </div>

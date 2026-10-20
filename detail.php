@@ -93,10 +93,19 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="bg-white rounded-xl border p-5 sm:p-6 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 sm:gap-8" style="border-color: var(--border)">
   <div class="md:col-span-1">
-    <div class="aspect-[3/4] rounded-lg overflow-hidden border" style="background: var(--paper-2); border-color: var(--border)">
-      <img src="<?= e(cover_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" class="w-full h-full object-cover">
+    <div class="rounded-xl overflow-hidden border flex items-center justify-center p-3 sm:p-4" style="background: var(--paper-2); border-color: var(--border); min-height: 360px;">
+      <a href="<?= e(cover_url($buku['cover'])) ?>" target="_blank" rel="noopener noreferrer" title="Lihat cover ukuran penuh" class="group/cover block relative">
+        <img src="<?= e(cover_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>" class="w-auto h-auto max-h-[380px] max-w-full rounded-md shadow-md object-contain transition-transform duration-200 group-hover/cover:scale-[1.02]" onerror="this.src='<?= BASE_URL ?>/assets/img/no-cover.svg'">
+        <span class="absolute bottom-2 right-2 px-2 py-1 rounded bg-black/60 text-white text-[10px] font-medium opacity-0 group-hover/cover:opacity-100 transition-opacity flex items-center gap-1 backdrop-blur-none">
+          <i class="bi bi-arrows-fullscreen text-[9px]"></i> Perbesar
+        </span>
+      </a>
     </div>
-    <p class="text-xs text-center mt-2" style="color: var(--text-faint)">Cover buku · Rasio 3:4</p>
+    <div class="text-center mt-2.5">
+      <a href="<?= e(cover_url($buku['cover'])) ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-xs hover:underline" style="color: var(--accent-text)">
+        <i class="bi bi-arrows-fullscreen text-[11px]"></i> Lihat cover penuh
+      </a>
+    </div>
   </div>
 
   <div class="md:col-span-1 min-w-0">
