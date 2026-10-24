@@ -259,6 +259,77 @@
     });
   }
 
+  // Preserve scroll position & natural back navigation across catalog/list pages
+  (() => {
+    // 1. Simpan scroll sebelum navigasi (klik link detail, submit, atau unload)
+    function saveCurrentScroll() {
+      const scrollKey = 'scroll_pos:' + window.location.pathname + window.location.search;
+      try {
+        sessionStorage.setItem(scrollKey, String(window.scrollY || window.pageYOffset || 0));
+      } catch (e) {}
+    }
+
+    // Tangkap klik pada link menuju detail.php untuk mencatat posisi scroll dan element target
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href*="detail.php?id="]');
+      if (!link) return;
+      saveCurrentScroll();
+      try {
+        const bookCard = link.closest('.book-card') || link.closest('[data-book-id]');
+        if (bookCard && bookCard.dataset.bookId) {
+          sessionStorage.setItem('scroll_book_id', bookCard.dataset.bookId);
+        }
+      } catch (err) {}
+    }, { capture: true });
+
+    // Simpan juga saat pagehide / beforeunload jika berada di halaman non-detail
+    if (!window.location.pathname.includes('detail.php')) {
+      window.addEventListener('pagehide', saveCurrentScroll);
+    }
+
+    // 2. Pada halaman detail: tombol "Kembali ke Katalog" mengutamakan history.back() jika URL asal valid
+    const btnKembali = document.getElementById('btnKembaliKatalog');
+    if (btnKembali) {
+      btnKembali.addEventListener('click', (e) => {
+        // Cek apakah ada history navigation internal yang bisa dipakai
+        if (window.history.length > 1 && document.referrer) {
+          try {
+            const refUrl = new URL(document.referrer);
+            if (refUrl.origin === window.location.origin && !refUrl.pathname.includes('detail.php')) {
+              e.preventDefault();
+              window.history.back();
+              return;
+            }
+          } catch (err) {}
+        }
+        // Fallback: browser mengikuti href normal
+      });
+    }
+
+    // 3. Pada halaman list / katalog: pulihkan posisi scroll jika ada data tersimpan
+    if (!window.location.pathname.includes('detail.php')) {
+      const scrollKey = 'scroll_pos:' + window.location.pathname + window.location.search;
+      const savedPos = sessionStorage.getItem(scrollKey);
+      if (savedPos !== null) {
+        const targetY = parseFloat(savedPos);
+        sessionStorage.removeItem(scrollKey); // One-shot restore
+        if (!isNaN(targetY) && targetY > 0) {
+          // Cegah scroll restoration bawaan browser menimpa posisi tersimpan
+          if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+          }
+          const restoreScroll = () => {
+            window.scrollTo({ top: targetY, behavior: 'instant' });
+          };
+          // Coba pulihkan sesegera mungkin
+          restoreScroll();
+          requestAnimationFrame(restoreScroll);
+          setTimeout(restoreScroll, 60);
+          setTimeout(restoreScroll, 180);
+        }
+      }
+    }
+  })();
 </script>
 <script src="<?= BASE_URL ?>/assets/js/custom-select.js" defer></script>
 <script src="<?= BASE_URL ?>/assets/js/katalog.js" defer></script>

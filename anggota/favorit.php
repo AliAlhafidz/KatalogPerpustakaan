@@ -28,9 +28,12 @@ require_once __DIR__ . '/../includes/header.php';
   </div>
 <?php else: ?>
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-    <?php foreach ($daftar as $buku): ?>
+    <?php
+      $favorit_back_url = BASE_URL . '/anggota/favorit.php';
+      foreach ($daftar as $buku):
+    ?>
       <div class="rounded-xl border overflow-hidden group relative" style="background: var(--surface); border-color: var(--border)">
-        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$buku['id_buku'] ?>">
+        <a href="<?= BASE_URL ?>/detail.php?id=<?= (int)$buku['id_buku'] ?>&back=<?= urlencode($favorit_back_url) ?>">
           <div class="aspect-[3/4] overflow-hidden" style="background: var(--surface-2)">
             <img src="<?= e(cover_url($buku['cover'])) ?>" alt="Cover <?= e($buku['judul']) ?>"
                  class="w-full h-full object-cover group-hover:opacity-95 transition duration-200">

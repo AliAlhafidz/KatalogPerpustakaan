@@ -56,20 +56,49 @@ if (is_anggota()) {
     }
 }
 
-// Ambil URL kembali (dari parameter GET 'back' atau HTTP_REFERER jika internal)
-$back_url = BASE_URL . '/index.php#koleksi';
+// Ambil URL kembali yang aman (dari parameter GET 'back' atau HTTP_REFERER jika internal)
+$default_back_url = BASE_URL . '/index.php#koleksi';
+$back_url = $default_back_url;
+
+$validate_internal_url = function($url) {
+    if (empty($url)) return false;
+    $url = trim($url);
+    // Tolak protocol-relative "//" atau malformed "/\"
+    if (str_starts_with($url, '//') || str_starts_with($url, '/\\')) return false;
+
+    // Relative path lokal (misal: /perpustakaan/... atau /index.php...)
+    if (str_starts_with($url, '/')) {
+        return $url;
+    }
+
+    // Absolute URL internal (cocokkan host dengan server saat ini)
+    $parts = parse_url($url);
+    if (!$parts || empty($parts['scheme'])) return false;
+    if (!in_array(strtolower($parts['scheme']), ['http', 'https'], true)) return false;
+
+    $host = strtolower($parts['host'] ?? '');
+    $cur_host = strtolower($_SERVER['HTTP_HOST'] ?? '');
+    if ($cur_host !== '') {
+        $host_no_port = explode(':', $cur_host)[0];
+        if ($host === $cur_host || $host === $host_no_port) {
+            $path = $parts['path'] ?? '/';
+            $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+            $frag = isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
+            return $path . $query . $frag;
+        }
+    }
+    return false;
+};
+
 if (!empty($_GET['back'])) {
-    $cand = trim($_GET['back']);
-    // Validasi bahwa URL merupakan path relatif lokal atau diawali BASE_URL
-    if (str_starts_with($cand, BASE_URL . '/') || str_starts_with($cand, '/')) {
+    $cand = $validate_internal_url($_GET['back']);
+    if ($cand !== false) {
         $back_url = $cand;
     }
 } elseif (!empty($_SERVER['HTTP_REFERER'])) {
-    $ref = $_SERVER['HTTP_REFERER'];
-    $parsed_ref = parse_url($ref, PHP_URL_PATH);
-    if ($parsed_ref && (str_contains($parsed_ref, 'index.php') || str_ends_with($parsed_ref, 'perpustakaan') || str_ends_with($parsed_ref, 'perpustakaan/'))) {
-        $query_ref = parse_url($ref, PHP_URL_QUERY);
-        $back_url = BASE_URL . '/index.php' . ($query_ref ? '?' . $query_ref : '') . '#koleksi';
+    $cand = $validate_internal_url($_SERVER['HTTP_REFERER']);
+    if ($cand !== false && !str_contains($cand, 'detail.php')) {
+        $back_url = $cand;
     }
 }
 
@@ -77,18 +106,12 @@ $page_title = $buku['judul'];
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<nav class="text-xs mb-4 flex items-center justify-between gap-2" style="color: var(--text-faint)">
-  <div class="flex items-center gap-1.5 min-w-0">
-    <a href="<?= e($back_url) ?>" class="inline-flex items-center gap-1 font-semibold hover:underline" style="color: var(--accent-text)">
-      <i class="bi bi-arrow-left text-xs"></i> Kembali ke Katalog
-    </a>
-    <span class="opacity-40">/</span>
-    <span class="truncate" style="color: var(--text-muted)"><?= e($buku['judul']) ?></span>
-  </div>
-  <a href="<?= e($back_url) ?>" class="shrink-0 inline-flex sm:hidden items-center gap-1 px-2.5 py-1 rounded-full border bg-white text-[11px] font-semibold" style="border-color: var(--border); color: var(--text-muted)">
-    &larr; Kembali
+<div class="mb-5 sm:mb-6">
+  <a href="<?= e($back_url) ?>" id="btnKembaliKatalog" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border bg-white text-xs sm:text-sm font-semibold transition-all duration-150 shadow-xs hover:bg-slate-50 hover:border-slate-300 active:bg-slate-100" style="border-color: var(--border); color: var(--accent-text);">
+    <i class="bi bi-arrow-left text-sm"></i>
+    <span>Kembali ke Katalog</span>
   </a>
-</nav>
+</div>
 
 
 <div class="bg-white rounded-xl border p-5 sm:p-6 grid grid-cols-1 md:grid-cols-[280px_1fr] gap-6 sm:gap-8" style="border-color: var(--border)">

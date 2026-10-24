@@ -44,6 +44,25 @@
     return qs ? base + '?' + qs : base;
   }
 
+  function updateDetailLinks() {
+    const currentFullUrl = window.location.pathname + window.location.search + (window.location.hash || '#koleksi');
+    const encodedCurrent = encodeURIComponent(currentFullUrl);
+    // Update link buku di katalog
+    document.querySelectorAll('a[href*="detail.php?id="]').forEach(a => {
+      try {
+        const href = a.getAttribute('href');
+        if (!href) return;
+        const urlObj = new URL(href, window.location.origin);
+        urlObj.searchParams.set('back', currentFullUrl);
+        a.setAttribute('href', urlObj.pathname + urlObj.search + urlObj.hash);
+      } catch (e) {}
+    });
+    // Update return_url pada form toggle favorit
+    document.querySelectorAll('form[action*="toggle_favorit.php"] input[name="return_url"]').forEach(input => {
+      input.value = currentFullUrl;
+    });
+  }
+
   async function fetchAndUpdate(url, push = true) {
     const requestId = ++lastRequestId;
     // Batalkan request sebelumnya
@@ -85,6 +104,7 @@
         oldKoleksiHeader.innerHTML = newKoleksiHeader.innerHTML;
       }
       if (push) history.pushState(null, '', url);
+      updateDetailLinks();
       const targetElem = document.getElementById('koleksi');
       if (targetElem) {
         targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
