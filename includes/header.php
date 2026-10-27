@@ -41,7 +41,9 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:opsz,wght@6..12,600;6..12,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="<?= BASE_URL ?>/assets/img/pwa-icon-192.png">
+<link rel="icon" type="image/png" sizes="128x128" href="<?= BASE_URL ?>/assets/img/logo-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="<?= BASE_URL ?>/assets/img/pwa-icon-192.png">
+<link rel="apple-touch-icon" href="<?= BASE_URL ?>/assets/img/apple-touch-icon.png">
 <link rel="manifest" href="<?= BASE_URL ?>/manifest.json">
 <meta name="theme-color" content="#243a5e">
 <meta name="mobile-web-app-capable" content="yes">
@@ -59,9 +61,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
   <div class="max-w-7xl mx-auto px-4 sm:px-6 <?= ((isset($menu_aktif) && $menu_aktif !== '') || (is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '')) ? 'area-nav-inner' : '' ?>">
     <div class="flex items-center justify-between h-[56px]">
       <a href="<?= BASE_URL ?>/index.php" class="flex items-center gap-2.5 min-w-0">
-        <span class="w-8 h-8 shrink-0 rounded-lg bg-brand-600 text-white flex items-center justify-center">
-          <i class="bi bi-book-half text-[15px]"></i>
-        </span>
+        <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="Logo Perpustakaan" class="w-8 h-8 shrink-0 rounded-lg" width="32" height="32">
         <span class="min-w-0">
           <span class="block font-display font-bold tracking-tight leading-none" style="font-size: 15px; color: var(--text);">Sistem Informasi Perpustakaan</span>
           <span class="hidden sm:block text-[11px] font-medium" style="color: var(--text-faint); letter-spacing: .02em;">Layanan Sirkulasi &amp; Katalog Digital</span>
@@ -105,7 +105,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <aside id="mobileDrawer" class="drawer fixed top-0 left-0 z-[60] h-dvh w-[min(82vw,300px)] bg-white min-[900px]:hidden flex flex-col" aria-label="Menu navigasi" aria-hidden="true">
   <div class="px-4 py-4 border-b flex items-center justify-between" style="border-color: var(--border)">
     <div class="flex items-center gap-2.5">
-      <span class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center"><i class="bi bi-book-half text-sm"></i></span>
+      <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="" class="w-8 h-8 rounded-lg" width="32" height="32">
       <div><div class="font-display font-bold text-sm" style="color: var(--text)">Menu Navigasi</div><div class="text-xs" style="color: var(--text-faint)">Sistem Informasi Perpustakaan</div></div>
     </div>
     <button id="navClose" type="button" class="w-8 h-8 rounded-lg text-slate-600 flex items-center justify-center hover:bg-slate-100" style="border:1px solid var(--border); background: var(--surface-2)" aria-label="Tutup menu"><i class="bi bi-x-lg text-sm"></i></button>

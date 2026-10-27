@@ -7,14 +7,16 @@
 require_once __DIR__ . '/env.php';
 
 // Ambil dari env jika ada, fallback ke default
-if (!defined('DB_HOST')) define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+// Gunakan TCP sebagai fallback; di beberapa lingkungan (termasuk Termux)
+// socket default untuk `localhost` tidak berada di lokasi yang dicari PHP.
+if (!defined('DB_HOST')) define('DB_HOST', getenv('DB_HOST') ?: '127.0.0.1');
 if (!defined('DB_NAME')) define('DB_NAME', getenv('DB_NAME') ?: 'perpustakaan');
 if (!defined('DB_USER')) define('DB_USER', getenv('DB_USER') ?: 'root');
 if (!defined('DB_PASS')) define('DB_PASS', getenv('DB_PASS') !== false ? getenv('DB_PASS') : '');
 
 // Base URL aplikasi (sesuaikan dengan folder project di htdocs/htdocs)
 // Contoh: jika project berada di htdocs/perpustakaan maka BASE_URL = '/perpustakaan'
-if (!defined('BASE_URL')) define('BASE_URL', getenv('BASE_URL') ?: '/perpustakaan');
+if (!defined('BASE_URL')) define('BASE_URL', getenv('BASE_URL') !== false ? getenv('BASE_URL') : '/perpustakaan');
 
 // Pengaturan sistem peminjaman
 define('LAMA_PINJAM_HARI', 7);      // lama peminjaman dalam hari

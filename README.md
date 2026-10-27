@@ -1,122 +1,217 @@
 # Sistem Informasi Perpustakaan Umum
 
-Proyek UKK — PHP Native 8+, PDO MySQL, Tailwind CSS, Bootstrap Icons.
+Aplikasi web perpustakaan untuk proyek UKK. Dibangun dengan **PHP 8+ native (tanpa framework)**, **MySQL/MariaDB (PDO)**, **Tailwind CSS (CDN)**, dan **Bootstrap Icons**. Mendukung PWA.
+
+Repo: <https://github.com/AliAlhafidz/KatalogPerpustakaan>
+
+## Daftar Isi
+
+- [Fitur](#fitur)
+- [Aturan Sistem](#aturan-sistem)
+- [Struktur Folder](#struktur-folder)
+- [Skema Database](#skema-database)
+- [Instalasi](#instalasi)
+- [Konfigurasi](#konfigurasi)
+- [Akun Demo](#akun-demo)
+- [Keamanan](#keamanan)
+- [Fitur ISBN](#fitur-isbn)
+- [PWA](#pwa)
+- [Keterbatasan & Rencana](#keterbatasan--rencana)
 
 ## Fitur
 
-**Pengunjung (tanpa login):** katalog + pencarian lanjutan (judul/penulis/ISBN/penerbit), filter kategori & "hanya tersedia", sort (A–Z/terbaru/stok), Top 5 populer & terbaru, detail buku (rak/ketersediaan/cover thumb 400px), empty state, favorit guest → modal login, daftar mandiri.
+### Pengunjung (tanpa login)
+- Katalog buku dengan pencarian (judul, penulis, ISBN, penerbit), filter kategori, filter "hanya tersedia", dan urutan (A–Z, terbaru, stok terbanyak). Pagination 24 buku per halaman.
+- Section "Buku Paling Banyak Dipinjam" (cache 5 menit) dan "Pilihan Minggu Ini". Keduanya hanya tampil jika ada datanya.
+- Detail buku: cover, rak, ketersediaan, deskripsi.
+- Daftar mandiri sebagai anggota (`register.php`).
 
-**Anggota:** semua di atas + dashboard (sedang dipinjam, estimasi denda, notifikasi, statistik: total pinjam/total denda/kategori favorit), peminjaman aktif + kalender jatuh tempo, riwayat (`LEFT JOIN` — histori tetap tampil meski buku dihapus), notifikasi H-3/H-1 + lencana navbar/sidebar + tandai dibaca, favorit, ajukan perpanjangan 1–7 hari (1×), pengajuan peminjaman, ubah profil + foto profil (thumb), lupa password token demo 1 jam.
+### Anggota
+- Dashboard: peminjaman aktif, estimasi denda, notifikasi terbaru, statistik pribadi.
+- Peminjaman aktif dengan kalender jatuh tempo dan riwayat peminjaman.
+- Favorit buku.
+- Notifikasi pengingat jatuh tempo (H-3 sampai hari-H, dan terlambat). Dibuat otomatis saat anggota membuka halaman (maks 1x per 5 menit per sesi), tanpa cron. Ada lencana belum dibaca dan "tandai semua dibaca".
+- Ajukan perpanjangan 1–7 hari (1x per peminjaman, perlu persetujuan admin; tidak bisa jika sudah lewat jatuh tempo).
+- Ajukan peminjaman buku yang tersedia. Status: menunggu, disetujui, ditolak, dibatalkan. Anggota bisa membatalkan pengajuan yang masih menunggu.
+- Ubah profil, foto profil, dan password.
 
-**Admin:** dashboard (7 stat + chart 30 hari via Chart.js CDN) + warning `aliali123`, CRUD buku (arsip/hapus/ISBN cache 24j/bulk import 20/batch + thumb) & kategori, kelola anggota, peminjaman & pengembalian (filter/pagination clamp/LEAST stok/validasi Minggu) + trigger simulasi H-3/H-1, perpanjangan & pengajuan peminjaman (approve/reject + notifikasi), laporan 5 jenis (`LIMIT 500` + export CSV BOM + print A4), profil + foto.
+### Admin
+- Dashboard: statistik dan grafik peminjaman 30 hari (Chart.js CDN).
+- Buku: tambah, ubah, hapus, arsip/publikasi ulang, upload cover (+thumbnail 400px), tambah via ISBN, dan impor batch (maks 20 ISBN per submit).
+- Kategori: tambah, ubah, hapus.
+- Anggota: tambah, ubah, hapus (diblokir jika punya riwayat pinjam), aktif/nonaktif.
+- Peminjaman: catat peminjaman (multi-buku), batalkan peminjaman salah input.
+- Pengembalian: pilih tanggal kembali, denda dihitung otomatis.
+- Perpanjangan dan pengajuan peminjaman: setujui/tolak dengan catatan, anggota mendapat notifikasi.
+- Laporan: 5 jenis (buku, anggota, peminjaman, pengembalian, denda), ekspor CSV, cetak, grafik. Dibatasi 500 baris per laporan.
 
-> **Hapus buku:** histori `peminjaman` tidak ikut terhapus. FK `peminjaman.id_buku` → `ON DELETE SET NULL` (NULL → tampil "Buku telah dihapus dari katalog / Tidak tersedia" di `anggota/riwayat.php` + halaman admin). `favorit` & `pengajuan_peminjaman` tetap `CASCADE` (workflow). Admin `hapus.php` tidak lagi blokir buku berhistori; ada `warning` bila buku masih `dipinjam`.
+## Aturan Sistem
 
-**Umum:** `password_hash`, prepared statement, `e()` (`htmlspecialchars`), validasi upload (ext/MIME 2MB, thumb), `.htaccess` upload, `wajib_admin`/`wajib_anggota`, modal konfirmasi, rate limit 5/15m, `csrf_regenerate` setelah login, PWA (HTTPS, `BASE_URL`).
+| Aturan | Nilai | Lokasi |
+|---|---|---|
+| Lama pinjam | 7 hari | `LAMA_PINJAM_HARI` |
+| Denda | Rp 1.000/hari | `DENDA_PER_HARI` |
+| Maks perpanjangan | 7 hari, 1x | `PERPANJANGAN_MAKS_HARI` |
+| Pengingat jatuh tempo | mulai H-3 | `NOTIFIKASI_JATUH_TEMPO_HARI` |
+| Maks pinjaman aktif | 3 buku | ditulis langsung di kode (`peminjaman/tambah.php`, `pengajuan_peminjaman/proses.php`, `anggota/ajukan_peminjaman.php`) |
+
+Konstanta ada di `config/database.php`. Aturan lain:
+
+- Perpustakaan **tutup hari Minggu**: peminjaman, pengembalian, dan persetujuan pengajuan tidak bisa diproses pada hari Minggu.
+- Tanggal pinjam/kembali tidak boleh melebihi hari ini. Tanggal kembali tidak boleh sebelum tanggal pinjam.
+- Persetujuan pengajuan peminjaman memakai tanggal hari itu dan langsung mengurangi stok tersedia.
+- Pengajuan hanya untuk buku yang tersedia dan tidak diarsipkan. Satu anggota hanya boleh punya satu pengajuan "menunggu" per buku.
+- Membatalkan peminjaman menghapus catatannya dan mengembalikan stok.
+- Buku yang diarsipkan hilang dari katalog dan tidak bisa dipinjam.
+- Pendaftaran mandiri: nama maks 150 karakter, no. HP format `08xxxxxxxxxx`, password minimal 6 karakter. Nomor anggota otomatis (`A0001`, dst), kode buku otomatis (`BK-0001`, dst).
 
 ## Struktur Folder
 
 ```
 perpustakaan/
 ├── config/
-│   ├── database.php        # PDO + LAMA_PINJAM_HARI=7, DENDA_PER_HARI=1000, BASE_URL, UPLOAD_*
-│   └── bootstrap.php       # session secure + PDO + helpers + auth/csrf/rate_limit/audit
+│   ├── bootstrap.php        # session aman + semua include; dipakai semua entry point
+│   ├── database.php         # koneksi PDO + konstanta sistem + BASE_URL + path upload
+│   └── env.php              # pembaca .env sederhana
 ├── includes/
-│   ├── auth.php            # wajib_admin / wajib_anggota
-│   ├── functions.php       # helpers + notifikasi + menu + audit helpers
-│   ├── header.php          # navbar + drawer + CSS (assets/css/app.css)
-│   ├── footer.php          # modal/JS + PWA + theme 5 warna
-│   ├── admin_menu.php      # sidebar desktop admin
-│   ├── csrf.php            # CSRF + csrf_regenerate()
-│   ├── rate_limit.php      # 5/15m file+session
-│   ├── audit.php           # catat_audit() side-effect (tanpa UI Audit Log)
-│   ├── isbn.php            # isbn_cache_get/set + isbn_api_get (24j)
-│   └── email_simulasi.php  # simulasi H-3/H-1 (INSERT IGNORE, kunci_unik)
-├── assets/
-│   ├── css/app.css         # single source CSS
-│   ├── img/no-cover.svg | no-avatar.svg
-│   ├── uploads/covers/     # thumb_*.jpg 400px + .htaccess
-│   └── uploads/profil/     # foto profil + .htaccess
-├── database/
-│   ├── perpustakaan.sql                    # skema + data contoh (fresh install)
-│   ├── migrasi_hapus_pengajuan_buku.sql   # DROP pengajuan_buku (DB yang sudah terisi)
-│   └── bersihkan_duplikat.php             # util pembersihan data (manual)
-├── anggota/                # dashboard, peminjaman, riwayat, favorit, notifikasi, ajukan_perpanjangan, pengajuan_peminjaman, profil
+│   ├── auth.php             # is_admin/is_anggota, wajib_admin/wajib_anggota
+│   ├── csrf.php             # token CSRF
+│   ├── rate_limit.php       # rate limit berbasis file + session
+│   ├── audit.php            # catat_audit() ke tabel audit_log
+│   ├── functions.php        # helper umum, upload, notifikasi, menu, duplikat buku
+│   ├── helpers.php          # validasi tanggal, pagination
+│   ├── isbn.php             # cache & HTTP helper ISBN
+│   ├── book_metadata.php    # orkestrator metadata + deteksi kategori
+│   ├── book_providers/      # google_books.php, open_library.php
+│   ├── header.php / footer.php / admin_menu.php
 ├── admin/
 │   ├── dashboard.php
-│   ├── buku/               # index, tambah, edit, hapus, arsip, import, cari_isbn, _form
-│   ├── kategori/           # index, edit, hapus
-│   ├── anggota/            # index, tambah, edit, hapus
-│   ├── peminjaman/         # index, tambah, batalkan
-│   ├── pengembalian/       # index, proses
-│   ├── perpanjangan/       # index, proses
-│   ├── pengajuan_peminjaman/ # index, proses
-│   ├── laporan/index.php   # 5 jenis + CSV + chart
-│   ├── kirim_notifikasi_jatuh_tempo.php
-│   └── profil.php
-├── index.php               # katalog (pencarian+filter+sort, Pilihan Minggu Ini, Buku Paling Banyak Dipinjam, grid 3 kolom mobile)
-├── detail.php | tentang.php | login.php | logout.php | register.php
-├── lupa_password.php | reset_password.php
-└── README.md
+│   ├── buku/                # index, tambah, edit, hapus, arsip, import, cari_isbn, _form
+│   ├── kategori/            # index, edit, hapus
+│   ├── anggota/             # index, tambah, edit, hapus, _form
+│   ├── peminjaman/          # index, tambah, batalkan
+│   ├── pengembalian/        # index, proses
+│   ├── perpanjangan/        # index, proses
+│   ├── pengajuan_peminjaman/# index, proses
+│   └── laporan/index.php
+├── anggota/                 # dashboard, peminjaman, riwayat, favorit, notifikasi,
+│                            # ajukan_perpanjangan, pengajuan_peminjaman, ajukan_peminjaman,
+│                            # batalkan_pengajuan_peminjaman, toggle_favorit, profil
+├── assets/                  # css/app.css, js/, img/, uploads/covers, uploads/profil
+├── database/
+│   ├── perpustakaan.sql         # skema + data contoh
+│   └── bersihkan_duplikat.php   # utilitas manual pembersihan data
+├── index.php  detail.php  tentang.php
+├── login.php  register.php  logout.php
+├── manifest.json  sw.js     # PWA
+└── composer.json
 ```
 
-> `index.php` — "Pilihan Minggu Ini" (`$featured`) & "Buku Paling Banyak Dipinjam" (`$buku_populer`) hanya dirender `if (!empty(...))`, jadi tidak muncul saat DB kosong. Cache populer 5 menit di-invalidate saat buku ditambah/diedit/dihapus/diarsipkan (`hapus_cache_buku_populer()`). Grid katalog & populer `grid-cols-3` di mobile (compact `p-2`, `aspect-[2/3]`, `line-clamp-2`).
+## Skema Database
 
-## Instalasi (XAMPP/Laragon)
+| Tabel | Fungsi |
+|---|---|
+| `admin`, `anggota` | Akun. `anggota.status` = aktif/nonaktif |
+| `kategori`, `buku` | Katalog. `buku.stok` total, `buku.tersedia` sisa, `is_arsip` |
+| `peminjaman` | Transaksi: status `dipinjam`/`dikembalikan`, denda, admin pemroses |
+| `perpanjangan_peminjaman` | Permintaan perpanjangan |
+| `pengajuan_peminjaman` | Pengajuan pinjam. Kolom virtual `aktif_unik` mencegah pengajuan "menunggu" ganda |
+| `notifikasi` | Notifikasi anggota. `kunci_unik` mencegah duplikat |
+| `favorit` | Relasi anggota–buku |
+| `audit_log` | Jejak tambah/ubah/hapus buku, kategori, pengajuan (belum ada halaman UI) |
 
-1. Salin `perpustakaan/` ke `htdocs` (XAMPP) atau `www` (Laragon).
-2. Buat DB `perpustakaan` → import `database/perpustakaan.sql` via phpMyAdmin atau `mysql -u root perpustakaan < database/perpustakaan.sql`.
-   Jika DB sudah ada dan fitur "Pengajuan Buku" dihapus: `mariadb --ssl=0 -h 127.0.0.1 -u root perpustakaan < database/migrasi_hapus_pengajuan_buku.sql`.
-3. Sesuaikan `DB_USER`/`DB_PASS`/`BASE_URL` di `config/database.php` jika folder/DB berbeda.
-4. Buka `http://localhost/perpustakaan/` — akun demo siap pakai.
+> **Penting — hapus buku:** agar riwayat peminjaman tetap aman saat buku dihapus, `peminjaman.id_buku` harus `NULL`-able dengan FK `ON DELETE SET NULL`. Pastikan database Anda sudah begini:
+>
+> ```sql
+> ALTER TABLE peminjaman DROP FOREIGN KEY peminjaman_ibfk_2;
+> ALTER TABLE peminjaman MODIFY id_buku INT NULL;
+> ALTER TABLE peminjaman ADD CONSTRAINT peminjaman_ibfk_2
+>   FOREIGN KEY (id_buku) REFERENCES buku (id_buku) ON DELETE SET NULL;
+> ```
+>
+> Verifikasi dengan `SHOW CREATE TABLE peminjaman;`. Jika belum, buku yang punya riwayat pinjam akan gagal dihapus.
 
-## Akun Demo (lokal saja — jangan dipakai di produksi)
+## Instalasi
 
-> ⚠️ Ganti segera setelah instal! Admin → Profil → Keamanan Akun. Hapus/nonaktifkan `budi@example.com` di produksi. `database/setup_akun_awal.php` sudah dihapus.
+Kebutuhan: PHP 8.0+ (ekstensi `pdo_mysql`, `gd`, `fileinfo`, `curl` disarankan), MySQL/MariaDB, Apache (XAMPP/Laragon).
 
-| Peran | Username / Email | Password | Catatan |
-|-------|------------------|----------|---------|
-| Admin | `admin` | `aliali123` | Demo — ganti segera |
-| Anggota | `budi@example.com` | `budi123` | Demo — hapus di produksi |
+1. Salin folder `perpustakaan/` ke `htdocs` (XAMPP) atau `www` (Laragon).
+2. Buat database `perpustakaan`, lalu impor:
+   ```bash
+   mysql -u root perpustakaan < database/perpustakaan.sql
+   ```
+   atau lewat phpMyAdmin.
+3. Terapkan perubahan FK pada bagian [Skema Database](#skema-database) bila perlu.
+4. Sesuaikan konfigurasi (lihat bawah).
+5. Buka `http://localhost/perpustakaan/`.
 
-## Aturan Sistem
+## Konfigurasi
 
-- Pinjam 7 hari, denda Rp 1.000/hari (`config/database.php`).
-- Maks 3 buku/anggota bersamaan.
-- Pengembalian: admin pilih `tanggal_kembali` (`tanggal_pinjam`–hari ini), tidak boleh Minggu (validasi JS+server).
-- Batalkan peminjaman (salah input) → stok `LEAST(stok, tersedia+1)`.
-- Daftar mandiri via `register.php` (validasi `nama` 150, `no_hp` `08…`, rate limit) atau admin daftarkan.
-- Favorit dari katalog/detail → lihat di Favorit.
-- Perpanjangan 1–7 hari, 1× per transaksi, butuh approve admin.
-- Pengajuan peminjaman: anggota ajukan buku yang sedang dipinjam/diarsipkan → menunggu/disetujui/ditolak (+ catatan admin).
-- Hapus buku tidak hapus histori; `peminjaman.id_buku` jadi `NULL` → riwayat tampil "Buku telah dihapus dari katalog / Tidak tersedia" (+ badge/notice konsisten `riwayat.php`).
+Nilai dibaca dari environment variable atau file `.env` (diabaikan Git), dengan nilai bawaan di `config/database.php`:
+
+```
+DB_HOST=127.0.0.1
+DB_NAME=perpustakaan
+DB_USER=root
+DB_PASS=
+BASE_URL=/perpustakaan
+APP_DEBUG=0
+```
+
+`BASE_URL` harus sesuai nama folder (kosongkan jika di root domain). Untuk produksi, jangan pakai `root` tanpa password.
+
+## Akun Demo
+
+> ⚠️ Hanya untuk lokal. Ganti atau hapus sebelum dipublikasikan.
+
+| Peran | Login | Password |
+|---|---|---|
+| Admin | `admin` | `aliali123` |
+| Anggota | `budi@example.com` | `budi123` |
+
+Saat ini belum ada halaman ganti password admin. Ganti lewat database:
+
+```sql
+UPDATE admin SET password = '<hash dari password_hash()>' WHERE username = 'admin';
+```
+
+Dashboard admin menampilkan peringatan selama password masih `aliali123`.
 
 ## Keamanan
 
-- `password_hash`/`password_verify`, PDO prepared, `e()` XSS, validasi upload (ext/MIME/`finfo`/`getimagesize` via thumb, `basename`, `move_uploaded_file`, 2MB), `.htaccess` upload, `wajib_admin`/`wajib_anggota`, modal konfirmasi, rate limit 5/15m, `csrf_regenerate`, audit side-effect, warning `aliali123`.
+- Password: `password_hash` / `password_verify`.
+- Seluruh query memakai prepared statement (`ATTR_EMULATE_PREPARES=false`). Kolom urutan/filter dinamis memakai whitelist.
+- CSRF token di semua form POST. Output di-escape dengan `e()`.
+- Login: rate limit 5 percobaan/15 menit per IP, pesan error generik, `session_regenerate_id`. Cookie sesi `HttpOnly`, `SameSite=Lax`, `Secure` di HTTPS.
+- Upload: cek ekstensi, MIME asli (`finfo`), ukuran maks 2 MB, nama acak, `.htaccess` anti-eksekusi di folder upload.
+- Transaksi memakai `FOR UPDATE` dan update stok bersyarat untuk mencegah race condition.
+- Unduhan cover eksternal hanya dari host yang diizinkan (Open Library, Google Books).
 
-### Hardening Nginx (opsional — `.htaccess` hanya Apache)
+Untuk Nginx (`.htaccess` hanya berlaku di Apache), tambahkan:
 
 ```nginx
 location ~* ^/perpustakaan/assets/uploads/.*\.php$ { deny all; return 404; }
-location ^~ /perpustakaan/assets/uploads/ {
-  location ~* \.(jpg|jpeg|png|webp|svg)$ { expires 30d; }
-}
 ```
-Validasi aplikasi tetap lapisan utama; blok di atas hanya dokumentasi (tambah manual di `nginx.conf` jika pakai Nginx).
-
-## PWA
-
-Sudah PWA (pasang di Android/Chrome via "Install aplikasi"). Syarat: HTTPS saat online (`http://localhost` OK untuk dev), `BASE_URL` benar, tetap butuh PHP+MySQL (tidak offline penuh).
 
 ## Fitur ISBN
 
-Admin → Buku → Tambah: mode **Via ISBN** (Open Library/Google Books, cache 24j `sys_get_temp_dir`) — dicek/dikoreksi sebelum simpan. Bulk Import: Admin → Buku → Import Batch — 20 ISBN/batch, `FOR UPDATE` per-ISBN, ringkasan berhasil/dilewati/gagal.
+- **Tambah via ISBN:** Admin → Buku → Tambah. Metadata diambil dari Open Library dan Google Books, di-cache 24 jam di folder temp sistem. Periksa data sebelum menyimpan.
+- **Impor batch:** Admin → Buku → Import. Maks 20 ISBN per submit; satu gagal tidak menghentikan yang lain; ringkasan berhasil/dilewati/gagal ditampilkan.
+- Pengecekan duplikat memakai ISBN-10/13 dan kesamaan judul + penulis.
 
-## Riwayat Perubahan
+## PWA
 
-- **Hapus 2 fitur:** Pengajuan Buku anggota+admin (`anggota/pengajuan.php`, `admin/pengajuan/`, kartu dashboard, tabel `pengajuan_buku` — **bukan** `pengajuan_peminjaman` yang tetap) dan Audit Log UI (`admin/audit_log/index.php` + entri menu — `includes/audit.php` & tabel `audit_log` tetap ditulis sebagai jejak internal tanpa UI).
-- **Fitur Notifikasi anggota dipertahankan penuh:** `anggota/notifikasi.php`, lencana unread di navbar/sidebar/drawer, kartu "Notifikasi terbaru" + "Notifikasi Baru" di dashboard, dan 3 helper `sinkronkan_notifikasi_anggota()`/`ambil_notifikasi_anggota()`/`jumlah_notifikasi_belum_dibaca()`. Tabel `notifikasi` + `buat_notifikasi_anggota()` kembali terpakai penuh (ditandai dibaca per-notifikasi & tandai-semua-dibaca).
-- **Hapus buku (histori aman):** `migrasi_hapus_buku_set_null.sql` (`MODIFY id_buku NULL` + `FK SET NULL`), `admin/buku/hapus.php` (hapus guard `COUNT(*) >0`, `warning` jika masih `dipinjam`, `DELETE favorit`+`DELETE buku`), `admin/buku/index.php` (`data-confirm` baru), `admin/peminjaman/index.php` & `admin/pengembalian/index.php` & `admin/laporan/index.php` (`JOIN`→`LEFT JOIN`, fallback "Buku telah dihapus dari katalog"/"Tidak tersedia"), `admin/pengembalian/proses.php` & `admin/peminjaman/batalkan.php` (skip `UPDATE buku` jika `id_buku IS NULL`).
-- **Homepage grid:** `index.php` `grid-cols-2`→`grid-cols-3` (populer & katalog), card compact (`p-2`, `aspect-[2/3]`, `text-[11px]`, `line-clamp-2`).
-- Sebelumnya: P1–P4 + N1–N10 (lihat `git log`; ringkas: UNIQUE ISBN/kategori, rate limit, `FOR UPDATE`, pagination clamp, `LIMIT 500` laporan, login generik, thumb orphan, cache ISBN, `LEAST`, audit, CSV, pencarian lanjutan, chart 30 hari, bulk import, notifikasi H-3/H-1 simulasi, kalender jatuh tempo, statistik pribadi, pengajuan buku).
+Bisa dipasang di Android/Chrome lewat "Install aplikasi". Butuh HTTPS saat online (`localhost` boleh) dan `BASE_URL` yang benar. Aplikasi tetap membutuhkan PHP + MySQL, jadi tidak berfungsi penuh saat offline.
+
+## Keterbatasan & Rencana
+
+- Belum ada: fitur lupa/reset password, halaman profil & ganti password admin, UI audit log, pengiriman email/WhatsApp (notifikasi hanya di dalam aplikasi).
+- Kolom `anggota.reset_token` dan `reset_expiry` sudah ada di skema untuk fitur reset password nanti.
+- Status anggota nonaktif belum dicek ulang pada sesi yang sedang berjalan.
+- Rate limit memakai IP (`REMOTE_ADDR`); di balik proxy perlu penyesuaian.
+- Tailwind masih via CDN; untuk produksi sebaiknya di-build.
+- Belum ada pengujian otomatis.
+
+## Lisensi
+
+Proyek pembelajaran (UKK). Cover buku dan metadata berasal dari sumber publik (Open Library, Google Books).

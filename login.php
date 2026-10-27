@@ -95,9 +95,6 @@ require_once __DIR__ . '/includes/header.php';
         <button type="button" onclick="togglePasswordVisibility(this)" tabindex="-1"
                 class="absolute right-3 top-1/2 -translate-y-1/2 hover:opacity-70" style="color: var(--text-faint)"><i class="bi bi-eye text-sm"></i></button>
       </div>
-      <div class="text-right mt-1.5">
-        <a href="<?= BASE_URL ?>/lupa_password.php" class="text-xs font-medium hover:underline" style="color: var(--accent)">Lupa password?</a>
-      </div>
     </div>
     <button type="submit" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2.5 rounded-lg text-sm transition">Masuk</button>
   </form>
