@@ -36,7 +36,7 @@ Repo: <https://github.com/AliAlhafidz/KatalogPerpustakaan>
 - Ubah profil, foto profil, dan password.
 
 ### Admin
-- Dashboard: statistik dan grafik peminjaman 30 hari (Chart.js CDN).
+- Dashboard: statistk dan grafik peminjaman 30 hari (Chart.js CDN).
 - Buku: tambah, ubah, hapus, arsip/publikasi ulang, upload cover (+thumbnail 400px), tambah via ISBN, dan impor batch (maks 20 ISBN per submit).
 - Kategori: tambah, ubah, hapus.
 - Anggota: tambah, ubah, hapus (diblokir jika punya riwayat pinjam), aktif/nonaktif.
@@ -215,3 +215,4 @@ Bisa dipasang di Android/Chrome lewat "Install aplikasi". Butuh HTTPS saat onlin
 ## Lisensi
 
 Proyek pembelajaran (UKK). Cover buku dan metadata berasal dari sumber publik (Open Library, Google Books).
+
