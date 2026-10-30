@@ -5,29 +5,29 @@
     <div class="lg:col-span-1">
       <div class="flex items-center gap-2.5 font-display font-bold text-white text-[15px] mb-2">
         <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="" class="w-8 h-8 rounded-lg" width="32" height="32">
-        Sistem Informasi Perpustakaan
+        Kandaga Bandung
       </div>
-      <p class="text-sm leading-6 text-stone-400 max-w-sm">Sistem informasi perpustakaan terpadu — katalog buku digital, sirkulasi peminjaman, dan manajemen keanggotaan.</p>
+      <p class="text-sm leading-6 text-stone-400 max-w-sm">Kandaga Bandung &mdash; Sistem Informasi Perpustakaan Kota Bandung. Layanan perpustakaan daerah, katalog buku digital, sirkulasi peminjaman, dan literasi masyarakat.</p>
     </div>
     <div>
       <div class="font-semibold text-white text-sm mb-2">Jam Layanan</div>
       <ul class="text-sm text-stone-400 space-y-1.5">
-        <li>Senin – Jumat · 08.00 – 17.00</li>
-        <li>Sabtu · 09.00 – 14.00</li>
-        <li>Minggu &amp; Hari Libur · Tutup</li>
+        <li>Senin – Jumat · 08.00 – 15.30 WIB</li>
+        <li>Sabtu · 08.00 – 12.00 WIB</li>
+        <li>Minggu &amp; Hari Libur Nasional · Tutup</li>
       </ul>
     </div>
     <div>
       <div class="font-semibold text-white text-sm mb-2">Hubungi Kami</div>
       <ul class="text-sm text-stone-400 space-y-1.5">
-        <li><i class="bi bi-geo-alt mr-1.5"></i>Jl. Pendidikan No. 5, Kotamu</li>
-        <li><i class="bi bi-telephone mr-1.5"></i>(021) 555-0123</li>
-        <li><i class="bi bi-envelope mr-1.5"></i>perpusumum@contoh.id</li>
+        <li><i class="bi bi-geo-alt mr-1.5"></i>Jl. Seram No. 2, Citarum, Kec. Bandung Wetan, Kota Bandung 40115</li>
+        <li><i class="bi bi-telephone mr-1.5"></i>(022) 423-1988 / (022) 731-8609</li>
+        <li><i class="bi bi-envelope mr-1.5"></i>layanan@kandaga-bandung.id</li>
       </ul>
     </div>
   </div>
   <div class="border-t text-center text-stone-500 text-xs py-3 px-4" style="border-color:#1e2326">
-    &copy; <?= date('Y') ?> Sistem Informasi Perpustakaan · Proyek UKK
+    &copy; <?= date('Y') ?> Kandaga Bandung · Perpustakaan Kota Bandung
   </div>
 </footer>
 

@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config/bootstrap.php';
 
-$page_title = 'Tentang Perpustakaan';
+$page_title = 'Tentang Kandaga Bandung';
 
 $total_buku = 0;
 $total_kategori = 0;
@@ -21,11 +21,11 @@ require_once __DIR__ . '/includes/header.php';
   <!-- Header Card -->
   <div class="bg-white rounded-xl border p-6 sm:p-8" style="border-color: var(--border)">
     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold mb-3" style="background: var(--surface-2); color: var(--accent)">
-      <i class="bi bi-info-circle-fill"></i> Profil Lembaga
+      <i class="bi bi-building"></i> Perpustakaan Kota Bandung
     </div>
-    <h1 class="font-display text-2xl sm:text-3xl font-bold mb-3" style="color: var(--text)">Sistem Informasi Perpustakaan</h1>
+    <h1 class="font-display text-2xl sm:text-3xl font-bold mb-3" style="color: var(--text)">Kandaga Bandung</h1>
     <p class="text-sm sm:text-base leading-relaxed mb-6" style="color: var(--text-muted)">
-      Perpustakaan Umum menyediakan akses terbuka ke berbagai sumber literatur bermutu untuk mendukung pembelajaran mandiri, penelitian, dan literasi masyarakat luas. Melalui sistem katalog digital terpadu, pemustaka dapat menelusuri koleksi buku, memantau ketersediaan stok, mengelola peminjaman secara mandiri, dan menerima pengingat jatuh tempo secara transparan.
+      <strong>Kandaga Bandung</strong> merupakan sistem informasi perpustakaan Perpustakaan Kota Bandung. Terinspirasi dari kata <em>Kandaga</em> dalam bahasa Sunda yang bermakna wadah penyimpanan pustaka dan ilmu pengetahuan berharga, sistem ini hadir menyediakan akses literatur yang inklusif, modern, dan terbuka bagi seluruh masyarakat Kota Bandung. Berlokasi di Jl. Seram No. 2, Citarum, perpustakaan ini menghadirkan ribuan koleksi bahan pustaka bermutu guna menunjang pendidikan, penelitian, dan rekreasi edukatif yang dapat diakses serta dipinjam secara terpadu melalui sistem ini.
     </p>
 
     <!-- Quick Stats -->
@@ -57,7 +57,10 @@ require_once __DIR__ . '/includes/header.php';
         <h2 class="font-display text-lg font-bold" style="color: var(--text)">Visi</h2>
       </div>
       <p class="text-sm leading-relaxed" style="color: var(--text-muted)">
-        Menjadi pusat sumber ilmu, riset, dan rekreasi literasi yang inklusif, modern, dan mudah diakses berbasis teknologi informasi guna menumbuhkan masyarakat pembelajar sepanjang hayat.
+        &ldquo;Terwujudnya Peningkatan Minat dan Budaya Baca Masyarakat Melalui Layanan Perpustakaan yang Modern, Inklusif, dan Unggul.&rdquo;
+      </p>
+      <p class="text-xs leading-relaxed mt-2" style="color: var(--text-muted)">
+        Landasan visi layanan perpustakaan dalam memperluas literasi dan kemudahan akses informasi bagi seluruh warga.
       </p>
     </div>
 
@@ -69,19 +72,19 @@ require_once __DIR__ . '/includes/header.php';
       <ul class="text-sm space-y-2.5 leading-relaxed" style="color: var(--text-muted)">
         <li class="flex items-start gap-2.5">
           <i class="bi bi-check2 text-emerald-600 font-bold mt-1 shrink-0"></i>
-          <span>Menyediakan koleksi pustaka cetak dan digital yang relevan dan terkini.</span>
+          <span>Mewujudkan peningkatan minat dan budaya baca masyarakat melalui penyediaan bahan pustaka berkualitas dan inklusif.</span>
         </li>
         <li class="flex items-start gap-2.5">
           <i class="bi bi-check2 text-emerald-600 font-bold mt-1 shrink-0"></i>
-          <span>Memberikan pelayanan sirkulasi yang cepat, tepat, dan transparan.</span>
+          <span>Meningkatkan mutu pelayanan perpustakaan umum yang prima, ramah, cepat, dan berbasis teknologi informasi.</span>
         </li>
         <li class="flex items-start gap-2.5">
           <i class="bi bi-check2 text-emerald-600 font-bold mt-1 shrink-0"></i>
-          <span>Menyediakan ruang baca yang kondusif, nyaman, dan ramah pengguna.</span>
+          <span>Menyediakan dan memelihara koleksi buku serta bahan bacaan yang relevan, mutakhir, dan bermanfaat secara berkelanjutan.</span>
         </li>
         <li class="flex items-start gap-2.5">
           <i class="bi bi-check2 text-emerald-600 font-bold mt-1 shrink-0"></i>
-          <span>Mendorong budaya gemar membaca melalui berbagai kegiatan literasi.</span>
+          <span>Mewujudkan kinerja kelembagaan perpustakaan yang akuntabel, transparan, dan berorientasi pada kepuasan pemustaka.</span>
         </li>
       </ul>
     </div>
@@ -109,7 +112,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="border rounded-lg p-4 relative" style="border-color: var(--border); background: var(--surface-2)">
         <span class="inline-block text-xs font-bold px-2 py-0.5 rounded bg-brand-600 text-white mb-2">Langkah 3</span>
         <h3 class="font-semibold text-sm mb-1" style="color: var(--text)">Sirkulasi &amp; Verifikasi</h3>
-        <p class="text-xs leading-relaxed" style="color: var(--text-muted)">Tunjukkan kartu anggota ke petugas sirkulasi untuk pencatatan dan verifikasi peminjaman.</p>
+        <p class="text-xs leading-relaxed" style="color: var(--text-muted)">Kunjungi meja sirkulasi Perpustakaan Kota Bandung dan tunjukkan kartu anggota untuk verifikasi peminjaman.</p>
       </div>
 
       <div class="border rounded-lg p-4 relative" style="border-color: var(--border); background: var(--surface-2)">
@@ -159,7 +162,7 @@ require_once __DIR__ . '/includes/header.php';
       <ul class="text-sm space-y-2.5 leading-relaxed" style="color: var(--text-muted)">
         <li class="flex items-start gap-2.5">
           <i class="bi bi-shield-check text-xs mt-1 shrink-0" style="color: var(--accent)"></i>
-          <span>Wajib menjaga ketenangan, ketertiban, dan kebersihan lingkungan perpustakaan.</span>
+          <span>Wajib menjaga ketenangan, ketertiban, dan kebersihan di seluruh lingkungan Perpustakaan Kota Bandung.</span>
         </li>
         <li class="flex items-start gap-2.5">
           <i class="bi bi-shield-check text-xs mt-1 shrink-0" style="color: var(--accent)"></i>
@@ -208,15 +211,15 @@ require_once __DIR__ . '/includes/header.php';
           <div class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text)">Jadwal Buka:</div>
           <div class="flex justify-between py-0.5 border-b" style="border-color: var(--border)">
             <span>Senin &ndash; Kamis:</span>
-            <span class="font-medium" style="color: var(--text)">08.00 &ndash; 16.30 WIB</span>
+            <span class="font-medium" style="color: var(--text)">08.00 &ndash; 15.30 WIB</span>
           </div>
           <div class="flex justify-between py-0.5 border-b" style="border-color: var(--border)">
             <span>Jumat:</span>
-            <span class="font-medium" style="color: var(--text)">08.00 &ndash; 16.00 WIB</span>
+            <span class="font-medium" style="color: var(--text)">08.00 &ndash; 15.30 WIB <span class="text-xs text-stone-400 font-normal">(Istirahat 11.30–13.00)</span></span>
           </div>
           <div class="flex justify-between py-0.5 border-b" style="border-color: var(--border)">
             <span>Sabtu:</span>
-            <span class="font-medium" style="color: var(--text)">09.00 &ndash; 14.00 WIB</span>
+            <span class="font-medium" style="color: var(--text)">08.00 &ndash; 12.00 WIB</span>
           </div>
           <div class="flex justify-between py-0.5">
             <span>Minggu &amp; Libur Nasional:</span>
@@ -225,10 +228,10 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div class="pt-2 border-t" style="border-color: var(--border)">
-          <div class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text)">Alamat &amp; Bantuan:</div>
-          <p><i class="bi bi-geo-alt me-1.5" style="color: var(--accent)"></i> Jl. Pendidikan No. 5, Kotamu</p>
-          <p><i class="bi bi-telephone me-1.5" style="color: var(--accent)"></i> (021) 555-0123 / WhatsApp: 0812-3456-7890</p>
-          <p><i class="bi bi-envelope me-1.5" style="color: var(--accent)"></i> perpustakaan@kotamu.go.id</p>
+          <div class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text)">Alamat &amp; Kontak Resmi:</div>
+          <p class="leading-relaxed"><i class="bi bi-geo-alt me-1.5" style="color: var(--accent)"></i> Jl. Seram No. 2, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115 <span class="text-xs text-stone-400 block ml-5">(Sebelah Kantor Disdukcapil Kota Bandung)</span></p>
+          <p><i class="bi bi-telephone me-1.5" style="color: var(--accent)"></i> (022) 423-1988 / (022) 731-8609</p>
+          <p><i class="bi bi-envelope me-1.5" style="color: var(--accent)"></i> layanan@kandaga-bandung.id</p>
         </div>
       </div>
     </div>
@@ -293,7 +296,7 @@ require_once __DIR__ . '/includes/header.php';
               <i class="bi bi-chevron-down text-xs transition-transform duration-200 group-open:rotate-180" style="color: var(--text-muted)"></i>
             </summary>
             <div class="px-4 pb-4 pt-2 text-xs sm:text-sm leading-relaxed border-t" style="border-color: var(--border); color: var(--text-muted)">
-              Silakan hubungi petugas sirkulasi di perpustakaan atau melalui kontak resmi dengan menunjukkan kartu identitas untuk verifikasi kepemilikan akun dan pembaruan kata sandi.
+              Silakan hubungi petugas layanan di gedung Perpustakaan Kota Bandung (Jl. Seram No. 2) atau melalui email layanan@kandaga-bandung.id dengan menunjukkan kartu identitas untuk verifikasi kepemilikan akun dan pembaruan kata sandi.
             </div>
           </details>
         </div>
@@ -338,7 +341,7 @@ require_once __DIR__ . '/includes/header.php';
               </div>
               <div class="flex items-start gap-2">
                 <span class="font-bold text-xs px-1.5 py-0.5 rounded bg-brand-100 text-brand-800">3</span>
-                <span>Bawa buku ke meja layanan sirkulasi dan tunjukkan kartu identitas anggota untuk dipindai.</span>
+                <span>Bawa buku ke meja layanan sirkulasi Perpustakaan Kota Bandung dan tunjukkan kartu identitas anggota untuk dipindai.</span>
               </div>
               <div class="flex items-start gap-2">
                 <span class="font-bold text-xs px-1.5 py-0.5 rounded bg-brand-100 text-brand-800">4</span>

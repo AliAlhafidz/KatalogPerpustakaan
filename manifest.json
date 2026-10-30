@@ -1,7 +1,7 @@
 {
-  "name": "Sistem Informasi Perpustakaan",
-  "short_name": "SI Perpustakaan",
-  "description": "Sistem Informasi Perpustakaan Terpadu",
+  "name": "Kandaga Bandung",
+  "short_name": "Kandaga",
+  "description": "Kandaga Bandung - Sistem Informasi Perpustakaan Kota Bandung",
   "lang": "id-ID",
   "start_url": "./index.php",
   "scope": "./",

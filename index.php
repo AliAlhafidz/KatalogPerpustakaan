@@ -212,12 +212,12 @@ require_once __DIR__ . '/includes/header.php';
     <!-- Left -->
     <div class="min-w-0">
       <p class="text-[11px] font-bold tracking-[.14em] uppercase inline-flex items-center gap-2" style="color:var(--text-faint-2)">
-        <span class="w-6 h-px" style="background:var(--border-strong)"></span> Sistem Informasi Perpustakaan · Layanan Terpadu
+        <span class="w-6 h-px" style="background:var(--border-strong)"></span> Kandaga Bandung · Perpustakaan Kota Bandung
       </p>
       <h1 class="font-display text-[24px] sm:text-[30px] lg:text-[32px] font-bold tracking-tight leading-[1.15] mt-3" style="color:var(--text)">
         Temukan buku yang<br>ingin kamu <span style="color:var(--accent)">baca.</span>
       </h1>
-      <p class="text-[14px] leading-6 mt-3 max-w-xl" style="color:var(--text-muted)">Jelajahi koleksi pilihan kami, ajukan peminjaman buku, dan nikmati kemudahan layanan sirkulasi terpadu melalui Sistem Informasi Perpustakaan.</p>
+      <p class="text-[14px] leading-6 mt-3 max-w-xl" style="color:var(--text-muted)">Jelajahi koleksi buku pilihan, ajukan peminjaman secara mandiri, dan nikmati kemudahan layanan sirkulasi terpadu melalui Kandaga Bandung (Perpustakaan Kota Bandung).</p>
 
       <form method="get" action="#koleksi" class="mt-6 bg-white rounded-xl border p-2.5 shadow-sm" style="border-color:var(--border)">
         <div class="flex flex-col sm:flex-row gap-2">

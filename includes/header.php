@@ -1,5 +1,5 @@
 <?php
-$page_title = $page_title ?? 'Sistem Informasi Perpustakaan';
+$page_title = $page_title ?? 'Kandaga Bandung';
 $jumlah_notifikasi = 0;
 if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_anggota'])) {
     try {
@@ -15,7 +15,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title><?= e($page_title) ?> | Sistem Informasi Perpustakaan</title>
+<title><?= e($page_title) ?> | Kandaga Bandung</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -49,7 +49,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="SI Perpustakaan">
+<meta name="apple-mobile-web-app-title" content="Kandaga Bandung">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/app.css">
 <script src="<?= BASE_URL ?>/assets/js/bi-icons.js"></script>
@@ -63,8 +63,8 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
       <a href="<?= BASE_URL ?>/index.php" class="flex items-center gap-2.5 min-w-0">
         <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="Logo Perpustakaan" class="w-8 h-8 shrink-0 rounded-lg" width="32" height="32">
         <span class="min-w-0">
-          <span class="block font-display font-bold tracking-tight leading-none" style="font-size: 15px; color: var(--text);">Sistem Informasi Perpustakaan</span>
-          <span class="hidden sm:block text-[11px] font-medium" style="color: var(--text-faint); letter-spacing: .02em;">Layanan Sirkulasi &amp; Katalog Digital</span>
+          <span class="block font-display font-bold tracking-tight leading-none" style="font-size: 15px; color: var(--text);">Kandaga Bandung</span>
+          <span class="hidden sm:block text-[11px] font-medium" style="color: var(--text-faint); letter-spacing: .02em;">Perpustakaan Kota Bandung</span>
         </span>
       </a>
 
@@ -106,7 +106,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
   <div class="px-4 py-4 border-b flex items-center justify-between" style="border-color: var(--border)">
     <div class="flex items-center gap-2.5">
       <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="" class="w-8 h-8 rounded-lg" width="32" height="32">
-      <div><div class="font-display font-bold text-sm" style="color: var(--text)">Menu Navigasi</div><div class="text-xs" style="color: var(--text-faint)">Sistem Informasi Perpustakaan</div></div>
+      <div><div class="font-display font-bold text-sm" style="color: var(--text)">Kandaga Bandung</div><div class="text-xs" style="color: var(--text-faint)">Perpustakaan Kota Bandung</div></div>
     </div>
     <button id="navClose" type="button" class="w-8 h-8 rounded-lg text-slate-600 flex items-center justify-center hover:bg-slate-100" style="border:1px solid var(--border); background: var(--surface-2)" aria-label="Tutup menu"><i class="bi bi-x-lg text-sm"></i></button>
   </div>
