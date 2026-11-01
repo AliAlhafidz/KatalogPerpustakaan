@@ -43,6 +43,16 @@ try {
             PDO::ATTR_EMULATE_PREPARES   => false,
         ]
     );
+
+    // Samakan zona waktu sesi MySQL dengan zona waktu PHP.
+    // Tanpa ini, CURDATE()/NOW() bisa berbeda hari dengan date('Y-m-d')
+    // ketika server database memakai zona waktu yang berbeda (mis. dini hari WIB).
+    try {
+        $tz_offset = (new DateTime('now', new DateTimeZone(date_default_timezone_get())))->format('P');
+        $pdo->exec('SET time_zone = ' . $pdo->quote($tz_offset));
+    } catch (Throwable $e) {
+        error_log('Gagal menyetel time_zone MySQL: ' . $e->getMessage());
+    }
 } catch (PDOException $e) {
     error_log('DB connect failed: ' . $e->getMessage());
     // Jangan expose detail DB ke user di produksi

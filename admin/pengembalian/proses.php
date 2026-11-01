@@ -69,17 +69,30 @@ try {
     if (!empty($peminjaman['id_buku'])) {
         $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
         $stmt->execute([':id' => $peminjaman['id_buku']]);
-        if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal diperbarui.');
+        // rowCount TIDAK dicek: jika tersedia sudah sama dengan stok, MySQL
+        // melaporkan 0 affected rows padahal bukan kegagalan.
     }
 
     $pdo->commit();
-    $stmt = $pdo->prepare("SELECT judul FROM buku WHERE id_buku=:id");
-    $stmt->execute([':id'=>$peminjaman['id_buku']]);
-    $judul_buku = $stmt->fetchColumn() ?: 'buku';
+} catch (Throwable $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    error_log('Pengembalian gagal #' . $id_peminjaman . ': ' . $e->getMessage());
+    set_flash('error', 'Pengembalian gagal diproses. Silakan coba lagi.');
+    redirect('/admin/pengembalian/index.php');
+}
+
+// Notifikasi dibuat SETELAH commit dan di luar transaksi: kegagalan notifikasi
+// tidak boleh membatalkan pengembalian yang sudah tersimpan.
+try {
+    $judul_buku = 'buku';
+    if (!empty($peminjaman['id_buku'])) {
+        $stmt = $pdo->prepare("SELECT judul FROM buku WHERE id_buku=:id");
+        $stmt->execute([':id'=>$peminjaman['id_buku']]);
+        $judul_buku = $stmt->fetchColumn() ?: 'buku';
+    }
     buat_notifikasi_anggota($pdo, $peminjaman['id_anggota'], 'Peminjaman selesai', 'Buku "' . $judul_buku . '" telah dicatat sebagai dikembalikan. ' . ($denda > 0 ? 'Denda tercatat: ' . format_rupiah($denda) . '.' : 'Tidak ada denda.'), $denda > 0 ? 'warning' : 'success', '/anggota/riwayat.php', 'kembali:' . $id_peminjaman);
-} catch (Exception $e) {
-    $pdo->rollBack();
-    throw $e;
+} catch (Throwable $e) {
+    error_log('Notifikasi pengembalian gagal #' . $id_peminjaman . ': ' . $e->getMessage());
 }
 
 $pesan = $denda > 0

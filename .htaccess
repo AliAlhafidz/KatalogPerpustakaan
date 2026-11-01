@@ -1,0 +1,14 @@
+# Keamanan dasar untuk deployment Apache (XAMPP/Laragon).
+# Blokir akses langsung ke file/folder internal yang tidak boleh diunduh publik.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Dotfile seperti .env dan .git (kecuali .well-known)
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+    # Folder database: dump SQL, backup, dan skrip maintenance
+    RewriteRule ^database(/|$) - [F,L]
+
+    # File yang tidak boleh diunduh publik
+    RewriteRule \.(sql|md|log)$ - [F,L,NC]
+</IfModule>

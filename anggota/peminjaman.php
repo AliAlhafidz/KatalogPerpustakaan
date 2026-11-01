@@ -139,7 +139,7 @@ require_once __DIR__ . '/../includes/header.php';
                   <button class="px-3 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold" type="submit" data-confirm="Kirim permintaan perpanjangan kepada admin?">Ajukan</button>
                 </div>
                 <input type="text" name="catatan" maxlength="500" placeholder="Catatan (opsional)" class="w-full rounded-lg px-3 py-2 text-xs" style="border:1px solid var(--border); background: var(--surface); color: var(--text)">
-                <p class="text-[11px]" style="color: var(--text-faint)">Maksimal <?= PERPANJANGAN_MAKS_HARI ?> hari dan perlu persetujuan admin.</p>
+                <p class="text-[11px]" style="color: var(--text-faint)">Maksimal <?= PERPANJANGAN_MAKS_HARI ?> hari dan perlu persetujuan admin. Jika tanggal baru jatuh pada hari Minggu, sistem otomatis menggesernya ke Senin.</p>
               </form>
             <?php endif; ?>
           </div>

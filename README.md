@@ -120,16 +120,13 @@ perpustakaan/
 | `favorit` | Relasi anggota–buku |
 | `audit_log` | Jejak tambah/ubah/hapus buku, kategori, pengajuan (belum ada halaman UI) |
 
-> **Penting — hapus buku:** agar riwayat peminjaman tetap aman saat buku dihapus, `peminjaman.id_buku` harus `NULL`-able dengan FK `ON DELETE SET NULL`. Pastikan database Anda sudah begini:
+> **Hapus buku & riwayat peminjaman:** `peminjaman.id_buku` bersifat `NULL`-able dengan FK `ON DELETE SET NULL`. Instalasi baru dari `database/perpustakaan.sql` sudah memakai skema ini. Database lama harus menjalankan migrasi:
 >
-> ```sql
-> ALTER TABLE peminjaman DROP FOREIGN KEY peminjaman_ibfk_2;
-> ALTER TABLE peminjaman MODIFY id_buku INT NULL;
-> ALTER TABLE peminjaman ADD CONSTRAINT peminjaman_ibfk_2
->   FOREIGN KEY (id_buku) REFERENCES buku (id_buku) ON DELETE SET NULL;
+> ```bash
+> mysql -u root perpustakaan < database/migrasi_v8_peminjaman_fk_set_null.sql
 > ```
 >
-> Verifikasi dengan `SHOW CREATE TABLE peminjaman;`. Jika belum, buku yang punya riwayat pinjam akan gagal dihapus.
+> Setelah itu, buku yang punya riwayat pinjam tetap bisa dihapus; kolom `id_buku` pada riwayat menjadi `NULL` dan ditampilkan sebagai "Buku telah dihapus dari katalog". Aplikasi juga menolak menghapus buku yang masih berstatus `dipinjam` — catat pengembaliannya lebih dulu. Verifikasi dengan `SHOW CREATE TABLE peminjaman;`.
 
 ## Instalasi
 
@@ -141,9 +138,15 @@ Kebutuhan: PHP 8.0+ (ekstensi `pdo_mysql`, `gd`, `fileinfo`, `curl` disarankan),
    mysql -u root perpustakaan < database/perpustakaan.sql
    ```
    atau lewat phpMyAdmin.
-3. Terapkan perubahan FK pada bagian [Skema Database](#skema-database) bila perlu.
+3. Jika memakai database lama, jalankan migrasi yang relevan — untuk perbaikan ini: `database/migrasi_v8_peminjaman_fk_set_null.sql`. Instalasi baru tidak perlu migrasi.
 4. Sesuaikan konfigurasi (lihat bawah).
 5. Buka `http://localhost/perpustakaan/`.
+6. Jika memakai PHP built-in server (`php -S`), jalankan lewat router agar proteksi file sensitif tetap aktif:
+   ```bash
+   php -S 127.0.0.1:8000 -t /path/ke/webroot /path/ke/perpustakaan/router.php
+   ```
+
+> **Keamanan file:** `.htaccess` menolak akses langsung ke `database/`, folder `.git`, dan file `*.sql`/`*.md`/`*.log`. Pastikan `mod_rewrite` Apache aktif. Pada `php -S`, aturan yang sama diterapkan oleh `router.php`.
 
 ## Konfigurasi
 
@@ -155,10 +158,11 @@ DB_NAME=perpustakaan
 DB_USER=root
 DB_PASS=
 BASE_URL=/perpustakaan
+APP_TIMEZONE=Asia/Jakarta
 APP_DEBUG=0
 ```
 
-`BASE_URL` harus sesuai nama folder (kosongkan jika di root domain). Untuk produksi, jangan pakai `root` tanpa password.
+`BASE_URL` harus sesuai nama folder (kosongkan jika di root domain). `APP_TIMEZONE` dipakai PHP, dan sesi MySQL otomatis disamakan dengan zona waktu tersebut agar `date('Y-m-d')` dan `CURDATE()` tidak berbeda hari. Untuk produksi, jangan pakai `root` tanpa password.
 
 ## Akun Demo
 

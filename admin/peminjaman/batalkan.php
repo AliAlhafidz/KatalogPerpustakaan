@@ -36,7 +36,7 @@ try {
     if (!empty($peminjaman['id_buku'])) {
         $stmt = $pdo->prepare("UPDATE buku SET tersedia = LEAST(stok, tersedia + 1) WHERE id_buku = :id");
         $stmt->execute([':id' => $peminjaman['id_buku']]);
-        if ($stmt->rowCount() !== 1) throw new Exception('Stok buku gagal dikembalikan.');
+        // rowCount bisa 0 jika stok sudah penuh; itu bukan kegagalan.
     }
 
     $pdo->commit();

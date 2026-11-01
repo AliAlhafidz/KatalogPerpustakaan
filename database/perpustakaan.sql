@@ -256,7 +256,7 @@ DROP TABLE IF EXISTS `peminjaman`;
 CREATE TABLE `peminjaman` (
   `id_peminjaman` int NOT NULL AUTO_INCREMENT,
   `id_anggota` int NOT NULL,
-  `id_buku` int NOT NULL,
+  `id_buku` int DEFAULT NULL,
   `tanggal_pinjam` date NOT NULL,
   `tanggal_jatuh_tempo` date NOT NULL,
   `tanggal_kembali` date DEFAULT NULL,
@@ -270,7 +270,7 @@ CREATE TABLE `peminjaman` (
   KEY `diproses_oleh` (`diproses_oleh`),
   KEY `idx_peminjaman_status_jatuh_tempo` (`status`,`tanggal_jatuh_tempo`),
   CONSTRAINT `peminjaman_ibfk_1` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`),
-  CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`),
+  CONSTRAINT `peminjaman_ibfk_2` FOREIGN KEY (`id_buku`) REFERENCES `buku` (`id_buku`) ON DELETE SET NULL,
   CONSTRAINT `peminjaman_ibfk_3` FOREIGN KEY (`diproses_oleh`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

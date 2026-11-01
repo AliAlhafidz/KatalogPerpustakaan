@@ -47,7 +47,9 @@ if ((int)$stmt->fetchColumn() > 0) {
     redirect('/anggota/peminjaman.php');
 }
 
-$tempo_baru = date('Y-m-d', strtotime($peminjaman['tanggal_jatuh_tempo'] . ' +' . $hari_diminta . ' days'));
+// Tanggal ini hanya untuk referensi; admin menghitung ulang dengan aturan yang sama
+// (termasuk menggeser jatuh tempo yang jatuh pada hari Minggu).
+$tempo_baru = jatuh_tempo_hari_kerja(date('Y-m-d', strtotime($peminjaman['tanggal_jatuh_tempo'] . ' +' . $hari_diminta . ' days')));
 $stmt = $pdo->prepare("INSERT INTO perpanjangan_peminjaman
     (id_peminjaman,id_anggota,tanggal_pengajuan,hari_diminta,tanggal_jatuh_tempo_lama,catatan_anggota,status)
     VALUES (:p,:a,:tgl,:hari,:lama,:catatan,'menunggu')");

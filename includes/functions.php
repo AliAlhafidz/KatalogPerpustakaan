@@ -87,6 +87,20 @@ function is_hari_minggu($tanggal) {
     return (int) date('w', strtotime($tanggal)) === 0;
 }
 
+/**
+ * Geser tanggal jatuh tempo ke hari kerja berikutnya bila jatuh pada hari Minggu.
+ * Perpustakaan tutup Minggu, jadi jatuh tempo tidak boleh mendarat di hari itu
+ * (mis. hasil perpanjangan +6 hari dari jatuh tempo Senin).
+ */
+function jatuh_tempo_hari_kerja($tanggal) {
+    $ts = strtotime($tanggal);
+    if ($ts === false) return $tanggal;
+    while ((int) date('w', $ts) === 0) {
+        $ts = strtotime('+1 day', $ts);
+    }
+    return date('Y-m-d', $ts);
+}
+
 // Validasi & pindahkan file gambar upload ke folder tujuan.
 // Dipakai bersama oleh upload_cover() dan upload_foto_profil() agar aturan
 // validasi (ekstensi, MIME, ukuran maksimal) hanya perlu dijaga di satu tempat.

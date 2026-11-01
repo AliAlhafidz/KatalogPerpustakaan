@@ -101,7 +101,7 @@ try {
     if (is_hari_minggu($tanggal_pinjam)) {
         throw new Exception('Perpustakaan tutup pada hari Minggu. Proses persetujuan dapat dilakukan pada hari kerja berikutnya.');
     }
-    $tanggal_jatuh_tempo = date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam)));
+    $tanggal_jatuh_tempo = jatuh_tempo_hari_kerja(date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam))));
 
     // Insert peminjaman
     $stmt = $pdo->prepare("INSERT INTO peminjaman (id_anggota, id_buku, tanggal_pinjam, tanggal_jatuh_tempo, status, diproses_oleh) VALUES (:anggota, :buku, :pinjam, :tempo, 'dipinjam', :admin)");

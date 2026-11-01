@@ -55,7 +55,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
           <?php else: ?><span class="text-xs font-bold rounded-full bg-red-50 text-red-700 px-2.5 py-1">Ditolak</span><?php endif; ?>
         </div>
         <p class="text-sm text-slate-600 mt-1"><?= e($r['nama_anggota']) ?> · <?= e($r['nomor_anggota']) ?> · <?= (int)$r['hari_diminta'] ?> hari</p>
-        <p class="text-xs text-slate-500 mt-1">Jatuh tempo: <b><?= format_tanggal($r['tanggal_jatuh_tempo_lama']) ?></b> → <b><?= format_tanggal($r['tanggal_jatuh_tempo_baru'] ?: date('Y-m-d', strtotime($r['tanggal_jatuh_tempo_lama'].' +'.$r['hari_diminta'].' days'))) ?></b></p>
+        <p class="text-xs text-slate-500 mt-1">Jatuh tempo: <b><?= format_tanggal($r['tanggal_jatuh_tempo_lama']) ?></b> → <b><?= format_tanggal($r['tanggal_jatuh_tempo_baru'] ?: jatuh_tempo_hari_kerja(date('Y-m-d', strtotime($r['tanggal_jatuh_tempo_lama'].' +'.$r['hari_diminta'].' days')))) ?></b></p>
         <?php if ($r['catatan_anggota']): ?><p class="text-sm text-slate-500 mt-2 bg-slate-50 rounded-xl px-3 py-2">“<?= e($r['catatan_anggota']) ?>”</p><?php endif; ?>
         <?php if ($r['catatan_admin']): ?><p class="text-sm text-slate-500 mt-2">Catatan admin: <?= e($r['catatan_admin']) ?></p><?php endif; ?>
       </div>

@@ -5,6 +5,12 @@
  * atau otomatis dipanggil jika MySQL aktif.
  */
 
+// Skrip ini menghapus data. Jangan pernah izinkan dieksekusi lewat browser.
+if (PHP_SAPI !== 'cli') {
+    http_response_code(404);
+    exit;
+}
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
@@ -24,6 +30,15 @@ foreach ($hapus_ids as $id) {
 
         if (!$buku) {
             echo "[-] ID $id tidak ditemukan di database (mungkin sudah dihapus).\n";
+            continue;
+        }
+
+        // Jangan hapus buku yang masih dipinjam: riwayat aktifnya akan
+        // kehilangan id_buku dan tidak bisa diproses lewat sistem.
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM peminjaman WHERE id_buku = :id AND status = 'dipinjam'");
+        $stmt->execute([':id' => $id]);
+        if ((int)$stmt->fetchColumn() > 0) {
+            echo "[-] ID $id dilewati: buku masih dipinjam.\n";
             continue;
         }
 

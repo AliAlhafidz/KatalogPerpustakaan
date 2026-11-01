@@ -26,11 +26,24 @@ if (!$buku) {
 }
 
 try {
+    $pdo->beginTransaction();
+
+    // Kunci baris buku selama pemeriksaan agar tidak ada peminjaman baru
+    // yang masuk di antara pengecekan dan DELETE.
+    $stmt = $pdo->prepare("SELECT id_buku FROM buku WHERE id_buku = :id FOR UPDATE");
+    $stmt->execute([':id' => $id_buku]);
+    if (!$stmt->fetch()) {
+        throw new RuntimeException('Data buku tidak ditemukan.');
+    }
+
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM peminjaman WHERE id_buku = :id AND status = 'dipinjam'");
     $stmt->execute([':id' => $id_buku]);
-    $masih_dipinjam = (int)$stmt->fetchColumn() > 0;
+    if ((int)$stmt->fetchColumn() > 0) {
+        $pdo->rollBack();
+        set_flash('error', "Buku \"{$buku['judul']}\" tidak bisa dihapus karena masih dipinjam. Catat pengembaliannya terlebih dahulu.");
+        redirect('/admin/buku/index.php');
+    }
 
-    $pdo->beginTransaction();
     $stmt = $pdo->prepare("DELETE FROM favorit WHERE id_buku = :id");
     $stmt->execute([':id' => $id_buku]);
 
@@ -45,11 +58,7 @@ try {
     hapus_cache_buku_populer();
     catat_audit($pdo, $_SESSION['id_admin'] ?? null, 'hapus', 'buku', $id_buku, ['judul' => $buku['judul']]);
 
-    if ($masih_dipinjam) {
-        set_flash('warning', "Buku \"{$buku['judul']}\" berhasil dihapus. Perhatian: buku ini masih dipinjam oleh anggota. Transaksi pengembaliannya nanti tidak akan bisa diproses otomatis lewat sistem karena data buku sudah dihapus — cek riwayat peminjaman manual.");
-    } else {
-        set_flash('sukses', "Buku \"{$buku['judul']}\" berhasil dihapus.");
-    }
+    set_flash('sukses', "Buku \"{$buku['judul']}\" berhasil dihapus.");
 } catch (Throwable $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

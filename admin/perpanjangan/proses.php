@@ -51,7 +51,8 @@ try {
             throw new Exception('Peminjaman ini sudah pernah mendapatkan perpanjangan.');
         }
 
-        $tempo_baru = date('Y-m-d', strtotime($r['tanggal_jatuh_tempo'] . ' +' . (int)$r['hari_diminta'] . ' days'));
+        // Geser ke hari kerja bila hasil perpanjangan jatuh pada hari Minggu.
+        $tempo_baru = jatuh_tempo_hari_kerja(date('Y-m-d', strtotime($r['tanggal_jatuh_tempo'] . ' +' . (int)$r['hari_diminta'] . ' days')));
         $stmt = $pdo->prepare("UPDATE peminjaman SET tanggal_jatuh_tempo=:tempo WHERE id_peminjaman=:p AND status='dipinjam'");
         $stmt->execute([':tempo'=>$tempo_baru, ':p'=>$r['id_peminjaman']]);
         if ($stmt->rowCount() !== 1) throw new Exception('Peminjaman sudah tidak aktif. Permintaan tidak dapat disetujui.');

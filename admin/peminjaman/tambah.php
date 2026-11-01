@@ -21,7 +21,7 @@ $id_buku_inputs = array_values(array_unique($id_buku_inputs));
 $id_buku_input_legacy = $id_buku_inputs[0] ?? 0;
 
 // Jatuh tempo dihitung setelah validasi, fallback untuk tampilan awal
-$jatuh_tempo_preview = date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam_input)));
+$jatuh_tempo_preview = jatuh_tempo_hari_kerja(date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam_input))));
 $jatuh_tempo = $jatuh_tempo_preview;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $tanggal_pinjam = $tanggal_pinjam_input;
-        $jatuh_tempo = date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam)));
+        $jatuh_tempo = jatuh_tempo_hari_kerja(date('Y-m-d', strtotime('+' . LAMA_PINJAM_HARI . ' days', strtotime($tanggal_pinjam))));
 
         $pdo->beginTransaction();
         try {

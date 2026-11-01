@@ -345,7 +345,7 @@ require_once __DIR__ . '/../../includes/admin_menu.php';
                 </button>
               </form>
             </div>
-            <form method="post" action="<?= BASE_URL ?>/admin/buku/hapus.php" data-confirm-danger="true" data-confirm="Yakin ingin menghapus buku &quot;<?= e($b['judul']) ?>&quot;? Riwayat peminjaman buku ini akan tetap tersimpan untuk anggota, tapi buku tidak bisa dikembalikan/diproses lagi lewat sistem. Tindakan ini tidak dapat dibatalkan." class="w-full">
+            <form method="post" action="<?= BASE_URL ?>/admin/buku/hapus.php" data-confirm-danger="true" data-confirm="Yakin ingin menghapus buku &quot;<?= e($b['judul']) ?>&quot;? Riwayat peminjaman tetap tersimpan untuk anggota, tetapi buku akan hilang dari katalog. Buku yang masih dipinjam tidak bisa dihapus. Tindakan ini tidak dapat dibatalkan." class="w-full">
               <?= csrf_field() ?>
               <input type="hidden" name="id" value="<?= (int)$b['id_buku'] ?>">
               <button type="submit" class="w-full h-6 rounded border font-semibold text-[11px] inline-flex items-center justify-center gap-1" style="background:#fef2f2; border-color:#fecaca; color:#991b1b">
