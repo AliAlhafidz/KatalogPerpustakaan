@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/config/bootstrap.php';
 
-$page_title = 'Tentang Kandaga Bandung';
+$page_title = 'Tentang Sistem';
 
 $total_buku = 0;
 $total_kategori = 0;
@@ -21,11 +21,11 @@ require_once __DIR__ . '/includes/header.php';
   <!-- Header Card -->
   <div class="bg-white rounded-xl border p-6 sm:p-8" style="border-color: var(--border)">
     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold mb-3" style="background: var(--surface-2); color: var(--accent)">
-      <i class="bi bi-building"></i> Perpustakaan Kota Bandung
+      <i class="bi bi-building"></i> Sistem Informasi Perpustakaan
     </div>
-    <h1 class="font-display text-2xl sm:text-3xl font-bold mb-3" style="color: var(--text)">Kandaga Bandung</h1>
+    <h1 class="font-display text-2xl sm:text-3xl font-bold mb-3" style="color: var(--text)">Tentang Sistem</h1>
     <p class="text-sm sm:text-base leading-relaxed mb-6" style="color: var(--text-muted)">
-      <strong>Kandaga Bandung</strong> merupakan sistem informasi perpustakaan Perpustakaan Kota Bandung. Terinspirasi dari kata <em>Kandaga</em> dalam bahasa Sunda yang bermakna wadah penyimpanan pustaka dan ilmu pengetahuan berharga, sistem ini hadir menyediakan akses literatur yang inklusif, modern, dan terbuka bagi seluruh masyarakat Kota Bandung. Berlokasi di Jl. Seram No. 2, Citarum, perpustakaan ini menghadirkan ribuan koleksi bahan pustaka bermutu guna menunjang pendidikan, penelitian, dan rekreasi edukatif yang dapat diakses serta dipinjam secara terpadu melalui sistem ini.
+      Sistem ini membantu pengelolaan perpustakaan secara digital: katalog buku yang dapat dicari, pengajuan peminjaman dan perpanjangan secara mandiri, pengingat jatuh tempo, serta pengelolaan koleksi, anggota, dan laporan oleh petugas. Dibuat sebagai proyek pembelajaran (UKK) untuk menunjukkan alur sirkulasi perpustakaan dari katalog hingga pengembalian dan denda.
     </p>
 
     <!-- Quick Stats -->
@@ -112,7 +112,7 @@ require_once __DIR__ . '/includes/header.php';
       <div class="border rounded-lg p-4 relative" style="border-color: var(--border); background: var(--surface-2)">
         <span class="inline-block text-xs font-bold px-2 py-0.5 rounded bg-brand-600 text-white mb-2">Langkah 3</span>
         <h3 class="font-semibold text-sm mb-1" style="color: var(--text)">Sirkulasi &amp; Verifikasi</h3>
-        <p class="text-xs leading-relaxed" style="color: var(--text-muted)">Kunjungi meja sirkulasi Perpustakaan Kota Bandung dan tunjukkan kartu anggota untuk verifikasi peminjaman.</p>
+        <p class="text-xs leading-relaxed" style="color: var(--text-muted)">Kunjungi meja sirkulasi perpustakaan dan tunjukkan kartu anggota untuk verifikasi peminjaman.</p>
       </div>
 
       <div class="border rounded-lg p-4 relative" style="border-color: var(--border); background: var(--surface-2)">
@@ -162,7 +162,7 @@ require_once __DIR__ . '/includes/header.php';
       <ul class="text-sm space-y-2.5 leading-relaxed" style="color: var(--text-muted)">
         <li class="flex items-start gap-2.5">
           <i class="bi bi-shield-check text-xs mt-1 shrink-0" style="color: var(--accent)"></i>
-          <span>Wajib menjaga ketenangan, ketertiban, dan kebersihan di seluruh lingkungan Perpustakaan Kota Bandung.</span>
+          <span>Wajib menjaga ketenangan, ketertiban, dan kebersihan di seluruh lingkungan perpustakaan.</span>
         </li>
         <li class="flex items-start gap-2.5">
           <i class="bi bi-shield-check text-xs mt-1 shrink-0" style="color: var(--accent)"></i>
@@ -228,10 +228,10 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <div class="pt-2 border-t" style="border-color: var(--border)">
-          <div class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text)">Alamat &amp; Kontak Resmi:</div>
-          <p class="leading-relaxed"><i class="bi bi-geo-alt me-1.5" style="color: var(--accent)"></i> Jl. Seram No. 2, Citarum, Kec. Bandung Wetan, Kota Bandung, Jawa Barat 40115 <span class="text-xs text-stone-400 block ml-5">(Sebelah Kantor Disdukcapil Kota Bandung)</span></p>
-          <p><i class="bi bi-telephone me-1.5" style="color: var(--accent)"></i> (022) 423-1988 / (022) 731-8609</p>
-          <p><i class="bi bi-envelope me-1.5" style="color: var(--accent)"></i> layanan@kandaga-bandung.id</p>
+          <div class="font-semibold text-xs uppercase tracking-wider mb-1" style="color: var(--text)">Alamat &amp; Kontak:</div>
+          <p class="leading-relaxed"><i class="bi bi-geo-alt me-1.5" style="color: var(--accent)"></i> Jl. Pendidikan No. 5, Kotamu</p>
+          <p><i class="bi bi-telephone me-1.5" style="color: var(--accent)"></i> (021) 555-0123</p>
+          <p><i class="bi bi-envelope me-1.5" style="color: var(--accent)"></i> perpusumum@contoh.id</p>
         </div>
       </div>
     </div>
@@ -296,7 +296,7 @@ require_once __DIR__ . '/includes/header.php';
               <i class="bi bi-chevron-down text-xs transition-transform duration-200 group-open:rotate-180" style="color: var(--text-muted)"></i>
             </summary>
             <div class="px-4 pb-4 pt-2 text-xs sm:text-sm leading-relaxed border-t" style="border-color: var(--border); color: var(--text-muted)">
-              Silakan hubungi petugas layanan di gedung Perpustakaan Kota Bandung (Jl. Seram No. 2) atau melalui email layanan@kandaga-bandung.id dengan menunjukkan kartu identitas untuk verifikasi kepemilikan akun dan pembaruan kata sandi.
+              Silakan hubungi petugas layanan di perpustakaan atau melalui email perpusumum@contoh.id dengan menunjukkan kartu identitas untuk verifikasi kepemilikan akun dan pembaruan kata sandi.
             </div>
           </details>
         </div>
@@ -341,7 +341,7 @@ require_once __DIR__ . '/includes/header.php';
               </div>
               <div class="flex items-start gap-2">
                 <span class="font-bold text-xs px-1.5 py-0.5 rounded bg-brand-100 text-brand-800">3</span>
-                <span>Bawa buku ke meja layanan sirkulasi Perpustakaan Kota Bandung dan tunjukkan kartu identitas anggota untuk dipindai.</span>
+                <span>Bawa buku ke meja layanan sirkulasi perpustakaan dan tunjukkan kartu identitas anggota untuk dipindai.</span>
               </div>
               <div class="flex items-start gap-2">
                 <span class="font-bold text-xs px-1.5 py-0.5 rounded bg-brand-100 text-brand-800">4</span>
