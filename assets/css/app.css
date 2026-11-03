@@ -439,7 +439,7 @@ a { transition: color var(--transition-fast) !important; }
 .picker-backdrop,
 .app-modal-backdrop,
 .custom-select-backdrop { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-.picker-backdrop { background: rgba(15,23,42,.32) !important; }
+.picker-backdrop { position: absolute; inset: 0; background: rgba(12,16,20,.5) !important; }
 .app-modal-backdrop { background: rgba(15,23,42,.32) !important; }
 .custom-select-backdrop { background: rgba(15,23,42,.32) !important; }
 

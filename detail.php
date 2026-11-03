@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/config/bootstrap.php';
 
+if (is_anggota()) $member_menu_aktif = 'katalog';
+
 $id_buku = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 $stmt = $pdo->prepare("SELECT b.*, k.nama_kategori

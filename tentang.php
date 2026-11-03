@@ -14,6 +14,7 @@ try {
     // fallback senyap
 }
 
+if (is_anggota()) $member_menu_aktif = 'tentang';
 require_once __DIR__ . '/includes/header.php';
 ?>
 

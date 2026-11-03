@@ -60,7 +60,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
 <nav class="sticky top-0 z-40 border-b bg-white">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 <?= ((isset($menu_aktif) && $menu_aktif !== '') || (is_anggota() && isset($member_menu_aktif) && $member_menu_aktif !== '')) ? 'area-nav-inner' : '' ?>">
     <div class="flex items-center justify-between h-[56px]">
-      <a href="<?= BASE_URL ?>/index.php" class="flex items-center gap-2.5 min-w-0">
+      <a href="<?= is_admin() ? BASE_URL . '/admin/dashboard.php' : (is_anggota() ? BASE_URL . '/anggota/dashboard.php' : BASE_URL . '/index.php') ?>" class="flex items-center gap-2.5 min-w-0">
         <img src="<?= BASE_URL ?>/assets/img/logo-icon.png" alt="Logo Perpustakaan" class="w-8 h-8 shrink-0 rounded-lg" width="32" height="32">
         <span class="min-w-0">
           <span class="block font-display font-bold tracking-tight leading-none" style="font-size: 15px; color: var(--text);">Sistem Informasi Perpustakaan</span>
@@ -69,23 +69,9 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
       </a>
 
       <div class="hidden min-[900px]:flex items-center gap-1 text-sm font-semibold">
-        <?php if (is_anggota()): ?>
-          <a href="<?= BASE_URL ?>/anggota/dashboard.php" class="nav-link px-2.5 py-1.5 rounded-lg <?= ($member_menu_aktif ?? '') === 'dashboard' ? 'text-brand-700 bg-brand-50' : 'text-slate-600 hover:text-brand-700 hover:bg-brand-50' ?>">Dashboard</a>
-        <?php endif; ?>
-        <a href="<?= BASE_URL ?>/index.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Katalog</a>
-        <a href="<?= BASE_URL ?>/tentang.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Tentang</a>
-        <?php if (is_admin()): ?>
-          <a href="<?= BASE_URL ?>/admin/dashboard.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Dashboard Admin</a>
-        <?php elseif (is_anggota()): ?>
-          <a href="<?= BASE_URL ?>/anggota/notifikasi.php" class="relative w-8 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50" aria-label="Notifikasi">
-            <i class="bi bi-bell text-[16px]"></i>
-            <?php if ($jumlah_notifikasi > 0): ?><span class="absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center"><?= $jumlah_notifikasi > 99 ? '99+' : $jumlah_notifikasi ?></span><?php endif; ?>
-          </a>
-          <a href="<?= BASE_URL ?>/anggota/profil.php" class="nav-link ml-1 flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-700 hover:bg-slate-100">
-            <img src="<?= e(foto_profil_url($_SESSION['foto'] ?? null)) ?>" class="w-7 h-7 rounded-full object-cover" style="border:1px solid var(--border)" alt="Profil">
-            <span class="text-sm font-semibold">Profil</span>
-          </a>
-        <?php else: ?>
+        <?php if (!is_admin() && !is_anggota()): ?>
+          <a href="<?= BASE_URL ?>/index.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Katalog</a>
+          <a href="<?= BASE_URL ?>/tentang.php" class="nav-link px-2.5 py-1.5 rounded-lg text-slate-600 hover:text-brand-700 hover:bg-brand-50">Tentang</a>
           <a href="<?= BASE_URL ?>/register.php" class="nav-link ml-1 px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 text-sm">Daftar</a>
           <a href="<?= BASE_URL ?>/login.php" class="ml-1 px-4 py-1.5 rounded-lg bg-brand-600 text-white hover:bg-brand-700 text-sm font-semibold">Masuk</a>
         <?php endif; ?>
@@ -111,12 +97,14 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
     <button id="navClose" type="button" class="w-8 h-8 rounded-lg text-slate-600 flex items-center justify-center hover:bg-slate-100" style="border:1px solid var(--border); background: var(--surface-2)" aria-label="Tutup menu"><i class="bi bi-x-lg text-sm"></i></button>
   </div>
   <div class="flex-1 overflow-y-auto p-3">
-    <div class="text-[10px] font-bold tracking-widest uppercase px-3 mb-2" style="color: var(--text-faint-2)">Navigasi</div>
     <div class="space-y-1">
-      <a href="<?= BASE_URL ?>/index.php" class="drawer-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-semibold text-sm"><i class="bi bi-grid text-base w-5 text-center"></i>Katalog Buku</a>
-      <a href="<?= BASE_URL ?>/tentang.php" class="drawer-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-semibold text-sm"><i class="bi bi-info-circle text-base w-5 text-center"></i>Tentang</a>
+      <?php if (!is_admin() && !is_anggota()): ?>
+        <div class="text-[10px] font-bold tracking-widest uppercase px-3 mb-2" style="color: var(--text-faint-2)">Navigasi</div>
+        <a href="<?= BASE_URL ?>/index.php" class="drawer-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-semibold text-sm"><i class="bi bi-grid text-base w-5 text-center"></i>Katalog Buku</a>
+        <a href="<?= BASE_URL ?>/tentang.php" class="drawer-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-700 hover:bg-brand-50 hover:text-brand-700 font-semibold text-sm"><i class="bi bi-info-circle text-base w-5 text-center"></i>Tentang</a>
+      <?php endif; ?>
       <?php if (is_admin()): ?>
-        <div class="pt-4 mt-3 border-t" style="border-color: var(--border)">
+        <div>
           <div class="text-[10px] font-bold tracking-widest uppercase px-3 mb-2" style="color: var(--text-faint-2)">Panel Pengelola</div>
           <div class="space-y-1">
             <?php
@@ -138,7 +126,7 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
           </div>
         </div>
       <?php elseif (is_anggota()): ?>
-        <div class="pt-4 mt-3 border-t" style="border-color: var(--border)">
+        <div>
           <div class="text-[10px] font-bold tracking-widest uppercase px-3 mb-2" style="color: var(--text-faint-2)">Area Anggota</div>
           <div class="space-y-1">
             <?php foreach (member_menu_items() as $key => $item): ?>

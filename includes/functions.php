@@ -380,6 +380,8 @@ function admin_menu_items() {
 function member_menu_items() {
     return [
         'dashboard'            => ['label' => 'Dashboard',         'icon' => 'bi-house-door',        'url' => '/anggota/dashboard.php'],
+        'katalog'              => ['label' => 'Katalog',           'icon' => 'bi-grid',              'url' => '/index.php'],
+        'tentang'              => ['label' => 'Tentang',           'icon' => 'bi-info-circle',       'url' => '/tentang.php'],
         'peminjaman'           => ['label' => 'Peminjaman',        'icon' => 'bi-bookmark',          'url' => '/anggota/peminjaman.php'],
         'pengajuan_peminjaman' => ['label' => 'Pengajuan Pinjam',  'icon' => 'bi-journal-arrow-up',   'url' => '/anggota/pengajuan_peminjaman.php'],
         'riwayat'              => ['label' => 'Riwayat',           'icon' => 'bi-clock-history',     'url' => '/anggota/riwayat.php'],

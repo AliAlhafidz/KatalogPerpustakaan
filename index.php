@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/config/bootstrap.php';
 
+// Admin langsung masuk ke dashboard pengelola.
+if (is_admin()) redirect('/admin/dashboard.php');
+
 // ---- Ambil parameter pencarian & filter ----
 $kata_kunci  = clean($_GET['q'] ?? '');
 $id_kategori = isset($_GET['kategori']) ? (int) $_GET['kategori'] : 0;
@@ -158,6 +161,7 @@ if (!empty($buku_populer)) {
 }
 
 $page_title = 'Katalog Koleksi';
+if (is_anggota()) $member_menu_aktif = 'katalog';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -575,4 +579,8 @@ require_once __DIR__ . '/includes/header.php';
   <?php endif; ?>
 <?php endif; ?>
 
-<?php require_once __DIR__ . '/includes/footer.php'; ?>
+<?php
+// Tombol install PWA hanya ditampilkan di halaman katalog.
+$tampilkan_pwa_install = true;
+require_once __DIR__ . '/includes/footer.php';
+?>

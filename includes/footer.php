@@ -32,7 +32,8 @@
 </footer>
 
 
-<!-- PWA install -->
+<?php if (!empty($tampilkan_pwa_install)): ?>
+<!-- PWA install (hanya halaman katalog) -->
 <div id="pwaInstallWrap" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:w-auto z-50 hidden">
   <button id="pwaInstallBtn" type="button"
     class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700 transition">
@@ -40,6 +41,7 @@
     Install aplikasi
   </button>
 </div>
+<?php endif; ?>
 
 <!-- Global confirmation / notice modal -->
 <div id="appModal" class="app-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="appModalTitle">
@@ -229,6 +231,7 @@
   document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
 
   // Progressive Web App (PWA)
+  <?php if (!empty($tampilkan_pwa_install)): ?>
   let deferredInstallPrompt = null;
   const pwaWrap = document.getElementById('pwaInstallWrap');
   const pwaBtn = document.getElementById('pwaInstallBtn');
@@ -251,6 +254,7 @@
     deferredInstallPrompt = null;
     pwaWrap?.classList.add('hidden');
   });
+  <?php endif; ?>
 
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
