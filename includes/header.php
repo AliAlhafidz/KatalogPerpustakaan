@@ -77,8 +77,8 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
         <?php endif; ?>
       </div>
 
-      <div class="flex items-center gap-1.5">
-        <button id="navToggle" type="button" class="min-[900px]:hidden w-9 h-9 rounded-lg border bg-white text-slate-700 flex items-center justify-center hover:bg-slate-50" style="border-color: var(--border)" aria-label="Buka menu" aria-controls="mobileDrawer" aria-expanded="false">
+      <div class="flex items-center gap-1.5 min-[900px]:hidden">
+        <button id="navToggle" type="button" class="w-9 h-9 rounded-lg border bg-white text-slate-700 flex items-center justify-center hover:bg-slate-50" style="border-color: var(--border)" aria-label="Buka menu" aria-controls="mobileDrawer" aria-expanded="false">
           <i class="bi bi-list text-xl"></i>
         </button>
       </div>
@@ -146,9 +146,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
       <?php endif; ?>
     </div>
   </div>
-  <div class="px-4 py-3 border-t flex items-center justify-between" style="border-color: var(--border)">
-    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Menu</div>
-  </div>
   <?php if (is_admin() || is_anggota()): ?>
     <div class="p-3 border-t" style="border-color: var(--border)">
       <a href="<?= BASE_URL ?>/logout.php" data-confirm="Yakin ingin keluar dari akun?" data-confirm-text="Keluar" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800"><i class="bi bi-box-arrow-right"></i>Keluar</a>
@@ -177,9 +174,6 @@ if (function_exists('is_anggota') && is_anggota() && isset($pdo, $_SESSION['id_a
         </a>
       <?php endforeach; ?>
     </div>
-  </div>
-  <div class="px-3 py-2.5 border-t flex items-center justify-between" style="border-color: var(--border)">
-    <div class="flex items-center gap-2 text-sm font-semibold" style="color: var(--text-muted)"><i class="bi bi-circle-half"></i> Menu</div>
   </div>
   <div class="p-3 border-t" style="border-color: var(--border)">
     <a href="<?= BASE_URL ?>/logout.php" data-confirm="Yakin ingin keluar dari akun?" data-confirm-text="Keluar" class="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition"><i class="bi bi-box-arrow-right"></i>Keluar</a>
