@@ -494,7 +494,7 @@ require_once __DIR__ . '/includes/header.php';
     <a href="<?= BASE_URL ?>/index.php" class="inline-flex items-center gap-2 text-sm font-semibold hover:underline" style="color: var(--accent)">
       <i class="bi bi-arrow-left"></i> Kembali ke Katalog Koleksi
     </a>
-    <?php if (!function_exists('is_logged_in') || !is_logged_in()): ?>
+    <?php if (!is_anggota() && !is_admin()): ?>
       <div class="flex items-center gap-2">
         <a href="<?= BASE_URL ?>/register.php" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 transition">
           <i class="bi bi-person-plus"></i> Daftar Anggota
